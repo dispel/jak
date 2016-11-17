@@ -18,7 +18,7 @@ changes work or not BEFORE they open a PR.
 We aim to be friendly to rookie devs, so if you are in doubt about proper operating procedure don't hesitate to reach out by creating an issue, we are super friendly =).
 
 1. Clone this repo
-2. Install the excellent (vagrant)[https://www.vagrantup.com/]
+2. Install the excellent [vagrant](https://www.vagrantup.com/)
 3. See below.
 
 ```
@@ -90,9 +90,4 @@ The main author is Chris DiLorenzo (chrisdl on github).
 
 # License (gpl-v3)
 
-see LICENSE file.
-
-jak Copyright (C) 2016  Dispel, LLC
-This program comes with ABSOLUTELY NO WARRANTY; for details type `show w'.
-This is free software, and you are welcome to redistribute it
-under certain conditions; type `show c' for details.
+see [LICENSE](https://github.com/dispel/jak/blob/master/LICENSE) file.
