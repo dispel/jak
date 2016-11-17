@@ -5,7 +5,7 @@ Vagrant.configure(2) do |config|
 
   # config.vm.box = "ubuntu/trusty64"
   # config.vm.box = "jak.2016.11.16.box"
-  config.vm.box = "jak20161116v2"
+  config.vm.box = "https://s3.amazonaws.com/jak.releases/jak20161116v2.box"
 
   # config.ssh.private_key_path = '/Users/chris/.vagrant.d/boxes/jak.2016.11.16.box/0/virtualbox/vagrant_private_key'
 
