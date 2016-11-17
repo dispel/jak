@@ -60,7 +60,7 @@ tox
 ## Notes of import
 
 To edit which environments the tests should be run as see the `tox.ini` file.
-Since we are forward thinking individuals most development is done against python 3, eventually we will deprecate python 2.
+Since we are forward thinking individuals most development is done against python 3, eventually we will deprecate python 2.7 compatibility.
 
 
 # Future versions
