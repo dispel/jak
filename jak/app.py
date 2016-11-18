@@ -26,8 +26,12 @@ def main(version):
 @click.option('-p', '--password', required=True, default=None)
 def encrypt(filename, password):
     """Encrypts a file"""
-    encrypt_file(key=password, filename=filename)
-    click.echo('{} - is now encrypted.'.format(filename))
+    try:
+        encrypt_file(key=password, filename=filename)
+    except FileNotFoundError:
+        click.echo('Sorry I can\'t find the file: {}'.format(filename))
+    else:
+        click.echo('{} - is now encrypted.'.format(filename))
 
 
 @main.command(help='Decrypts a file')
@@ -35,8 +39,12 @@ def encrypt(filename, password):
 @click.option('-p', '--password', required=True, default=None)
 def decrypt(password, filename):
     """Decrypts a file"""
-    decrypt_file(key=password, filename=filename)
-    click.echo('{} - is now decrypted.'.format(filename))
+    try:
+        decrypt_file(key=password, filename=filename)
+    except FileNotFoundError:
+        click.echo('Sorry I can\'t find the file: {}'.format(filename))
+    else:
+        click.echo('{} - is now decrypted.'.format(filename))
 
 
 #
