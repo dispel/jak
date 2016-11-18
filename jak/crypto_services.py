@@ -2,12 +2,12 @@ from Crypto.Cipher import AES
 from Crypto import Random
 import base64
 from io import open
+import os
+import binascii
 
 
 class AES256Cipher(object):
-    """
-    http://stackoverflow.com/questions/1220751/how-to-choose-an-aes-encryption-mode-cbc-ecb-ctr-ocb-cfb
-    """
+    """AES256 using CFB mode and a 16bit block size."""
 
     def __init__(self, mode=AES.MODE_CFB):
         """You can override the mode if you want, But you had better know
@@ -43,8 +43,15 @@ class AES256Cipher(object):
         return Random.new().read(self.block_size)
 
 
+def generate_256bit_key():
+    """Generate a secure password key for people"""
+
+    return binascii.hexlify(os.urandom(16))
+
+
 def encrypt_file(key, filename):
     """Encrypts a file"""
+
     with open(filename, 'rt') as f:
         secret = f.read()
         aes256_cipher = AES256Cipher()
@@ -62,9 +69,6 @@ def encrypt_file(key, filename):
 
 def decrypt_file(key, filename):
     """Decrypts a file"""
-
-    # TODO
-    # if cant find file should raise FileNotFoundError
 
     with open(filename, 'rt') as f:
         encrypted_secret = f.read()
