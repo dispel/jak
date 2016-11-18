@@ -3,6 +3,7 @@
 import click
 from .crypto_services import encrypt_file, decrypt_file, generate_256bit_key
 from .version import __version_full__
+import binascii
 
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
@@ -34,10 +35,11 @@ def main(version):
 @click.option('-p', '--password', required=True, default=None)
 def encrypt(filename, password):
     """Encrypts a file"""
+
     try:
         encrypt_file(key=password, filename=filename)
     except FileNotFoundError:
-        click.echo('Sorry I can\'t find the file: {}'.format(filename))
+        click.echo('Sorry I can‘t find the file: {}'.format(filename))
     else:
         click.echo('{} - is now encrypted.'.format(filename))
 
@@ -47,17 +49,23 @@ def encrypt(filename, password):
 @click.option('-p', '--password', required=True, default=None)
 def decrypt(password, filename):
     """Decrypts a file"""
+
     try:
         decrypt_file(key=password, filename=filename)
     except FileNotFoundError:
-        click.echo('Sorry I can\'t find the file: {}'.format(filename))
+        click.echo('::Error::')
+        click.echo('Sorry I can‘t find the file: {}'.format(filename))
+    except binascii.Error:
+        click.echo('::Warning::')
+        click.echo('The file "{}" is already decoded, or is not in a format I recognize.'.format(filename))
     else:
         click.echo('{} - is now decrypted.'.format(filename))
 
 
-@main.command(help='Generate a secure password')
+@main.command(help='Generates a valid secure password.')
 def genpass():
-    """"""
+    """Generate a password for use with jak."""
+
     password = generate_256bit_key().decode()
     output = '''Here is your shiny new password. It is 32 characters (bytes) and will work just fine with AES256.
 
