@@ -77,6 +77,10 @@ def decrypt_file(key, filename):
 
     with open(filename, 'rt') as f:
         encrypted_secret = f.read()
+
+        if len(encrypted_secret) == 0:
+            raise JakException('The file "{}" is empty, aborting...'.format(filename))
+
         aes256_cipher = AES256Cipher()
         encrypted_secret = encrypted_secret.replace(ENCRYPTED_BY_HEADER, '')
         encrypted_secret = base64.urlsafe_b64decode(encrypted_secret.encode())

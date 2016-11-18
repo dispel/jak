@@ -61,6 +61,8 @@ def decrypt(password, filename):
     except binascii.Error:
         click.echo('::Warning::')
         click.echo('The file "{}" is already decoded, or is not in a format I recognize.'.format(filename))
+    except JakException as je:
+        click.echo(je)
     else:
         click.echo('{} - is now decrypted.'.format(filename))
 
