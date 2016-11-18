@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """Jak is a CLI tool for encrypting files."""
 
 import click
