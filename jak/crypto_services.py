@@ -1,6 +1,5 @@
 from Crypto.Cipher import AES
 from Crypto import Random
-# from .padding import pad32, PKCS7_16, unPKCS7_16
 import base64
 from io import open
 

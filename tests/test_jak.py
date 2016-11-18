@@ -20,10 +20,9 @@ def test_empty(runner):
     )
 def test_version(runner, version_flag):
     result = runner.invoke(jak, [version_flag])
-    expected_output = 'Jak v0.2.0 (Troubled Toddler)'
     assert not result.exception
     assert result.exit_code == 0
-    assert result.output.strip() == expected_output
+    assert '(Troubled Toddler)' in result.output.strip()
 
 
 # def test_encrypt_smoke(runner):
