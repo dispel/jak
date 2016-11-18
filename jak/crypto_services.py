@@ -1,36 +1,77 @@
 from Crypto.Cipher import AES
-from .padding import pad32, PKCS7_16, unPKCS7_16
+from Crypto import Random
+# from .padding import pad32, PKCS7_16, unPKCS7_16
+import base64
+from io import open
 
 
-def encrypt(key, secret):
-    """"""
-    # if key is not 32 characters pad it.
-    # a key with less than 32 characters is really not that secure though...
-    # so I wonder if we should actually pad it...
-    if len(key) != 32:
-        key = pad32(string=key)
+class AES256Cipher(object):
+    """
+    http://stackoverflow.com/questions/1220751/how-to-choose-an-aes-encryption-mode-cbc-ecb-ctr-ocb-cfb
+    """
 
-    secret = PKCS7_16(unpadded_text=secret)
+    def __init__(self, mode=AES.MODE_CFB):
+        """You can override the mode if you want, But you had better know
+        what you are doing."""
 
-    # FIXME
-    # to IV or not to IV, that is the question.
-    # Choose a secure mode.
-    # ask someone to validate that what we've done is secure.
+        self.cipher = AES
+        self.block_size = AES.block_size
+        self.mode = mode
 
-    # Debugging
-    # print(key)
+    def decrypt(self, key, encrypted_secret):
+        """Decrypts an encrypted secret.
+        both key and encrypted_secret should be bytestrings
+        """
 
-    aes = AES.new(key=key)
-    encrypted_secret = aes.encrypt(secret)
-    return encrypted_secret
+        iv = encrypted_secret[:self.block_size]
+        cipher_instance = self.cipher.new(key=key, mode=self.mode, IV=iv)
+        return cipher_instance.decrypt(encrypted_secret)[self.block_size:]
+
+    def encrypt(self, key, secret):
+        """Encrypts a secret piece of text
+        both key and secret should be bytestrings
+        """
+
+        iv = self.generate_iv()
+        cipher_instance = self.cipher.new(key=key, mode=self.mode, IV=iv)
+
+        # FIXME ask crypto expert whether attaching IV like this is ok.
+        return iv + cipher_instance.encrypt(secret)
+
+    def generate_iv(self):
+        """Generates an Initialization Vector (IV)"""
+
+        return Random.new().read(self.block_size)
 
 
-def decrypt(key, encrypted_secret):
-    """"""
-    if len(key) != 32:
-        key = pad32(string=key)
+def encrypt_file(key, filename):
+    """Encrypts a file"""
+    with open(filename, 'rt') as f:
+        secret = f.read()
+        aes256_cipher = AES256Cipher()
+        encrypted_secret = aes256_cipher.encrypt(key=key, secret=secret)
+        nice_enc_secret = base64.urlsafe_b64encode(encrypted_secret)
 
-    aes = AES.new(key=key)
-    decrypted_padded_secret = aes.decrypt(encrypted_secret)
-    unpadded_secret = unPKCS7_16(padded_text=decrypted_padded_secret)
-    return unpadded_secret
+    with open(filename, 'w') as f:
+        try:
+            nice_encoded_secret = nice_enc_secret.decode()
+            f.write(nice_encoded_secret)
+        except Exception as e:
+            print("oh shit rolling back file")
+            f.write(secret)
+
+
+def decrypt_file(key, filename):
+    """Decrypts a file"""
+
+    # TODO
+    # if cant find file should raise FileNotFoundError
+
+    with open(filename, 'rt') as f:
+        encrypted_secret = f.read()
+        aes256_cipher = AES256Cipher()
+        encrypted_secret = base64.urlsafe_b64decode(encrypted_secret.encode())
+        decrypted_secret = aes256_cipher.decrypt(key=key, encrypted_secret=encrypted_secret)
+
+    with open(filename, 'w') as f:
+        f.write(decrypted_secret.decode())

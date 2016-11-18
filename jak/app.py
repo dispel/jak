@@ -1,8 +1,7 @@
 """Jak is a CLI tool for encrypting files."""
 
 import click
-import base64
-from .crypto_services import encrypt as c_encrypt, decrypt as c_decrypt
+from .crypto_services import encrypt_file, decrypt_file
 from .version import __version_full__
 
 
@@ -22,26 +21,13 @@ def main(version):
     # TODO if possible show help text if they just type "$> jak"
 
 
-# TODO
-# Takes a filename
-# after reading file i would reocmmend calling an internal _encrypt
-# function that we can then more easily test...
-# TODO http://click.pocoo.org/6/options/#values-from-environment-variables
 @main.command(help='Encrypts a file')
 @click.argument('filename')
 @click.option('-p', '--password', required=True, default=None)
 def encrypt(filename, password):
     """Encrypts a file"""
-
-    # Debugging
-    # click.echo(filename)
-    # click.echo(password)
-
-    # TODO open a file
-    encrypted_secret = c_encrypt(key=password, secret=filename)
-
-    # TODO Push that back into the file
-    click.echo(base64.urlsafe_b64encode(encrypted_secret))
+    encrypt_file(key=password, filename=filename)
+    click.echo('{} - is now encrypted.'.format(filename))
 
 
 @main.command(help='Decrypts a file')
@@ -49,14 +35,8 @@ def encrypt(filename, password):
 @click.option('-p', '--password', required=True, default=None)
 def decrypt(password, filename):
     """Decrypts a file"""
-
-    # Only need str because of unicode on 2.7 -.-
-    # dont even know if I wanna keep the base64 encoding/decoding
-    # only makes sense for readability...
-    filename = base64.urlsafe_b64decode(str(filename))
-
-    unencrypted_secret = c_decrypt(key=password, encrypted_secret=filename)
-    click.echo(unencrypted_secret)
+    decrypt_file(key=password, filename=filename)
+    click.echo('{} - is now decrypted.'.format(filename))
 
 
 #
