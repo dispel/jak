@@ -1,0 +1,2 @@
+class JakException(Exception):
+    pass

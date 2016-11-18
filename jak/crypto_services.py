@@ -4,6 +4,7 @@ import base64
 from io import open
 import os
 import binascii
+from .exceptions import JakException
 
 
 class AES256Cipher(object):
@@ -54,6 +55,10 @@ def encrypt_file(key, filename):
 
     with open(filename, 'rt') as f:
         secret = f.read()
+
+        if len(secret) == 0:
+            raise JakException('The file "{}" is empty, aborting...'.format(filename))
+
         aes256_cipher = AES256Cipher()
         encrypted_secret = aes256_cipher.encrypt(key=key, secret=secret)
         nice_enc_secret = base64.urlsafe_b64encode(encrypted_secret)

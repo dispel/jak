@@ -4,6 +4,7 @@
 import click
 from .crypto_services import encrypt_file, decrypt_file, generate_256bit_key
 from .version import __version_full__
+from .exceptions import JakException
 import binascii
 
 
@@ -41,6 +42,8 @@ def encrypt(filename, password):
         encrypt_file(key=password, filename=filename)
     except FileNotFoundError:
         click.echo('Sorry I can‘t find the file: {}'.format(filename))
+    except JakException as je:
+        click.echo(je)
     else:
         click.echo('{} - is now encrypted.'.format(filename))
 
