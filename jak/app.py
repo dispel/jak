@@ -28,7 +28,6 @@ def main(version):
 
     if version:
         click.echo(__version_full__)
-
     # TODO if possible show help text if they just type "$> jak"
 
 

@@ -7,6 +7,9 @@ import binascii
 from .exceptions import JakException
 
 
+ENCRYPTED_BY_HEADER = '- - - Encrypted by jak - - -\n'
+
+
 class AES256Cipher(object):
     """AES256 using CFB mode and a 16bit block size."""
 
@@ -64,12 +67,9 @@ def encrypt_file(key, filename):
         nice_enc_secret = base64.urlsafe_b64encode(encrypted_secret)
 
     with open(filename, 'w') as f:
-        try:
-            nice_encoded_secret = nice_enc_secret.decode()
-            f.write(nice_encoded_secret)
-        except Exception as e:
-            print("oh shit rolling back file")
-            f.write(secret)
+        nice_encoded_secret = nice_enc_secret.decode()
+        f.write(ENCRYPTED_BY_HEADER)
+        f.write(nice_encoded_secret)
 
 
 def decrypt_file(key, filename):
@@ -78,8 +78,10 @@ def decrypt_file(key, filename):
     with open(filename, 'rt') as f:
         encrypted_secret = f.read()
         aes256_cipher = AES256Cipher()
+        encrypted_secret = encrypted_secret.replace(ENCRYPTED_BY_HEADER, '')
         encrypted_secret = base64.urlsafe_b64decode(encrypted_secret.encode())
         decrypted_secret = aes256_cipher.decrypt(key=key, encrypted_secret=encrypted_secret)
 
     with open(filename, 'w') as f:
-        f.write(decrypted_secret.decode())
+        decrypted_secret = decrypted_secret.decode()
+        f.write(decrypted_secret)
