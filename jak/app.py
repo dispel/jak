@@ -25,7 +25,6 @@ def main(version):
     not want to enter their permanent git history. But nothing prevents
     jak from being used with arbitrary files on a case by case basis.
     """
-
     if version:
         click.echo(__version_full__)
     # TODO if possible show help text if they just type "$> jak"
@@ -36,7 +35,6 @@ def main(version):
 @click.option('-p', '--password', required=True, default=None)
 def encrypt(filename, password):
     """Encrypts a file"""
-
     try:
         encrypt_file(key=password, filename=filename)
     except IOError:
@@ -52,7 +50,6 @@ def encrypt(filename, password):
 @click.option('-p', '--password', required=True, default=None)
 def decrypt(password, filename):
     """Decrypts a file"""
-
     try:
         decrypt_file(key=password, filename=filename)
     except IOError:
@@ -68,7 +65,6 @@ def decrypt(password, filename):
 @main.command(help='Generates a valid secure password.')
 def genpass():
     """Generate a password for use with jak."""
-
     password = generate_256bit_key().decode()
     output = '''Here is your shiny new password. It is 32 characters (bytes) and will work just fine with AES256.
 
