@@ -68,6 +68,9 @@ def encrypt_file(key, filename):
         if len(secret) == 0:
             raise JakException('The file "{}" is empty, aborting...'.format(filename))
 
+        if ENCRYPTED_BY_HEADER in secret:
+            raise JakException('The file "{}" is already encrypted by me. Aborting...'.format(filename))
+
         aes256_cipher = AES256Cipher()
         encrypted_secret = aes256_cipher.encrypt(key=key, secret=secret)
         nice_enc_secret = base64.urlsafe_b64encode(encrypted_secret)
