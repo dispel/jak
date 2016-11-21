@@ -37,10 +37,6 @@ def main(version):
 def encrypt(filename, password):
     """Encrypts a file"""
 
-    if len(password) != 32:
-        click.echo('Password must be exactly 32 characters long.')
-        return
-
     try:
         encrypt_file(key=password, filename=filename)
     except IOError:

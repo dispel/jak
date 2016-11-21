@@ -5,9 +5,10 @@ from io import open
 import os
 import binascii
 from .exceptions import JakException
+from builtins import str as text
+from .compat import bytes
 
-
-ENCRYPTED_BY_HEADER = u'- - - Encrypted by jak - - -\n'
+ENCRYPTED_BY_HEADER = text('- - - Encrypted by jak - - -\n')
 
 
 class AES256Cipher(object):
@@ -35,6 +36,11 @@ class AES256Cipher(object):
         both key and secret should be bytestrings
         """
 
+        if len(key) != 32:
+            raise JakException(
+                ("Password must be exactly 32 characters long. \n"
+                 "I would recommend you use the genpass command to generate a strong password."))
+
         iv = self.generate_iv()
         cipher_instance = self.cipher.new(key=key, mode=self.mode, IV=iv)
 
@@ -56,7 +62,7 @@ def generate_256bit_key():
 def encrypt_file(key, filename):
     """Encrypts a file"""
 
-    with open(filename, 'rt') as f:
+    with open(filename, 'rt', encoding='utf-8') as f:
         secret = f.read()
 
         if len(secret) == 0:
@@ -66,16 +72,16 @@ def encrypt_file(key, filename):
         encrypted_secret = aes256_cipher.encrypt(key=key, secret=secret)
         nice_enc_secret = base64.urlsafe_b64encode(encrypted_secret)
 
-    with open(filename, 'w') as f:
-        nice_encoded_secret = nice_enc_secret.decode()
+    with open(filename, 'w', encoding='utf-8') as f:
+        # nice_encoded_secret = nice_enc_secret.decode()
         f.write(ENCRYPTED_BY_HEADER)
-        f.write(nice_encoded_secret)
+        f.write(text(nice_enc_secret))
 
 
 def decrypt_file(key, filename):
     """Decrypts a file"""
 
-    with open(filename, 'rt') as f:
+    with open(filename, 'rt', encoding='utf-8') as f:
         encrypted_secret = f.read()
 
         if len(encrypted_secret) == 0:
@@ -83,9 +89,9 @@ def decrypt_file(key, filename):
 
         aes256_cipher = AES256Cipher()
         encrypted_secret = encrypted_secret.replace(ENCRYPTED_BY_HEADER, '')
-        encrypted_secret = base64.urlsafe_b64decode(encrypted_secret.encode())
+        # import pdb; pdb.set_trace()
+        encrypted_secret = base64.urlsafe_b64decode(bytes(encrypted_secret))
         decrypted_secret = aes256_cipher.decrypt(key=key, encrypted_secret=encrypted_secret)
 
-    with open(filename, 'w') as f:
-        decrypted_secret = decrypted_secret.decode()
-        f.write(decrypted_secret)
+    with open(filename, 'w', encoding='utf-8') as f:
+        f.write(text(decrypted_secret))
