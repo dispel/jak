@@ -7,7 +7,7 @@ import binascii
 from .exceptions import JakException
 
 
-ENCRYPTED_BY_HEADER = '- - - Encrypted by jak - - -\n'
+ENCRYPTED_BY_HEADER = u'- - - Encrypted by jak - - -\n'
 
 
 class AES256Cipher(object):

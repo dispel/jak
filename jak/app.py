@@ -37,9 +37,13 @@ def main(version):
 def encrypt(filename, password):
     """Encrypts a file"""
 
+    if len(password) != 32:
+        click.echo('Password must be exactly 32 characters long.')
+        return
+
     try:
         encrypt_file(key=password, filename=filename)
-    except FileNotFoundError:
+    except IOError:
         click.echo('Sorry I can‘t find the file: {}'.format(filename))
     except JakException as je:
         click.echo(je)
@@ -55,11 +59,9 @@ def decrypt(password, filename):
 
     try:
         decrypt_file(key=password, filename=filename)
-    except FileNotFoundError:
-        click.echo('::Error::')
+    except IOError:
         click.echo('Sorry I can‘t find the file: {}'.format(filename))
     except binascii.Error:
-        click.echo('::Warning::')
         click.echo('The file "{}" is already decoded, or is not in a format I recognize.'.format(filename))
     except JakException as je:
         click.echo(je)

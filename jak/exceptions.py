@@ -1,2 +1,2 @@
 class JakException(Exception):
-    pass
+    """Something obvious went wrong."""
