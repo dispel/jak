@@ -2,7 +2,8 @@
 """Jak is a CLI tool for encrypting files."""
 
 import click
-from .crypto_services import encrypt_file, decrypt_file, generate_256bit_key
+from .crypto_services import encrypt_file, decrypt_file
+from .password_services import check_password_type, generate_256bit_key
 from .version import __version_full__
 from .exceptions import JakException
 import binascii
@@ -51,23 +52,8 @@ def encrypt(filename, password):
 @click.option('-pf', '--password-file', default=None)
 def decrypt(password, password_file, filename):
     """Decrypts a file"""
-
-    # TODO We dont want it to take both a password and a password file.
-    from io import open
-    if password and password_file:
-        click.echo("Only one of password and password-file please...")
-        return
-
-    # TODO handle file not existing.
-    if password_file:
-        with open(password_file, 'rt', encoding='utf-8') as f:
-            password = f.read()
-            password = password.replace('\n', '')
-
-    # FIXME they MUST have a password at this point.
-
     try:
-        decide_which_password()
+        password = check_password_type(password, password_file)
     except JakException as je:
         click.echo(je)
         return
@@ -97,6 +83,7 @@ Remember to keep this password secret and save it. Without it you will NOT be ab
 to decrypt any file(s) you encrypt using it.
     '''.format(password=password)
     click.echo(output)
+
 
 #
 # TODO FUTURE
