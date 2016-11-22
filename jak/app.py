@@ -47,9 +47,31 @@ def encrypt(filename, password):
 
 @main.command(help='jak decrypt <file> --password <pass>')
 @click.argument('filename')
-@click.option('-p', '--password', required=True, default=None)
-def decrypt(password, filename):
+@click.option('-p', '--password', default=None)
+@click.option('-pf', '--password-file', default=None)
+def decrypt(password, password_file, filename):
     """Decrypts a file"""
+
+    # TODO We dont want it to take both a password and a password file.
+    from io import open
+    if password and password_file:
+        click.echo("Only one of password and password-file please...")
+        return
+
+    # TODO handle file not existing.
+    if password_file:
+        with open(password_file, 'rt', encoding='utf-8') as f:
+            password = f.read()
+            password = password.replace('\n', '')
+
+    # FIXME they MUST have a password at this point.
+
+    try:
+        decide_which_password()
+    except JakException as je:
+        click.echo(je)
+        return
+
     try:
         decrypt_file(key=password, filename=filename)
     except IOError:
