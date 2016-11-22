@@ -1,13 +1,7 @@
 import os
-import hmac
-import base64
-import hashlib
 import binascii
 from io import open
-from Crypto import Random
-from .compat import bytes
 from builtins import str as text
-from Crypto.Cipher import AES
 from .exceptions import JakException
 
 ENCRYPTED_BY_HEADER = text('- - - Encrypted by jak - - -\n')
