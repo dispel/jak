@@ -2,9 +2,8 @@
 """Jak is a CLI tool for encrypting files."""
 
 import click
-from .crypto_services import encrypt_file, decrypt_file
-# from .password_services import check_password_type, generate_256bit_key
-from .password_services import * as ps
+import crypto_services as cs
+import password_services as ps
 from .version import __version_full__
 from .exceptions import JakException
 import binascii
@@ -43,9 +42,12 @@ def encrypt(filename, password, password_file):
     except JakException as je:
         click.echo(je)
         return
+    except IOError:
+        click.echo('Sorry I can‘t find the password file: {}'.format(password_file))
+        return
 
     try:
-        encrypt_file(key=password, filename=filename)
+        cs.encrypt_file(key=password, filename=filename)
     except IOError:
         click.echo('Sorry I can‘t find the file: {}'.format(filename))
     except JakException as je:
@@ -67,7 +69,7 @@ def decrypt(filename, password, password_file):
         return
 
     try:
-        decrypt_file(key=password, filename=filename)
+        cs.decrypt_file(key=password, filename=filename)
     except IOError:
         click.echo('Sorry I can‘t find the file: {}'.format(filename))
     except binascii.Error:

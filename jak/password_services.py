@@ -34,5 +34,4 @@ def get_password(password, password_file):
             password = password.replace('\n', '')
         return password
 
-    if not password and not password_file:
-        raise JakException('Please provide a password or password_file. Aborting...')
+    raise JakException('Please provide a password or password_file. Aborting...')
