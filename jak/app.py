@@ -3,7 +3,8 @@
 
 import click
 from .crypto_services import encrypt_file, decrypt_file
-from .password_services import check_password_type, generate_256bit_key
+# from .password_services import check_password_type, generate_256bit_key
+from .password_services import * as ps
 from .version import __version_full__
 from .exceptions import JakException
 import binascii
@@ -31,11 +32,18 @@ def main(version):
     # TODO if possible show help text if they just type "$> jak"
 
 
-@main.command(help='jak encrypt <file> --password <pass>')
+@main.command(help='jak encrypt <file> (-p OR -pf) <pass>')
 @click.argument('filename')
-@click.option('-p', '--password', required=True, default=None)
-def encrypt(filename, password):
+@click.option('-p', '--password', default=None)
+@click.option('-pf', '--password-file', default=None)
+def encrypt(filename, password, password_file):
     """Encrypts a file"""
+    try:
+        password = ps.get_password(password, password_file)
+    except JakException as je:
+        click.echo(je)
+        return
+
     try:
         encrypt_file(key=password, filename=filename)
     except IOError:
@@ -46,14 +54,14 @@ def encrypt(filename, password):
         click.echo('{} - is now encrypted.'.format(filename))
 
 
-@main.command(help='jak decrypt <file> --password <pass>')
+@main.command(help='jak decrypt <file> (-p OR -pf) <pass>')
 @click.argument('filename')
 @click.option('-p', '--password', default=None)
 @click.option('-pf', '--password-file', default=None)
-def decrypt(password, password_file, filename):
+def decrypt(filename, password, password_file):
     """Decrypts a file"""
     try:
-        password = check_password_type(password, password_file)
+        password = ps.get_password(password, password_file)
     except JakException as je:
         click.echo(je)
         return
@@ -73,7 +81,7 @@ def decrypt(password, password_file, filename):
 @main.command(help='Generates a valid secure password.')
 def genpass():
     """Generate a password for use with jak."""
-    password = generate_256bit_key().decode()
+    password = ps.generate_256bit_key().decode()
     output = '''Here is your shiny new password. It is 32 characters (bytes) and will work just fine with AES256.
 
 

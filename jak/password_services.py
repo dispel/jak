@@ -1,20 +1,29 @@
+# -*- coding: utf-8 -*-
+
+"""
+jak.password_services
+---
+
+logic related to passwords.
+"""
+
 import os
 import binascii
 from io import open
-from builtins import str as text
 from .exceptions import JakException
-
-ENCRYPTED_BY_HEADER = text('- - - Encrypted by jak - - -\n')
 
 
 def generate_256bit_key():
     """Generate a secure password key."""
     return binascii.hexlify(os.urandom(16))
 
-def check_password_type(password, password_file):
-    """Will check to see if password is a string or read in from file"""
+
+def get_password(password, password_file):
+    """Will check to see if password is a string or read in from file
+    returns the password.
+    """
     if password and password_file:
-        raise JakException('Cannot pass both a password and password_file. Aborting...')
+        raise JakException('Cannot pass both a --password and --password-file. Aborting...')
 
     if password:
         return password
