@@ -5,7 +5,6 @@ import jak.crypto_services as crypto
 import jak.password_services as ps
 from Crypto.Cipher import AES
 import six
-from jak.crypto_services import ENCRYPTED_BY_HEADER
 from jak.exceptions import JakException
 # import os
 
@@ -60,7 +59,7 @@ def test_encrypt_file(tmpdir):
     key = ps.generate_256bit_key().decode('utf-8')
     crypto.encrypt_file(key, tempfile.dirname + "/hello")
     assert tempfile.read() != "secret"
-    assert ENCRYPTED_BY_HEADER in tempfile.read()
+    assert crypto.ENCRYPTED_BY_HEADER in tempfile.read()
 
 
 def test_has_integrity(cipher):
