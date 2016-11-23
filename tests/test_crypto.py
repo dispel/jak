@@ -2,6 +2,7 @@
 
 import pytest
 import jak.crypto_services as crypto
+import jak.password_services as ps
 from Crypto.Cipher import AES
 import six
 from jak.crypto_services import ENCRYPTED_BY_HEADER
@@ -52,17 +53,11 @@ def test_encrypt_decrypt(cipher):
     assert encrypted != decrypted
 
 
-def test_generate_256bit_key():
-    key = crypto.generate_256bit_key()
-    assert len(key) == 32
-    assert isinstance(key, six.binary_type)
-
-
 def test_encrypt_file(tmpdir):
     tempfile = tmpdir.mkdir("sub").join("hello")
     tempfile.write("secret")
     assert tempfile.read() == "secret"
-    key = crypto.generate_256bit_key().decode('utf-8')
+    key = ps.generate_256bit_key().decode('utf-8')
     crypto.encrypt_file(key, tempfile.dirname + "/hello")
     assert tempfile.read() != "secret"
     assert ENCRYPTED_BY_HEADER in tempfile.read()

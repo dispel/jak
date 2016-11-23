@@ -37,7 +37,15 @@ class AES256Cipher(object):
         return b(new_fingerprint) == existing_fingerprint
 
     def create_integrity_fingerprint(self, key, iv):
-        """Generate a fingerprint during encrypt to check integrity on decrypt"""
+        """Generate a fingerprint during encrypt to check integrity on decrypt
+
+        FIXME
+        technically using the same key for integrity checking and decrypting/encrypting
+        is not a great idea. but otherwise we are asking users to keep track of two
+        separate keys... One option i've been considering is just asking for a really long
+        48 character password and use 32 for encrypting/decryption and final 16 for the
+        integrity checking...
+        """
         return hmac.new(b(key), iv, self.integrity_algorithm).hexdigest()
 
     def decrypt(self, key, encrypted_secret):
@@ -74,11 +82,6 @@ class AES256Cipher(object):
     def generate_iv(self):
         """Generates an Initialization Vector (IV)."""
         return Random.new().read(self.block_size)
-
-
-def generate_256bit_key():
-    """Generate a secure password key."""
-    return binascii.hexlify(os.urandom(16))
 
 
 def encrypt_file(key, filename):
