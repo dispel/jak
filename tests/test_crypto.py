@@ -73,6 +73,15 @@ def test_has_integrity(cipher):
     assert bad_key != key
     assert cipher.has_integrity(bad_key, encrypted, iv) is False
 
+
+def test_create_integrity_fingerprint(cipher):
+    iv = cipher.generate_iv()
+    key = ps.generate_256bit_key().decode('utf-8')
+    fingerprint = cipher.create_integrity_fingerprint(key, iv)
+    assert len(fingerprint) == cipher.fingerprint_length
+    assert isinstance(fingerprint, six.binary_type)
+
+
 def test_decrypt_file():
     # TODO
     pass
