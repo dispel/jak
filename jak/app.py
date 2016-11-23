@@ -2,7 +2,8 @@
 """Jak is a CLI tool for encrypting files."""
 
 import click
-from .crypto_services import encrypt_file, decrypt_file, generate_256bit_key
+import crypto_services as cs
+import password_services as ps
 from .version import __version_full__
 from .exceptions import JakException
 import binascii
@@ -30,13 +31,23 @@ def main(version):
     # TODO if possible show help text if they just type "$> jak"
 
 
-@main.command(help='jak encrypt <file> --password <pass>')
+@main.command(help='jak encrypt <file> (-p OR -pf) <pass>')
 @click.argument('filename')
-@click.option('-p', '--password', required=True, default=None)
-def encrypt(filename, password):
+@click.option('-p', '--password', default=None)
+@click.option('-pf', '--password-file', default=None)
+def encrypt(filename, password, password_file):
     """Encrypts a file"""
     try:
-        encrypt_file(key=password, filename=filename)
+        password = ps.get_password(password, password_file)
+    except JakException as je:
+        click.echo(je)
+        return
+    except IOError:
+        click.echo('Sorry I can‘t find the password file: {}'.format(password_file))
+        return
+
+    try:
+        cs.encrypt_file(key=password, filename=filename)
     except IOError:
         click.echo('Sorry I can‘t find the file: {}'.format(filename))
     except JakException as je:
@@ -45,35 +56,20 @@ def encrypt(filename, password):
         click.echo('{} - is now encrypted.'.format(filename))
 
 
-@main.command(help='jak decrypt <file> --password <pass>')
+@main.command(help='jak decrypt <file> (-p OR -pf) <pass>')
 @click.argument('filename')
 @click.option('-p', '--password', default=None)
 @click.option('-pf', '--password-file', default=None)
-def decrypt(password, password_file, filename):
+def decrypt(filename, password, password_file):
     """Decrypts a file"""
-
-    # TODO We dont want it to take both a password and a password file.
-    from io import open
-    if password and password_file:
-        click.echo("Only one of password and password-file please...")
-        return
-
-    # TODO handle file not existing.
-    if password_file:
-        with open(password_file, 'rt', encoding='utf-8') as f:
-            password = f.read()
-            password = password.replace('\n', '')
-
-    # FIXME they MUST have a password at this point.
-
     try:
-        decide_which_password()
+        password = ps.get_password(password, password_file)
     except JakException as je:
         click.echo(je)
         return
 
     try:
-        decrypt_file(key=password, filename=filename)
+        cs.decrypt_file(key=password, filename=filename)
     except IOError:
         click.echo('Sorry I can‘t find the file: {}'.format(filename))
     except binascii.Error:
@@ -87,7 +83,7 @@ def decrypt(password, password_file, filename):
 @main.command(help='Generates a valid secure password.')
 def genpass():
     """Generate a password for use with jak."""
-    password = generate_256bit_key().decode()
+    password = ps.generate_256bit_key().decode()
     output = '''Here is your shiny new password. It is 32 characters (bytes) and will work just fine with AES256.
 
 
@@ -97,6 +93,7 @@ Remember to keep this password secret and save it. Without it you will NOT be ab
 to decrypt any file(s) you encrypt using it.
     '''.format(password=password)
     click.echo(output)
+
 
 #
 # TODO FUTURE

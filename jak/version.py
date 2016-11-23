@@ -19,5 +19,5 @@ with people using it. I Don't care what incompatible API changes happen during 0
 it is NOT 1.X until we are 99.9 percent sure it is secure.
 """
 
-__version__ = '0.4.0'
+__version__ = '0.5.0'
 __version_full__ = "Jak v{} ({})".format(__version__, 'Troubled Toddler')
