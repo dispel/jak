@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import pytest
 import jak.crypto_services as crypto
 from Crypto.Cipher import AES
@@ -40,11 +42,12 @@ def test_encrypt_exceptions(cipher, password):
 def test_encrypt_decrypt(cipher):
     key = 'ldsjfhdskjfhdskljfhdsklfjh347398'
     secret = 'my secret'
+
     encrypted = cipher.encrypt(key=key, secret=secret)
     decrypted = cipher.decrypt(key=key, encrypted_secret=encrypted)
     assert isinstance(encrypted, six.binary_type)
     assert isinstance(decrypted, six.binary_type)
-    assert decrypted == secret
+    assert decrypted.decode('utf-8') == secret
     assert encrypted != secret
     assert encrypted != decrypted
 
@@ -59,11 +62,22 @@ def test_encrypt_file(tmpdir):
     tempfile = tmpdir.mkdir("sub").join("hello")
     tempfile.write("secret")
     assert tempfile.read() == "secret"
-    key = crypto.generate_256bit_key()
+    key = crypto.generate_256bit_key().decode('utf-8')
     crypto.encrypt_file(key, tempfile.dirname + "/hello")
     assert tempfile.read() != "secret"
     assert ENCRYPTED_BY_HEADER in tempfile.read()
 
+
+def test_has_integrity(cipher):
+    key = 'lds3fhdskj2hdskl1fhdsklfjh347398'
+    secret = 'integrity'
+    encrypted = cipher.encrypt(key, secret)
+    iv = encrypted[cipher.fingerprint_length:cipher.fingerprint_length + cipher.block_size]
+    assert cipher.has_integrity(key, encrypted, iv) is True
+
+    bad_key = '0ds3fhdskj2hdskl1fhdsklfjh347398'
+    assert bad_key != key
+    assert cipher.has_integrity(bad_key, encrypted, iv) is False
 
 def test_decrypt_file():
     # TODO

@@ -9,6 +9,11 @@ Thanks Kenneth!
 
 import six
 
+if six.PY2:
+    builtin_str = str
+    bytes = str
+    str = unicode           # noqa
+    basestring = basestring # noqa
 
 if six.PY3:
     builtin_str = str
@@ -16,8 +21,18 @@ if six.PY3:
     bytes = bytes
     basestring = (str, bytes)
 
-if six.PY2:
-    builtin_str = str
-    bytes = str
-    str = unicode  # noqa
-    basestring = basestring
+
+if six.PY3:
+    import codecs
+
+    def b(x):
+        if isinstance(x, six.binary_type):
+            return x
+        else:
+            return codecs.latin_1_encode(x)[0]
+else:
+    def b(x):
+        if isinstance(x, six.binary_type):
+            return x
+        else:
+            return bytes(x)

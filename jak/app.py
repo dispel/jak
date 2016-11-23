@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-"""Jak is a CLI tool for encrypting files."""
+"""Jak is a easy to use CLI tool for securely encrypting files."""
 
 import click
-import crypto_services as cs
-import password_services as ps
+from . import crypto_services as cs
+from . import password_services as ps
 from .version import __version_full__
 from .exceptions import JakException
 import binascii
@@ -17,7 +17,7 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 def main(version):
     """(c) Dispel LLC (GPLv3)
 
-    Jak helps you encrypt/decrypt files.
+    Jak is a easy to use CLI tool for securely encrypting files.
 
     All passwords must be exactly 32 characters so that jak can generate
     a strong enough encryption (AES256).
