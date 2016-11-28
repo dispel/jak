@@ -12,7 +12,7 @@ TODOS
 import click
 from . import crypto_services as cs
 from . import password_services as ps
-from .version import __version_full__
+from . import __version_full__
 from .exceptions import JakException
 
 
@@ -95,25 +95,13 @@ to decrypt any file(s) you encrypt using it.
 
 # @main.command()
 # def protect():
-#     """"""
+#     """Add file to jakfile if it is not already in there"""
 #     click.echo("TODO")
 #
 #
 # @main.command()
 # def abandon():
-#     """"""
-#     click.echo("TODO")
-
-
-# @main.command()
-# def encrypt_all():
-#     """Encrypt all protected files"""
-#     click.echo("TODO")
-#
-#
-# @main.command()
-# def decrypt_all():
-#     """Decrypt all protected files"""
+#     """Remove file to jakfile if it is in there"""
 #     click.echo("TODO")
 #
 #

@@ -3,13 +3,20 @@ jak makes encrypting files really easy. Its original purpose was to obscure
 files so they could securely be shared within git.
 """
 from setuptools import find_packages, setup
-import jak
+import re
+import ast
 
-dependencies = ['click', 'pycrypto', 'six']
+# 100% stolen from flask to avoid catch 22 issue with importing version
+# (can't rely on something that we haven't installed yet)
+_version_re = re.compile(r'__version__\s+=\s+(.*)')
+with open('jak/__init__.py', 'rb') as f:
+    version = str(ast.literal_eval(_version_re.search(
+        f.read().decode('utf-8')).group(1)))
+
 
 setup(
     name='jak',
-    version=jak.__version__,
+    version=version,
     url='https://github.com/dispel/jak',
     license='GPL-V3',
     author='Dispel, LLC',
@@ -20,7 +27,11 @@ setup(
     include_package_data=True,
     zip_safe=False,
     platforms='any',
-    install_requires=dependencies,
+    install_requires=[
+        'click>=6.6',
+        'pycrypto>=2.6.1',
+        'six>=1.10.0'
+    ],
     entry_points={
         'console_scripts': [
             'jak = jak.app:main',

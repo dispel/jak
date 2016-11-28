@@ -84,9 +84,8 @@ the first number would be if we make backwards incompatible changes.
 
 # Authors
 
-jak is built by Dispel.
+jak is stewarded and sponsored by [Dispel](https://dispel.io) but all of the contributors are the authors.
 
-The main author is Chris DiLorenzo (chrisdl on github).
 
 # License (gpl-v3)
 

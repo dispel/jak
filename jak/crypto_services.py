@@ -14,12 +14,11 @@ import binascii
 from io import open
 from Crypto import Random
 from .compat import b
-from builtins import str as text
 from Crypto.Cipher import AES
 from .exceptions import JakException
 from . import password_services as ps
 
-ENCRYPTED_BY_HEADER = text('- - - Encrypted by jak - - -\n')
+ENCRYPTED_BY_HEADER = u'- - - Encrypted by jak - - -\n'
 
 
 class AES256Cipher(object):
@@ -120,16 +119,14 @@ def all(callable_action, password, password_file):
         except JakException as je:
             result = je.__str__()
 
-        try:
-            results += result
-        except Exception as e:
-            import pdb; pdb.set_trace()
+        results += result
 
         # Only add newline if we are not on the final one.
         if index + 1 != len(contents['protected']):
             results += '\n'
 
     return results
+
 
 def encrypt_file(filename, password, password_file=None):
     """Encrypts a file"""
@@ -145,10 +142,10 @@ def encrypt_file(filename, password, password_file=None):
         return 'Sorry I can‘t find the file: {}'.format(filename)
 
     if len(secret) == 0:
-        raise JakException('The file "{}" is empty, aborting...'.format(filename))
+        raise JakException('Hmmmm "{}" seems to be completely empty, skipping...'.format(filename))
 
     if ENCRYPTED_BY_HEADER in secret:
-        raise JakException('The file "{}" is already encrypted by me.'.format(filename))
+        raise JakException('I already encrypted the file: "{}".'.format(filename))
 
     # Encrypt
     aes256_cipher = AES256Cipher()

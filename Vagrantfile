@@ -22,5 +22,5 @@ end
 # apt-get update
 # apt-get install python2.7 python3.5 pypy
 # apt-get install python-pip
-# sudo apt-get install build-essential libssl-dev libffi-dev python-dev python3-dev # for building cryptography among other things.
+# apt-get install build-essential libssl-dev libffi-dev python-dev python3-dev git # for building cryptography among other things.
 # Wasn't so hard was it?
