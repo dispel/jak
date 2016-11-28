@@ -22,12 +22,28 @@ def test_remove_comments_from_JSON():
 
 
 def test_read_jakfile_to_dict(tmpdir):
-    tempfile = tmpdir.mkdir("sub").join("jakfile")
-    tempfile.write(jakfile_content)
-    assert tempfile.read() == jakfile_content
+    jakfile = tmpdir.join("jakfile")
+    jakfile.write(jakfile_content)
+    assert jakfile.read() == jakfile_content
 
-    result = helpers.read_jakfile_to_dict()
+    result = helpers.read_jakfile_to_dict(jakfile.strpath)
 
     assert isinstance(result, dict)
     assert 'protected' in result
     assert 'password_file' in result
+
+
+def test_create_jakfile_error(tmpdir):
+    jakfile = tmpdir.join("jakfile")
+    jakfile.write('gobbledigook')
+    result = helpers.create_jakfile(jakfile.strpath)
+    assert result == "You already seem to have a jakfile."
+
+
+def test_create_jakfile(tmpdir):
+    jakfile = tmpdir.join("jakfile")
+
+    # I still want it to go in the tmpdir and not affect the actual location
+    # without the jakfile.write it should not exist there.
+    result = helpers.create_jakfile(jakfile.strpath)
+    assert result == "I created a fresh new jakfile for you. You should check it out!"
