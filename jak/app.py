@@ -1,12 +1,19 @@
 # -*- coding: utf-8 -*-
-"""Jak is a easy to use CLI tool for securely encrypting files."""
+"""
+jak.app
+---
+
+Jak is a easy to use CLI tool for securely encrypting files.
+
+TODOS
+ - We have way too many functions named decrypt/encrypt now, it is straight up confusing.
+"""
 
 import click
 from . import crypto_services as cs
 from . import password_services as ps
-from .version import __version_full__
+from . import __version_full__
 from .exceptions import JakException
-import binascii
 
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
@@ -36,24 +43,17 @@ def main(version):
 @click.option('-p', '--password', default=None)
 @click.option('-pf', '--password-file', default=None)
 def encrypt(filename, password, password_file):
-    """Encrypts a file"""
+    """Encrypts file(s)"""
     try:
-        password = ps.get_password(password, password_file)
+        if filename == 'all':
+            click.echo(
+                cs.all(callable_action=cs.encrypt_file,
+                       password=password,
+                       password_file=password_file))
+        else:
+            click.echo(cs.encrypt_file(filename, password, password_file))
     except JakException as je:
         click.echo(je)
-        return
-    except IOError:
-        click.echo('Sorry I can‘t find the password file: {}'.format(password_file))
-        return
-
-    try:
-        cs.encrypt_file(key=password, filename=filename)
-    except IOError:
-        click.echo('Sorry I can‘t find the file: {}'.format(filename))
-    except JakException as je:
-        click.echo(je)
-    else:
-        click.echo('{} - is now encrypted.'.format(filename))
 
 
 @main.command(help='jak decrypt <file> (-p OR -pf) <pass>')
@@ -61,23 +61,17 @@ def encrypt(filename, password, password_file):
 @click.option('-p', '--password', default=None)
 @click.option('-pf', '--password-file', default=None)
 def decrypt(filename, password, password_file):
-    """Decrypts a file"""
+    """Decrypt file(s)"""
     try:
-        password = ps.get_password(password, password_file)
+        if filename == 'all':
+            click.echo(
+                cs.all(callable_action=cs.decrypt_file,
+                       password=password,
+                       password_file=password_file))
+        else:
+            click.echo(cs.decrypt_file(filename, password, password_file))
     except JakException as je:
         click.echo(je)
-        return
-
-    try:
-        cs.decrypt_file(key=password, filename=filename)
-    except IOError:
-        click.echo('Sorry I can‘t find the file: {}'.format(filename))
-    except binascii.Error:
-        click.echo('The file "{}" is already decoded, or is not in a format I recognize.'.format(filename))
-    except JakException as je:
-        click.echo(je)
-    else:
-        click.echo('{} - is now decrypted.'.format(filename))
 
 
 @main.command(help='Generates a valid secure password.')
@@ -101,25 +95,13 @@ to decrypt any file(s) you encrypt using it.
 
 # @main.command()
 # def protect():
-#     """"""
+#     """Add file to jakfile if it is not already in there"""
 #     click.echo("TODO")
 #
 #
 # @main.command()
 # def abandon():
-#     """"""
-#     click.echo("TODO")
-
-
-# @main.command()
-# def encrypt_all():
-#     """Encrypt all protected files"""
-#     click.echo("TODO")
-#
-#
-# @main.command()
-# def decrypt_all():
-#     """Decrypt all protected files"""
+#     """Remove file to jakfile if it is in there"""
 #     click.echo("TODO")
 #
 #

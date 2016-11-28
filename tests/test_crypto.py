@@ -21,7 +21,7 @@ def test_cipher(cipher):
 
 
 def test_generate_iv(cipher):
-    result = cipher.generate_iv()
+    result = cipher._generate_iv()
     assert len(result) == 16
     assert isinstance(result, six.binary_type)
 
@@ -57,7 +57,7 @@ def test_encrypt_file(tmpdir):
     tempfile.write("secret")
     assert tempfile.read() == "secret"
     key = ps.generate_256bit_key().decode('utf-8')
-    crypto.encrypt_file(key, tempfile.dirname + "/hello")
+    crypto.encrypt_file(filename=tempfile.dirname + "/hello", password=key)
     assert tempfile.read() != "secret"
     assert crypto.ENCRYPTED_BY_HEADER in tempfile.read()
 
@@ -67,26 +67,39 @@ def test_has_integrity(cipher):
     secret = 'integrity'
     encrypted = cipher.encrypt(key, secret)
     iv = encrypted[cipher.fingerprint_length:cipher.fingerprint_length + cipher.block_size]
-    assert cipher.has_integrity(key, encrypted, iv) is True
+    assert cipher._has_integrity(key, encrypted, iv) is True
 
     bad_key = '0ds3fhdskj2hdskl1fhdsklfjh347398'
     assert bad_key != key
-    assert cipher.has_integrity(bad_key, encrypted, iv) is False
+    assert cipher._has_integrity(bad_key, encrypted, iv) is False
 
 
 def test_create_integrity_fingerprint(cipher):
-    iv = cipher.generate_iv()
+    iv = cipher._generate_iv()
     key = ps.generate_256bit_key().decode('utf-8')
-    fingerprint = cipher.create_integrity_fingerprint(key, iv)
+    fingerprint = cipher._create_integrity_fingerprint(key, iv)
     assert len(fingerprint) == cipher.fingerprint_length
     assert isinstance(fingerprint, six.binary_type)
 
 
 def test_decrypt_file():
     # TODO
-    pass
+    assert True is False
 
 
 def test_encrypt_and_decrypt_a_file():
     # TODO
-    pass
+    assert True is False
+
+
+def test_ed_all_password_cases():
+    """
+    password_file value not in jakfile
+    password_file value in jakfile but no value
+    password_file value in jakfile and has value (yay!)
+    """
+    assert True is False
+
+
+def test_ed_all_no_jakfile():
+    assert True is False
