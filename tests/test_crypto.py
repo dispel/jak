@@ -6,6 +6,7 @@ import jak.password_services as ps
 from Crypto.Cipher import AES
 import six
 from jak.exceptions import JakException
+import binascii
 
 
 @pytest.fixture
@@ -51,6 +52,34 @@ def test_encrypt_decrypt(cipher):
     assert encrypted != decrypted
 
 
+def test_create_integrity_fingerprint(cipher):
+    iv = cipher._generate_iv()
+    key = ps.generate_256bit_key().decode('utf-8')
+
+    from datetime import datetime
+    start = datetime.now()
+    for x in range(15):
+        fingerprint = cipher._create_integrity_fingerprint(key, iv)
+    end = datetime.now()
+    elapsed = end - start
+    assert elapsed.total_seconds() > 0.1
+    assert len(fingerprint) == cipher.fingerprint_length
+    assert isinstance(fingerprint, six.binary_type)
+
+
+def test_create_integrity_fingerprint_old_python(cipher):
+    """Technically I dont need to check for python 3 here but otherwise I am
+    just comparing the exact same thing against itself."""
+    if six.PY3:
+        iv = cipher._generate_iv()
+        key = ps.generate_256bit_key().decode('utf-8')
+        new_way = cipher._create_integrity_fingerprint(key, iv)
+        old_way = cipher._old_python_create_integrity_fingerprint(key, iv)
+        assert new_way == binascii.hexlify(old_way)
+    else:
+        pass
+
+
 def test_has_integrity(cipher):
     key = 'lds3fhdskj2hdskl1fhdsklfjh347398'
     secret = 'integrity'
@@ -61,14 +90,6 @@ def test_has_integrity(cipher):
     bad_key = '0ds3fhdskj2hdskl1fhdsklfjh347398'
     assert bad_key != key
     assert cipher._has_integrity(bad_key, encrypted, iv) is False
-
-
-def test_create_integrity_fingerprint(cipher):
-    iv = cipher._generate_iv()
-    key = ps.generate_256bit_key().decode('utf-8')
-    fingerprint = cipher._create_integrity_fingerprint(key, iv)
-    assert len(fingerprint) == cipher.fingerprint_length
-    assert isinstance(fingerprint, six.binary_type)
 
 
 def test_encrypt_file(tmpdir):
