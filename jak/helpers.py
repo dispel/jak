@@ -45,26 +45,46 @@ def create_jakfile(jakfile='jakfile'):
     password = ps.generate_256bit_key().decode('utf-8')
     fresh_jakfile = '''// For more information visit https://github.com/dispel/jak
 // A jakfile is JSON except it can have comments starting with double slashes "//"
+// For good syntax highlighting I would recommend treating it as a JavaScript file.
 {{
 
   // READ ME I'M IMPORTANT
-  // A jakfile should have either a password (which i've generated for you)
-  // or a link to a "password_file". If you supply both "password" DOES override
-  // the password_file. Also, supplying the password (-p) OR the password file (-pf)
-  // through the CLI will override anything that is in this jakfile.
-  // An encryption is only as strong as the password used to encrypt it. That is
-  // why I force you to use 32 characters (an astronomical number!) in your password.
-  // However, it SHOULD ALSO BE RANDOM. Please use "$> jak genpass" to make a password.
-  // And share it securely with your team.
+  // A jakfile should have EITHER a strong 32 character password
+  // OR a link to a "password_file" OR neither. A password or password file given through
+  // the CLI will override the jakfiles password/password_file values. This is to
+  // avoid confusion about which password a file is encrypted with.
+  //
+  // To better explain the asterisk * will denote which password will be used:
+  // cli pass*
+  // cli passfile*
+  // cli pass + cli passfile              -> NOPE
+  // jakfile pass*
+  // jakfile passfile*
+  // jakfile pass + jakfile passfile      -> NOPE
+  // cli pass* + jakfile pass             -> OVERRIDE
+  // cli passfile* + jakfile pass         -> OVERRIDE
+  // cli pass + jakfile passfile          -> OVERRIDE
+  // cli pass + cli passfile + jakfile x  -> NOPE
+  // etc...
+
+  // Recommended usage is to simply input a password in the jakfile and then
+  // spam "jak encrypt/decrypt all" for all it's worth. Keep it simple stupid.
+
+  // An encryptions strength is only as strong as the password used to encrypt it.
+  // That is why I force you to use 32 characters (an astronomical number!)
+  // in your password.
+  // The password SHOULD BE AS RANDOM AS POSSIBLE.
+  // Please use "$> jak genpass" to make a password
+  // and share it securely with your team (not e-mail! Say it with me... NOT E-MAIL!).
   "password": "{password}",
   // OR
-  // "password_file": "jakpassword.txt"
+  // "password_file": "jakpasswordfile"
 
-  // a list of files that will be encrypted/decrypted with the "all" command.
+  // a list of protected files that will be encrypted/decrypted with the "all" command.
   // f.e.
   // $> jak encrypt all
   // $> jak decrypt all
-  "protected": ["examplefile1", "examplefile2.txt", "/Users/thedude/mysecrets.txt"] // EDIT ME
+  "protected_files": ["examplefile1", "examplefile2.txt", "/Users/thedude/mysecrets.txt"] // EDIT ME
 }}'''.format(password=password)
     try:
         with open(jakfile, 'r'):
