@@ -77,7 +77,7 @@ def decrypt(filename, password, password_file):
 @main.command(help='Generates a valid secure password.')
 def genpass():
     """Generate a password for use with jak."""
-    password = ps.generate_256bit_key().decode()
+    password = ps.generate_256bit_key().decode('utf-8')
     output = '''Here is your shiny new password. It is 32 characters (bytes) and will work just fine with AES256.
 
 
@@ -87,6 +87,14 @@ Remember to keep this password secret and save it. Without it you will NOT be ab
 to decrypt any file(s) you encrypt using it.
     '''.format(password=password)
     click.echo(output)
+
+
+@main.command(help='Create a jakfile with some helpful examples.')
+def init():
+    """Create a jakfile with some helpful examples."""
+    from . import helpers
+    result = helpers.create_jakfile()
+    click.echo(result)
 
 
 #

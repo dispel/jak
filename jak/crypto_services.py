@@ -12,8 +12,9 @@ import base64
 import hashlib
 import binascii
 from io import open
-from Crypto import Random
+from . import helpers
 from .compat import b
+from Crypto import Random
 from Crypto.Cipher import AES
 from .exceptions import JakException
 from . import password_services as ps
@@ -98,10 +99,7 @@ def all(callable_action, password, password_file):
 
     """
     try:
-        with open('jakfile', 'rt') as jakfile:
-            import json
-            contents_raw = jakfile.read()
-            contents = json.loads(contents_raw)
+        contents = helpers.read_jakfile_to_dict()
     except IOError:
         return 'You need to create a jakfile to use this functionality. Aborting...'
 

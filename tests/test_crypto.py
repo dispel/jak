@@ -6,7 +6,6 @@ import jak.password_services as ps
 from Crypto.Cipher import AES
 import six
 from jak.exceptions import JakException
-# import os
 
 
 @pytest.fixture
