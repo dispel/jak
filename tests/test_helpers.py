@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import pytest
 from jak import helpers
 
 jakfile_content = """
@@ -47,3 +48,13 @@ def test_create_jakfile(tmpdir):
     # without the jakfile.write it should not exist there.
     result = helpers.create_jakfile(jakfile.strpath)
     assert result == "I created a fresh new jakfile for you. You should check it out!"
+
+
+def test_grouper():
+    assert helpers.grouper('aaa', 1) == ('a', 'a', 'a')
+    assert helpers.grouper('aaa', 5) == ('aaa', )
+    assert helpers.grouper('aaabbbcc', 3) == ('aaa', 'bbb', 'cc')
+
+    # Raise error due to 2 not being iterable
+    with pytest.raises(TypeError):
+        helpers.grouper(2, 1)

@@ -73,3 +73,10 @@ def create_jakfile(jakfile='jakfile'):
         with open(jakfile, 'w+') as f:
             f.write(fresh_jakfile)
         return "I created a fresh new jakfile for you. You should check it out!"
+
+
+def grouper(iterable, n):
+    """split iterable data into n-length blocks
+    grouper('aaa', 2) == ('aa', 'a')
+    """
+    return tuple(iterable[i:i + n] for i in range(0, len(iterable), n))

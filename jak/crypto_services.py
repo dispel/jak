@@ -19,7 +19,7 @@ from Crypto.Cipher import AES
 from .exceptions import JakException
 from . import password_services as ps
 
-ENCRYPTED_BY_HEADER = u'- - - Encrypted by jak - - -\n'
+ENCRYPTED_BY_HEADER = u'- - - Encrypted by jak - - -\n\n'
 
 
 class AES256Cipher(object):
@@ -152,10 +152,12 @@ def encrypt_file(filename, password, password_file=None):
     # Make it prettier for the file
     nice_enc_secret = base64.urlsafe_b64encode(encrypted_secret)
 
-    # Write it to the file
+    encrypted_chunks = helpers.grouper(nice_enc_secret.decode('utf-8'), 60)
+
     with open(filename, 'w', encoding='utf-8') as f:
         f.write(ENCRYPTED_BY_HEADER)
-        f.write(nice_enc_secret.decode('utf-8'))
+        for encrypted_chunk in encrypted_chunks:
+            f.write(encrypted_chunk + '\n')
 
     return '{} - is now encrypted.'.format(filename)
 
