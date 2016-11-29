@@ -3,13 +3,13 @@
 import pytest
 from jak import helpers
 
-jakfile_content = """
+jakfile_content_1 = """
 // Comment 1
 {
 // Comment 2
 "password_file": "jakpassword",
 // Comment 3
-"protected": [ "env", "env2" ]  // Inline-Comment 4
+"protected_files": [ "env", "env2" ]  // Inline-Comment 4
 // "commented out line": 5
 } // Comment 5 (seriously?)
 // Comment 6
@@ -18,19 +18,19 @@ jakfile_content = """
 
 
 def test_remove_comments_from_JSON():
-    result = helpers._remove_comments_from_JSON(jakfile_content)
-    assert result == '{"password_file":"jakpassword","protected":["env","env2"]}'
+    result = helpers._remove_comments_from_JSON(jakfile_content_1)
+    assert result == '{"password_file":"jakpassword","protected_files":["env","env2"]}'
 
 
 def test_read_jakfile_to_dict(tmpdir):
     jakfile = tmpdir.join("jakfile")
-    jakfile.write(jakfile_content)
-    assert jakfile.read() == jakfile_content
+    jakfile.write(jakfile_content_1)
+    assert jakfile.read() == jakfile_content_1
 
     result = helpers.read_jakfile_to_dict(jakfile.strpath)
 
     assert isinstance(result, dict)
-    assert 'protected' in result
+    assert 'protected_files' in result
     assert 'password_file' in result
 
 

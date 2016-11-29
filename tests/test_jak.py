@@ -31,6 +31,11 @@ def test_file_not_found(runner, cmd, filename):
     result = runner.invoke(jak, [cmd, filename, '-p', 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'])
     assert 'find the file: {}'.format(filename) in result.output
 
+
+def test_jakfile_valid_json():
+    # TODO
+    pass
+
 # def test_encrypt_smoke(runner):
 #     result = runner.invoke(jak, ['encrypt', 'secret', '--password', 'password'])
 #     assert result.output == 'zqnVrSb-Q3bFxN9jOdzZBw==\n'
