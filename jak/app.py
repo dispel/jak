@@ -119,7 +119,6 @@ to decrypt any file(s) you encrypt using it.
 @main.command(help='Create a jakfile with some helpful examples.')
 def init():
     """Create a jakfile with some helpful examples."""
-    from . import helpers
     result = helpers.create_jakfile()
     click.echo(result)
 
@@ -137,7 +136,7 @@ def shave():
 
 
 #
-# TODO FUTURE
+# TODO FUTURE(?)
 #
 
 # @main.command()
@@ -150,8 +149,6 @@ def shave():
 # def abandon():
 #     """Remove file from jakfile's "protected_files" list if it is in there"""
 #     click.echo("TODO")
-#
-#
 #
 #
 # @main.command()
