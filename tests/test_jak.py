@@ -36,15 +36,6 @@ def test_jakfile_valid_json():
     # TODO
     pass
 
-def test_iv_randomness(runner):
-    with runner.isolated_filesystem():
-        with open('secret.txt', 'w') as f:
-            f.write('secret')
-        setup_file = runner.invoke(jak, ['encrypt', 'secret.txt', '--password', '8aa07783be74904fa34be710a160325e'])
-        with open('secret.txt', 'r') as f:
-            result = f.read()
-        assert not result == '- - - Encrypted by jak - - -\n\nNzBlNmNkMjg1NDQyZWY1YzljZTA0NWYzMWE1MzcxYzBiYzU0OTcxZGVkZjQy\nMDkwNWY0Yzc2ZDE3Y2E4ZDliYTQwMWZmNTEyNjFhYWZlNjRiNzlmYTAyZDg2\nZWI2M2RlNzk2OGM3NDczNjBmMjIwOWQxMjg5OGM2NjIyZWNkYzLH7uJuJhZI\nymTsQyVWEJwdMFLRmsjO\n'
-
 def test_encrypt_smoke(runner):
     with runner.isolated_filesystem():
         with open('secret.txt', 'w') as f:
