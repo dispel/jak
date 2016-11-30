@@ -102,10 +102,20 @@ def test_encrypt_file(tmpdir):
     assert crypto.ENCRYPTED_BY_HEADER in tempfile.read()
 
 
-# def test_decrypt_file(tmpdir):
-#     # TODO
-#     assert True is False
-#
+def test_decrypt_file(tmpdir):
+    tempfile = tmpdir.mkdir("sub").join("hello")
+    tempfile.write("""- - - Encrypted by jak - - -
+
+NzIyMzVkODc3ZWFhM2VlMTg5MTYyZTllNTFlNGMxZmQzMzhmN2IwM2YxNmEz
+OGNiMTI5MjI2ODA1ZWRmNDg5M2IxNGI5ZjNmNDk0ODVjNDcwOTE5MWI3N2Q5
+Y2FlNTQwZWI2ZmY2MzE5YTZiOGU1NTA5ZGVhNmY2OTMxNTAyZDUcDK2xUZxf
+DTHv3kq_ukiq7rO7MiJDgQ==
+""")
+    key = '2a57929b3610ba53b96f472b0dca2740'
+    crypto.decrypt_file(filename=tempfile.strpath, password=key)
+    assert tempfile.read() == "secret\n"
+
+
 #
 # def test_encrypt_and_decrypt_a_file():
 #     # TODO
