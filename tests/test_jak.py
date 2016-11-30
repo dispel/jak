@@ -24,12 +24,12 @@ def test_version(runner, version_flag):
     assert '(Troubled Toddler)' in result.output.strip()
 
 
-@pytest.mark.parametrize('cmd, filename', [
+@pytest.mark.parametrize('cmd, filepath', [
     ('encrypt', 'filethatdoesnotexist'),
     ('decrypt', 'filethatdoesnotexist2')])
-def test_file_not_found(runner, cmd, filename):
-    result = runner.invoke(jak, [cmd, filename, '-p', 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'])
-    assert 'find the file: {}'.format(filename) in result.output
+def test_file_not_found(runner, cmd, filepath):
+    result = runner.invoke(jak, [cmd, filepath, '-p', 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'])
+    assert 'find the file: {}'.format(filepath) in result.output
 
 
 def test_jakfile_valid_json():

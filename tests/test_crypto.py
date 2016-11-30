@@ -102,19 +102,19 @@ def test_encrypt_file(tmpdir):
     secretfile.write("secret")
     assert secretfile.read() == "secret"
     key = ps.generate_256bit_key().decode('utf-8')
-    crypto.encrypt_file(filename=secretfile.strpath, password=key)
+    crypto.encrypt_file(filepath=secretfile.strpath, password=key)
     assert secretfile.read() != "secret"
     assert crypto.ENCRYPTED_BY_HEADER in secretfile.read()
 
 
-def test_bad_encrypt_file_filename(tmpdir):
+def test_bad_encrypt_file_filepath(tmpdir):
     key = ps.generate_256bit_key().decode('utf-8')
 
-    # Good password, no filename should freakout
-    result = crypto.encrypt_file(filename="", password=key)
+    # Good password, no filepath should freakout
+    result = crypto.encrypt_file(filepath="", password=key)
     assert "can't find the file: " in result
 
-    # result = crypto.encrypt_file(filename=None, password=key)
+    # result = crypto.encrypt_file(filepath=None, password=key)
     # assert "can't find the file: " in result
 
 
@@ -128,7 +128,7 @@ Y2FlNTQwZWI2ZmY2MzE5YTZiOGU1NTA5ZGVhNmY2OTMxNTAyZDUcDK2xUZxf
 DTHv3kq_ukiq7rO7MiJDgQ==
 """)
     key = '2a57929b3610ba53b96f472b0dca2740'
-    crypto.decrypt_file(filename=secretfile.strpath, password=key)
+    crypto.decrypt_file(filepath=secretfile.strpath, password=key)
     assert secretfile.read() == "secret\n"
 
 
@@ -138,7 +138,7 @@ def test_encrypt_and_decrypt_a_file(tmpdir):
     secretfile.write(secret_content)
     assert secretfile.read() == secret_content
     key = ps.generate_256bit_key().decode('utf-8')
-    crypto.encrypt_file(filename=secretfile.strpath, password=key)
+    crypto.encrypt_file(filepath=secretfile.strpath, password=key)
 
     # File has changed
     assert secretfile.read() != secret_content
@@ -147,7 +147,7 @@ def test_encrypt_and_decrypt_a_file(tmpdir):
     # which might be presumptuous.)
     assert crypto.ENCRYPTED_BY_HEADER in secretfile.read()
 
-    crypto.decrypt_file(filename=secretfile.strpath, password=key)
+    crypto.decrypt_file(filepath=secretfile.strpath, password=key)
 
     # Back to original
     assert secretfile.read() == secret_content
