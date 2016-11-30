@@ -39,25 +39,52 @@ def main(version):
     # TODO if possible show help text if they just type "$> jak"
 
 
-@main.command(help='jak encrypt <file> (-p OR -pf) <pass>')
-@click.argument('filename')
-@click.option('-p', '--password', default=None)
-@click.option('-pf', '--password-file', default=None)
-def encrypt(filename, password, password_file):
-    """Encrypts file(s)"""
+def encrypt_inner(filepath, password=None, password_file=None):
+    """shim with logic for encrypting file(s)"""
     try:
         jakfile_dict = helpers.read_jakfile_to_dict()
     except IOError:
         jakfile_dict = None
 
     try:
-        if filename == 'all':
+        if filepath == 'all':
             click.echo(cs.all(callable_action=cs.encrypt_file,
                               password=password,
                               password_file=password_file,
                               jakfile_dict=jakfile_dict))
         else:
-            click.echo(cs.encrypt_file(filename=filename,
+            click.echo(cs.encrypt_file(filepath=filepath,
+                                       password=password,
+                                       password_file=password_file,
+                                       jakfile_dict=jakfile_dict))
+    except JakException as je:
+        click.echo(je)
+
+
+@main.command(help='jak encrypt <file> (-p OR -pf) <pass>')
+@click.argument('filepath')
+@click.option('-p', '--password', default=None)
+@click.option('-pf', '--password-file', default=None)
+def encrypt(filepath, password, password_file):
+    """Encrypts file(s)"""
+    encrypt_inner(filepath, password, password_file)
+
+
+def decrypt_inner(filepath, password=None, password_file=None):
+    """Shim with logic for decrypting file(s)"""
+    try:
+        jakfile_dict = helpers.read_jakfile_to_dict()
+    except IOError:
+        jakfile_dict = None
+
+    try:
+        if filepath == 'all':
+            click.echo(cs.all(callable_action=cs.decrypt_file,
+                              password=password,
+                              password_file=password_file,
+                              jakfile_dict=jakfile_dict))
+        else:
+            click.echo(cs.decrypt_file(filepath=filepath,
                                        password=password,
                                        password_file=password_file,
                                        jakfile_dict=jakfile_dict))
@@ -66,29 +93,12 @@ def encrypt(filename, password, password_file):
 
 
 @main.command(help='jak decrypt <file> (-p OR -pf) <pass>')
-@click.argument('filename')
+@click.argument('filepath')
 @click.option('-p', '--password', default=None)
 @click.option('-pf', '--password-file', default=None)
-def decrypt(filename, password, password_file):
+def decrypt(filepath, password, password_file):
     """Decrypt file(s)"""
-    try:
-        jakfile_dict = helpers.read_jakfile_to_dict()
-    except IOError:
-        jakfile_dict = None
-
-    try:
-        if filename == 'all':
-            click.echo(cs.all(callable_action=cs.decrypt_file,
-                              password=password,
-                              password_file=password_file,
-                              jakfile_dict=jakfile_dict))
-        else:
-            click.echo(cs.decrypt_file(filename=filename,
-                                       password=password,
-                                       password_file=password_file,
-                                       jakfile_dict=jakfile_dict))
-    except JakException as je:
-        click.echo(je)
+    decrypt_inner(filepath, password, password_file)
 
 
 @main.command(help='Generates a valid secure password.')
@@ -114,6 +124,18 @@ def init():
     click.echo(result)
 
 
+@main.command()
+def stomp():
+    """alias for 'jak encrypt all'"""
+    encrypt_inner(filepath='all')
+
+
+@main.command()
+def shave():
+    """alias for 'jak decrypt all'"""
+    decrypt_inner(filepath='all')
+
+
 #
 # TODO FUTURE
 #
@@ -130,16 +152,6 @@ def init():
 #     click.echo("TODO")
 #
 #
-# @main.command()
-# def stomp():
-#     """alias for encrypt-all"""
-#     encrypt_all()
-#
-#
-# @main.command()
-# def shave():
-#     """alias for decrypt-all"""
-#     decrypt_all()
 #
 #
 # @main.command()

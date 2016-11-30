@@ -147,21 +147,21 @@ Aborting...'''
     return results
 
 
-def encrypt_file(filename, password, password_file=None, jakfile_dict=None):
+def encrypt_file(filepath, password, password_file=None, jakfile_dict=None):
     """Encrypts a file"""
     password = ps.get_password(password, password_file, jakfile_dict)
 
     try:
-        with open(filename, 'rt', encoding='utf-8') as f:
+        with open(filepath, 'rt', encoding='utf-8') as f:
             secret = f.read()
     except IOError:
-        return "Sorry I can't find the file: {}".format(filename)
+        return "Sorry I can't find the file: {}".format(filepath)
 
     if len(secret) == 0:
-        raise JakException('Hmmmm "{}" seems to be completely empty, skipping...'.format(filename))
+        raise JakException('Hmmmm "{}" seems to be completely empty, skipping...'.format(filepath))
 
     if ENCRYPTED_BY_HEADER in secret:
-        raise JakException('I already encrypted the file: "{}".'.format(filename))
+        raise JakException('I already encrypted the file: "{}".'.format(filepath))
 
     # Encrypt
     aes256_cipher = AES256Cipher()
@@ -171,26 +171,26 @@ def encrypt_file(filename, password, password_file=None, jakfile_dict=None):
     nice_enc_secret = base64.urlsafe_b64encode(encrypted_secret)
     encrypted_chunks = helpers.grouper(nice_enc_secret.decode('utf-8'), 60)
 
-    with open(filename, 'w', encoding='utf-8') as f:
+    with open(filepath, 'w', encoding='utf-8') as f:
         f.write(ENCRYPTED_BY_HEADER)
         for encrypted_chunk in encrypted_chunks:
             f.write(encrypted_chunk + '\n')
 
-    return '{} - is now encrypted.'.format(filename)
+    return '{} - is now encrypted.'.format(filepath)
 
 
-def decrypt_file(filename, password, password_file=None, jakfile_dict=None):
+def decrypt_file(filepath, password, password_file=None, jakfile_dict=None):
     """Decrypts a file"""
     password = ps.get_password(password, password_file, jakfile_dict)
 
     try:
-        with open(filename, 'rt', encoding='utf-8') as f:
+        with open(filepath, 'rt', encoding='utf-8') as f:
             encrypted_secret = f.read()
     except IOError:
-        return "Sorry I can't find the file: {}".format(filename)
+        return "Sorry I can't find the file: {}".format(filepath)
 
     if len(encrypted_secret) == 0:
-        raise JakException('The file "{}" is empty, aborting...'.format(filename))
+        raise JakException('The file "{}" is empty, aborting...'.format(filepath))
 
     # Remove header.
     encrypted_secret = encrypted_secret.replace(ENCRYPTED_BY_HEADER, '')
@@ -198,14 +198,14 @@ def decrypt_file(filename, password, password_file=None, jakfile_dict=None):
     try:
         encrypted_secret = base64.urlsafe_b64decode(b(encrypted_secret))
     except (TypeError, binascii.Error):
-        return 'The file "{}" is already decrypted, or is not in a format I recognize.'.format(filename)
+        return 'The file "{}" is already decrypted, or is not in a format I recognize.'.format(filepath)
 
     # Perform Decrypt
     aes256_cipher = AES256Cipher()
     decrypted_secret = aes256_cipher.decrypt(key=password, encrypted_secret=encrypted_secret)
 
     # Write back unencrypted content to the file
-    with open(filename, 'w', encoding='utf-8') as f:
+    with open(filepath, 'w', encoding='utf-8') as f:
         f.write(decrypted_secret.decode('utf-8'))
 
-    return '{} - is now decrypted.'.format(filename)
+    return '{} - is now decrypted.'.format(filepath)
