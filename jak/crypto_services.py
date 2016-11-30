@@ -67,7 +67,7 @@ class AES256Cipher(object):
         except ImportError:
 
             # Must be on python older than 2.7.8...
-            digest = self._old_python_pbkdf2(password=b(key), salt=iv)
+            digest = self._old_python_create_integrity_fingerprint(password=b(key), salt=iv)
         else:
             digest = pbkdf2_hmac(hash_name='SHA512', password=b(key),
                                  salt=iv, iterations=10000)
