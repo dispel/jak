@@ -3,7 +3,7 @@
 import pytest
 from click.testing import CliRunner
 from jak.app import main as jak
-
+import jak.crypto_services as crypto
 
 @pytest.fixture
 def runner():
@@ -43,7 +43,7 @@ def test_encrypt_smoke(runner):
         setup_file = runner.invoke(jak, ['encrypt', 'secret.txt', '--password', '8aa07783be74904fa34be710a160325e'])
         with open('secret.txt', 'r') as f:
             result = f.read()
-        assert '- - - Encrypted by jak - - -' in result
+        assert crypto.ENCRYPTED_BY_HEADER in result
 
 def test_decrypt_smoke(runner):
     with runner.isolated_filesystem():
@@ -52,5 +52,5 @@ def test_decrypt_smoke(runner):
         setup_file = runner.invoke(jak, ['decrypt', 'secret.txt', '--password', '8aa07783be74904fa34be710a160325e'])
         with open('secret.txt', 'r') as f:
             result = f.read()
-        assert not '- - - Encrypted by jak - - -' in result
+        assert not crypto.ENCRYPTED_BY_HEADER in result
         assert result == 'secret'
