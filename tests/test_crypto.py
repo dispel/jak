@@ -93,18 +93,18 @@ def test_has_integrity(cipher):
 
 
 def test_encrypt_file(tmpdir):
-    tempfile = tmpdir.mkdir("sub").join("hello")
-    tempfile.write("secret")
-    assert tempfile.read() == "secret"
+    secretfile = tmpdir.mkdir("sub").join("hello")
+    secretfile.write("secret")
+    assert secretfile.read() == "secret"
     key = ps.generate_256bit_key().decode('utf-8')
-    crypto.encrypt_file(filename=tempfile.strpath, password=key)
-    assert tempfile.read() != "secret"
-    assert crypto.ENCRYPTED_BY_HEADER in tempfile.read()
+    crypto.encrypt_file(filename=secretfile.strpath, password=key)
+    assert secretfile.read() != "secret"
+    assert crypto.ENCRYPTED_BY_HEADER in secretfile.read()
 
 
 def test_decrypt_file(tmpdir):
-    tempfile = tmpdir.mkdir("sub").join("hello")
-    tempfile.write("""- - - Encrypted by jak - - -
+    secretfile = tmpdir.mkdir("sub").join("hello")
+    secretfile.write("""- - - Encrypted by jak - - -
 
 NzIyMzVkODc3ZWFhM2VlMTg5MTYyZTllNTFlNGMxZmQzMzhmN2IwM2YxNmEz
 OGNiMTI5MjI2ODA1ZWRmNDg5M2IxNGI5ZjNmNDk0ODVjNDcwOTE5MWI3N2Q5
@@ -112,24 +112,23 @@ Y2FlNTQwZWI2ZmY2MzE5YTZiOGU1NTA5ZGVhNmY2OTMxNTAyZDUcDK2xUZxf
 DTHv3kq_ukiq7rO7MiJDgQ==
 """)
     key = '2a57929b3610ba53b96f472b0dca2740'
-    crypto.decrypt_file(filename=tempfile.strpath, password=key)
-    assert tempfile.read() == "secret\n"
+    crypto.decrypt_file(filename=secretfile.strpath, password=key)
+    assert secretfile.read() == "secret\n"
 
 
-#
-# def test_encrypt_and_decrypt_a_file():
-#     # TODO
-#     assert True is False
-#
-#
-# def test_ed_all_password_cases():
-#     """
-#     password_file value not in jakfile
-#     password_file value in jakfile but no value
-#     password_file value in jakfile and has value (yay!)
-#     """
-#     assert True is False
-#
-#
+def test_encrypt_and_decrypt_a_file(tmpdir):
+    secretfile = tmpdir.mkdir("sub").join("hello")
+    secret_content = "supercalifragialisticexpialidocious"
+    secretfile.write(secret_content)
+    assert secretfile.read() == secret_content
+    key = ps.generate_256bit_key().decode('utf-8')
+    crypto.encrypt_file(filename=secretfile.strpath, password=key)
+    assert secretfile.read() != secret_content
+    assert crypto.ENCRYPTED_BY_HEADER in secretfile.read()
+
+    crypto.decrypt_file(filename=secretfile.strpath, password=key)
+    assert secretfile.read() == secret_content
+
+
 # def test_ed_all_no_jakfile():
 #     assert True is False
