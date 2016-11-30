@@ -20,7 +20,7 @@ from . import helpers
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
 
-@click.group(invoke_without_command=True, context_settings=CONTEXT_SETTINGS)
+@click.group(invoke_without_command=True, context_settings=CONTEXT_SETTINGS, no_args_is_help=True)
 @click.option('-v', '--version', is_flag=True)
 def main(version):
     """(c) Dispel LLC (GPLv3)
