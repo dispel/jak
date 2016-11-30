@@ -3,7 +3,7 @@
 import pytest
 from click.testing import CliRunner
 from jak.app import main as jak
-
+import jak.crypto_services as crypto
 
 @pytest.fixture
 def runner():
@@ -36,11 +36,21 @@ def test_jakfile_valid_json():
     # TODO
     pass
 
-# def test_encrypt_smoke(runner):
-#     result = runner.invoke(jak, ['encrypt', 'secret', '--password', 'password'])
-#     assert result.output == 'zqnVrSb-Q3bFxN9jOdzZBw==\n'
-#
-#
-# def test_decrypt_smoke(runner):
-#     result = runner.invoke(jak, ['decrypt', 'zqnVrSb-Q3bFxN9jOdzZBw==', '--password', 'password'])
-#     assert result.output == 'secret\n'
+def test_encrypt_smoke(runner):
+    with runner.isolated_filesystem():
+        with open('secret.txt', 'w') as f:
+            f.write('secret')
+        setup_file = runner.invoke(jak, ['encrypt', 'secret.txt', '--password', '8aa07783be74904fa34be710a160325e'])
+        with open('secret.txt', 'r') as f:
+            result = f.read()
+        assert crypto.ENCRYPTED_BY_HEADER in result
+
+def test_decrypt_smoke(runner):
+    with runner.isolated_filesystem():
+        with open('secret.txt', 'w') as f:
+            f.write('- - - Encrypted by jak - - -\n\nNzBlNmNkMjg1NDQyZWY1YzljZTA0NWYzMWE1MzcxYzBiYzU0OTcxZGVkZjQy\nMDkwNWY0Yzc2ZDE3Y2E4ZDliYTQwMWZmNTEyNjFhYWZlNjRiNzlmYTAyZDg2\nZWI2M2RlNzk2OGM3NDczNjBmMjIwOWQxMjg5OGM2NjIyZWNkYzLH7uJuJhZI\nymTsQyVWEJwdMFLRmsjO\n')
+        setup_file = runner.invoke(jak, ['decrypt', 'secret.txt', '--password', '8aa07783be74904fa34be710a160325e'])
+        with open('secret.txt', 'r') as f:
+            result = f.read()
+        assert not crypto.ENCRYPTED_BY_HEADER in result
+        assert result == 'secret'
