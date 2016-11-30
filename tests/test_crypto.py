@@ -166,32 +166,20 @@ def test_all():
                              jakfile_dict=mock_jackfile_dict)
         assert results == 'one\ntwo'
 
-        mock_jackfile_dict = {}
-        with pytest.raises(JakException) as exception:
-            results = crypto.all(callable_action=foo, password=None, password_file=None,
-                                 jakfile_dict=mock_jackfile_dict)
-        assert 'jakfile with a "protected_files"' in exception.__str__()
 
-        with pytest.raises(JakException) as exception:
-            mock_jackfile_dict = {'protected_files': []}
-            crypto.all(callable_action=foo, password=None, password_file=None,
-                       jakfile_dict=mock_jackfile_dict)
-        assert "protected_files value is empty" in exception.__str__()
+@pytest.mark.parametrize('jakdict, error_string_part', [
+    ({}, 'jakfile with a "protected_files"'),
+    ({'protected_files': []}, "protected_files value is empty"),
+    ({'protected_files': 'one'}, '"protected_files" value must be a list (array).'),
+    ({'protected_files': 5}, '"protected_files" value must be a list (array).'),
+    ({'protected_files': None}, '"protected_files" value must be a list (array).')])
+def test_all_jakexceptions(jakdict, error_string_part):
+    def foo(protected_file, p, pf):
+        return protected_file
 
+    with mock.patch('jak.password_services.get_password') as gp:
+        gp.return_value = 'get_password'
         with pytest.raises(JakException) as exception:
-            mock_jackfile_dict = {'protected_files': 'one'}
             crypto.all(callable_action=foo, password=None, password_file=None,
-                       jakfile_dict=mock_jackfile_dict)
-        assert '"protected_files" value must be a list (array).' in exception.__str__()
-
-        with pytest.raises(JakException) as exception:
-            mock_jackfile_dict = {'protected_files': 5}
-            crypto.all(callable_action=foo, password=None, password_file=None,
-                       jakfile_dict=mock_jackfile_dict)
-        assert '"protected_files" value must be a list (array).' in exception.__str__()
-
-        with pytest.raises(JakException) as exception:
-            mock_jackfile_dict = {'protected_files': None}
-            crypto.all(callable_action=foo, password=None, password_file=None,
-                       jakfile_dict=mock_jackfile_dict)
-        assert '"protected_files" value must be a list (array).' in exception.__str__()
+                       jakfile_dict=jakdict)
+        assert error_string_part in exception.__str__()
