@@ -19,7 +19,7 @@ from Crypto.Cipher import AES
 from .exceptions import JakException
 from . import password_services as ps
 
-ENCRYPTED_BY_HEADER = u'- - - Encrypted by jak - - -\n'
+ENCRYPTED_BY_HEADER = u'- - - Encrypted by jak - - -\n\n'
 
 
 class AES256Cipher(object):
@@ -92,26 +92,16 @@ class AES256Cipher(object):
         return Random.new().read(self.block_size)
 
 
-def all(callable_action, password, password_file):
+def all(callable_action, password, password_file, jakfile_dict):
     """Read the jakfile and decrypt all the files in it.
 
     callable_action MUST be one of encrypt_file or decrypt_file (FIXME, throw warning if not?)
 
     """
-    try:
-        contents = helpers.read_jakfile_to_dict()
-    except IOError:
-        return 'You need to create a jakfile to use this functionality. Aborting...'
-
-    # TODO test:
-    # password_file not in there
-    # password_file in there but no value
-    # password_file in there and has value
-    if contents['password_file']:
-        password_file = contents['password_file']
+    password = ps.get_password(password, password_file, jakfile_dict)
 
     results = ''
-    for index, protected_file in enumerate(contents['protected']):
+    for index, protected_file in enumerate(jakfile_dict['protected_files']):
         try:
             result = callable_action(protected_file, password, password_file)
         except JakException as je:
@@ -119,25 +109,22 @@ def all(callable_action, password, password_file):
 
         results += result
 
-        # Only add newline if we are not on the final one.
-        if index + 1 != len(contents['protected']):
+        # Only add newline if we are not on the last protected file.
+        if index + 1 != len(jakfile_dict['protected_files']):
             results += '\n'
 
     return results
 
 
-def encrypt_file(filename, password, password_file=None):
+def encrypt_file(filename, password, password_file=None, jakfile_dict=None):
     """Encrypts a file"""
-    try:
-        password = ps.get_password(password, password_file)
-    except IOError:
-        return 'Sorry I can‘t find the password file: {}'.format(password_file)
+    password = ps.get_password(password, password_file, jakfile_dict)
 
     try:
         with open(filename, 'rt', encoding='utf-8') as f:
             secret = f.read()
     except IOError:
-        return 'Sorry I can‘t find the file: {}'.format(filename)
+        return "Sorry I can't find the file: {}".format(filename)
 
     if len(secret) == 0:
         raise JakException('Hmmmm "{}" seems to be completely empty, skipping...'.format(filename))
@@ -151,24 +138,25 @@ def encrypt_file(filename, password, password_file=None):
 
     # Make it prettier for the file
     nice_enc_secret = base64.urlsafe_b64encode(encrypted_secret)
+    encrypted_chunks = helpers.grouper(nice_enc_secret.decode('utf-8'), 60)
 
-    # Write it to the file
     with open(filename, 'w', encoding='utf-8') as f:
         f.write(ENCRYPTED_BY_HEADER)
-        f.write(nice_enc_secret.decode('utf-8'))
+        for encrypted_chunk in encrypted_chunks:
+            f.write(encrypted_chunk + '\n')
 
     return '{} - is now encrypted.'.format(filename)
 
 
-def decrypt_file(filename, password, password_file=None):
+def decrypt_file(filename, password, password_file=None, jakfile_dict=None):
     """Decrypts a file"""
-    password = ps.get_password(password, password_file)
+    password = ps.get_password(password, password_file, jakfile_dict)
 
     try:
         with open(filename, 'rt', encoding='utf-8') as f:
             encrypted_secret = f.read()
     except IOError:
-        return 'Sorry I can‘t find the file: {}'.format(filename)
+        return "Sorry I can't find the file: {}".format(filename)
 
     if len(encrypted_secret) == 0:
         raise JakException('The file "{}" is empty, aborting...'.format(filename))

@@ -1,91 +1,51 @@
 # jak
 
-jak is a Troubled Toddler who will help people encrypt their files.
+jak is a Troubled Toddler who helps developers encrypt their files.
 
 **OBS!! JAK IS NOT READY FOR PRODUCTION USE YET!!**
-
 
 # Installation
 
 `pip install jak`
 
-# Contributor installation
+# Usage
 
-Just like with jaks functionality we've worked hard to make developer installation consistent and easy.
-It should always be quick for people to contribute and the tests should help people know whether their
-changes work or not BEFORE they open a PR.
+```shell
 
-We aim to be friendly to rookie devs, so if you are in doubt about proper operating procedure don't hesitate to reach out by creating an issue, we are super friendly =).
+# Create a jakfile (for your settings)
+jak init
 
-1. Clone this repo
-2. Install the excellent [vagrant](https://www.vagrantup.com/)
-3. See below.
+# You will want to edit the file in a texteditor, it has a
+# lot of information in it.
+nano jakfile
 
+# Encrypt/Decrypt all of the files that are specified as
+# "protected_files" in your jakfile.
+jak encrypt all
+jak decrypt all
+
+jak encrypt <specific file>
+jak decrypt <specific file>
+
+# Generate a strong password. An encryption is only as strong as the password.
+# ALWAYS use a strong 32 character password.
+jak genpass
+
+# Where action is one of encrypt/decrypt
+# Overrides the password in the jakfile
+jak <action> -p 4233afb2bb59fb96ca468511b64a283d
+
+# Overrides the password in the jakfile with a password from a file
+jak <action> -pf <password file>
 ```
 
-# Boot up the vagrant machine
-vagrant up
+# Contributor Guide
 
-# Enter sandman
-vagrant ssh
-
-# Once inside the vagrant, if you know what you are doing you can make the call as to whether you want to use virtualenvironments or just something else to switch between python versions, or if you even feel the need to do so. So the rest of this is just a general guide.
-
-# Switch to root
-sudo su
-
-# Latest pip
-pip install --upgrade pip
-
-# This is where the project files are mirrorer on the virtual machine
-cd /vagrant
-
-# Not necessary just to clarify things for your sanity
-ls -al
-
-# Install the requirements
-pip install -r requirements.txt
-pip install -r requirements_dev.txt
-
-# Install the package in editable mode
-pip install --editable .
-
-# Run the tests
-tox
-
-# $$$ Profit $$$
-# Let us know if you have any issues.
-```
-
-## Notes of import
-
-To edit which environments the tests should be run as see the `tox.ini` file.
-Since we are forward thinking individuals most development is done against python 3, eventually we will deprecate python 2.7 compatibility.
-
-
-# Future versions
-
-0 - 10 are the formative years. If we get past them we will start
-a new naming scheme. We use semantic naming so the only time we shift
-the first number would be if we make backwards incompatible changes.
-```
-0.X Troubled Toddler        <-- CURRENT
-1.X Young Whippersnapper
-2.X Teenage Wasteland
-3.X Highschool Sweetheart
-4.X Wannabee Scientist
-5.X Jaded Hipster
-6.X Midlife Maniac
-7.X Dorky Parent
-8.X Rattled Retiree
-9.X Cranky Old Seafarer
-10.X Wizened Witch
-```
+See [CONTRIBUTOR_README.md](https://github.com/dispel/jak/blob/master/CONTRIBUTOR_README.md)
 
 # Authors
 
 jak is stewarded and sponsored by [Dispel](https://dispel.io) but all of the contributors are the authors.
-
 
 # License (gpl-v3)
 

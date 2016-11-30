@@ -14,6 +14,7 @@ from . import crypto_services as cs
 from . import password_services as ps
 from . import __version_full__
 from .exceptions import JakException
+from . import helpers
 
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
@@ -45,13 +46,21 @@ def main(version):
 def encrypt(filename, password, password_file):
     """Encrypts file(s)"""
     try:
+        jakfile_dict = helpers.read_jakfile_to_dict()
+    except IOError:
+        jakfile_dict = None
+
+    try:
         if filename == 'all':
-            click.echo(
-                cs.all(callable_action=cs.encrypt_file,
-                       password=password,
-                       password_file=password_file))
+            click.echo(cs.all(callable_action=cs.encrypt_file,
+                              password=password,
+                              password_file=password_file,
+                              jakfile_dict=jakfile_dict))
         else:
-            click.echo(cs.encrypt_file(filename, password, password_file))
+            click.echo(cs.encrypt_file(filename=filename,
+                                       password=password,
+                                       password_file=password_file,
+                                       jakfile_dict=jakfile_dict))
     except JakException as je:
         click.echo(je)
 
@@ -63,13 +72,21 @@ def encrypt(filename, password, password_file):
 def decrypt(filename, password, password_file):
     """Decrypt file(s)"""
     try:
+        jakfile_dict = helpers.read_jakfile_to_dict()
+    except IOError:
+        jakfile_dict = None
+
+    try:
         if filename == 'all':
-            click.echo(
-                cs.all(callable_action=cs.decrypt_file,
-                       password=password,
-                       password_file=password_file))
+            click.echo(cs.all(callable_action=cs.decrypt_file,
+                              password=password,
+                              password_file=password_file,
+                              jakfile_dict=jakfile_dict))
         else:
-            click.echo(cs.decrypt_file(filename, password, password_file))
+            click.echo(cs.decrypt_file(filename=filename,
+                                       password=password,
+                                       password_file=password_file,
+                                       jakfile_dict=jakfile_dict))
     except JakException as je:
         click.echo(je)
 
