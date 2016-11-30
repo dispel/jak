@@ -7,9 +7,7 @@ jak.crypto_services
 Logic for performing encryption and decryption
 """
 
-import hmac
 import base64
-import hashlib
 import binascii
 from io import open
 from . import helpers
@@ -32,10 +30,7 @@ class AES256Cipher(object):
         self.cipher = AES
         self.block_size = AES.block_size
         self.mode = mode
-
-        # Just one of those things.
         self.fingerprint_length = 128
-        self.integrity_algorithm = hashlib.sha512
 
     def _has_integrity(self, key, encrypted_secret, iv):
         """Validate that the fingerprint (HMAC) will match (aka is the password correct?)"""
@@ -43,17 +38,41 @@ class AES256Cipher(object):
         new_fingerprint = self._create_integrity_fingerprint(key, iv)
         return b(new_fingerprint) == existing_fingerprint
 
+    def _old_python_create_integrity_fingerprint(self, password, salt):
+        """Used to generate a PBKDF2 HMAC if python version doesn't have a
+        pbkdf2_hmac package built in.
+
+        Only reason we keep this is because of old ubuntu LTS. Come 2018 or so
+        we can probably remove this. And throw a "upgrade your python plz" message instead.
+        https://www.dlitz.net/software/pycrypto/api/current/Crypto.Protocol.KDF-module.html#PBKDF2
+        """
+        from Crypto.Protocol.KDF import PBKDF2
+        from Crypto.Hash import HMAC, SHA512
+
+        def prf(p, s):
+            return HMAC.new(key=p, msg=s, digestmod=SHA512).digest()
+
+        return PBKDF2(password=password, salt=salt, count=10000, prf=prf,
+                      dkLen=int(self.fingerprint_length / 2))
+
     def _create_integrity_fingerprint(self, key, iv):
         """Generate a fingerprint during encrypt to check integrity on decrypt
+        uses PBKDF2 (PKCS #5 v2.0)
 
-        FIXME
-        technically using the same key for integrity checking and decrypting/encrypting
-        is not a great idea. but otherwise we are asking users to keep track of two
-        separate keys... One option i've been considering is just asking for a really long
-        48 character password and use 32 for encrypting/decryption and final 16 for the
-        integrity checking...
+        for more info see source code here:
+        https://hg.python.org/cpython/file/2.7/Lib/hashlib.py
         """
-        fingerprint = hmac.new(b(key), iv, self.integrity_algorithm).hexdigest()
+        try:
+            from hashlib import pbkdf2_hmac
+        except ImportError:
+
+            # Must be on python older than 2.7.8...
+            digest = self._old_python_create_integrity_fingerprint(password=b(key), salt=iv)
+        else:
+            digest = pbkdf2_hmac(hash_name='SHA512', password=b(key),
+                                 salt=iv, iterations=10000)
+
+        fingerprint = binascii.hexlify(digest)
         return b(fingerprint)
 
     def decrypt(self, key, encrypted_secret):

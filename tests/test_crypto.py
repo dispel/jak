@@ -6,6 +6,7 @@ import jak.password_services as ps
 from Crypto.Cipher import AES
 import six
 from jak.exceptions import JakException
+import binascii
 
 
 @pytest.fixture
@@ -51,6 +52,34 @@ def test_encrypt_decrypt(cipher):
     assert encrypted != decrypted
 
 
+def test_create_integrity_fingerprint(cipher):
+    iv = cipher._generate_iv()
+    key = ps.generate_256bit_key().decode('utf-8')
+
+    from datetime import datetime
+    start = datetime.now()
+    for x in range(15):
+        fingerprint = cipher._create_integrity_fingerprint(key, iv)
+    end = datetime.now()
+    elapsed = end - start
+    assert elapsed.total_seconds() > 0.1
+    assert len(fingerprint) == cipher.fingerprint_length
+    assert isinstance(fingerprint, six.binary_type)
+
+
+def test_create_integrity_fingerprint_old_python(cipher):
+    """Technically I dont need to check for python 3 here but otherwise I am
+    just comparing the exact same thing against itself."""
+    if six.PY3:
+        iv = cipher._generate_iv()
+        key = ps.generate_256bit_key().decode('utf-8')
+        new_way = cipher._create_integrity_fingerprint(key, iv)
+        old_way = cipher._old_python_create_integrity_fingerprint(key, iv)
+        assert new_way == binascii.hexlify(old_way)
+    else:
+        pass
+
+
 def test_has_integrity(cipher):
     key = 'lds3fhdskj2hdskl1fhdsklfjh347398'
     secret = 'integrity'
@@ -63,42 +92,43 @@ def test_has_integrity(cipher):
     assert cipher._has_integrity(bad_key, encrypted, iv) is False
 
 
-def test_create_integrity_fingerprint(cipher):
-    iv = cipher._generate_iv()
-    key = ps.generate_256bit_key().decode('utf-8')
-    fingerprint = cipher._create_integrity_fingerprint(key, iv)
-    assert len(fingerprint) == cipher.fingerprint_length
-    assert isinstance(fingerprint, six.binary_type)
-
-
 def test_encrypt_file(tmpdir):
-    tempfile = tmpdir.mkdir("sub").join("hello")
-    tempfile.write("secret")
-    assert tempfile.read() == "secret"
+    secretfile = tmpdir.mkdir("sub").join("hello")
+    secretfile.write("secret")
+    assert secretfile.read() == "secret"
     key = ps.generate_256bit_key().decode('utf-8')
-    crypto.encrypt_file(filename=tempfile.strpath, password=key)
-    assert tempfile.read() != "secret"
-    assert crypto.ENCRYPTED_BY_HEADER in tempfile.read()
+    crypto.encrypt_file(filename=secretfile.strpath, password=key)
+    assert secretfile.read() != "secret"
+    assert crypto.ENCRYPTED_BY_HEADER in secretfile.read()
 
 
-# def test_decrypt_file(tmpdir):
-#     # TODO
-#     assert True is False
-#
-#
-# def test_encrypt_and_decrypt_a_file():
-#     # TODO
-#     assert True is False
-#
-#
-# def test_ed_all_password_cases():
-#     """
-#     password_file value not in jakfile
-#     password_file value in jakfile but no value
-#     password_file value in jakfile and has value (yay!)
-#     """
-#     assert True is False
-#
-#
+def test_decrypt_file(tmpdir):
+    secretfile = tmpdir.mkdir("sub").join("hello")
+    secretfile.write("""- - - Encrypted by jak - - -
+
+NzIyMzVkODc3ZWFhM2VlMTg5MTYyZTllNTFlNGMxZmQzMzhmN2IwM2YxNmEz
+OGNiMTI5MjI2ODA1ZWRmNDg5M2IxNGI5ZjNmNDk0ODVjNDcwOTE5MWI3N2Q5
+Y2FlNTQwZWI2ZmY2MzE5YTZiOGU1NTA5ZGVhNmY2OTMxNTAyZDUcDK2xUZxf
+DTHv3kq_ukiq7rO7MiJDgQ==
+""")
+    key = '2a57929b3610ba53b96f472b0dca2740'
+    crypto.decrypt_file(filename=secretfile.strpath, password=key)
+    assert secretfile.read() == "secret\n"
+
+
+def test_encrypt_and_decrypt_a_file(tmpdir):
+    secretfile = tmpdir.mkdir("sub").join("hello")
+    secret_content = "supercalifragialisticexpialidocious"
+    secretfile.write(secret_content)
+    assert secretfile.read() == secret_content
+    key = ps.generate_256bit_key().decode('utf-8')
+    crypto.encrypt_file(filename=secretfile.strpath, password=key)
+    assert secretfile.read() != secret_content
+    assert crypto.ENCRYPTED_BY_HEADER in secretfile.read()
+
+    crypto.decrypt_file(filename=secretfile.strpath, password=key)
+    assert secretfile.read() == secret_content
+
+
 # def test_ed_all_no_jakfile():
 #     assert True is False
