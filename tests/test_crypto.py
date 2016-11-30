@@ -8,6 +8,11 @@ import six
 from jak.exceptions import JakException
 import binascii
 
+try:
+    from unittest import mock
+except ImportError:
+    import mock
+
 
 @pytest.fixture
 def cipher():
@@ -102,6 +107,17 @@ def test_encrypt_file(tmpdir):
     assert crypto.ENCRYPTED_BY_HEADER in secretfile.read()
 
 
+def test_bad_encrypt_file_filename(tmpdir):
+    key = ps.generate_256bit_key().decode('utf-8')
+
+    # Good password, no filename should freakout
+    result = crypto.encrypt_file(filename="", password=key)
+    assert "can't find the file: " in result
+
+    # result = crypto.encrypt_file(filename=None, password=key)
+    # assert "can't find the file: " in result
+
+
 def test_decrypt_file(tmpdir):
     secretfile = tmpdir.mkdir("sub").join("hello")
     secretfile.write("""- - - Encrypted by jak - - -
@@ -123,12 +139,59 @@ def test_encrypt_and_decrypt_a_file(tmpdir):
     assert secretfile.read() == secret_content
     key = ps.generate_256bit_key().decode('utf-8')
     crypto.encrypt_file(filename=secretfile.strpath, password=key)
+
+    # File has changed
     assert secretfile.read() != secret_content
+
+    # File has the header (which we now assume means it is encrypted,
+    # which might be presumptuous.)
     assert crypto.ENCRYPTED_BY_HEADER in secretfile.read()
 
     crypto.decrypt_file(filename=secretfile.strpath, password=key)
+
+    # Back to original
     assert secretfile.read() == secret_content
 
 
-# def test_ed_all_no_jakfile():
-#     assert True is False
+def test_all():
+    """tests the 'all' function which allows you to encrypt/decrypt multiple files"""
+    def foo(protected_file, p, pf):
+        return protected_file
+
+    with mock.patch('jak.password_services.get_password') as gp:
+        gp.return_value = 'get_password'
+
+        mock_jackfile_dict = {'protected_files': ['one', 'two']}
+        results = crypto.all(callable_action=foo, password=None, password_file=None,
+                             jakfile_dict=mock_jackfile_dict)
+        assert results == 'one\ntwo'
+
+        mock_jackfile_dict = {}
+        with pytest.raises(JakException) as exception:
+            results = crypto.all(callable_action=foo, password=None, password_file=None,
+                                 jakfile_dict=mock_jackfile_dict)
+        assert 'jakfile with a "protected_files"' in exception.__str__()
+
+        with pytest.raises(JakException) as exception:
+            mock_jackfile_dict = {'protected_files': []}
+            crypto.all(callable_action=foo, password=None, password_file=None,
+                       jakfile_dict=mock_jackfile_dict)
+        assert "protected_files value is empty" in exception.__str__()
+
+        with pytest.raises(JakException) as exception:
+            mock_jackfile_dict = {'protected_files': 'one'}
+            crypto.all(callable_action=foo, password=None, password_file=None,
+                       jakfile_dict=mock_jackfile_dict)
+        assert '"protected_files" value must be a list (array).' in exception.__str__()
+
+        with pytest.raises(JakException) as exception:
+            mock_jackfile_dict = {'protected_files': 5}
+            crypto.all(callable_action=foo, password=None, password_file=None,
+                       jakfile_dict=mock_jackfile_dict)
+        assert '"protected_files" value must be a list (array).' in exception.__str__()
+
+        with pytest.raises(JakException) as exception:
+            mock_jackfile_dict = {'protected_files': None}
+            crypto.all(callable_action=foo, password=None, password_file=None,
+                       jakfile_dict=mock_jackfile_dict)
+        assert '"protected_files" value must be a list (array).' in exception.__str__()

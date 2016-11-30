@@ -115,12 +115,24 @@ def all(callable_action, password, password_file, jakfile_dict):
     """Read the jakfile and decrypt all the files in it.
 
     callable_action MUST be one of encrypt_file or decrypt_file (FIXME, throw warning if not?)
-
     """
     password = ps.get_password(password, password_file, jakfile_dict)
 
+    try:
+        protected_files = jakfile_dict['protected_files']
+    except KeyError:
+        raise JakException('This command requires a jakfile with a "protected_files" value.\nAborting...')
+    else:
+        if not isinstance(protected_files, list):
+            raise JakException("The jakfile's \"protected_files\" value must be a list (array).\nAborting...")
+
+        if not protected_files:
+            msg = '''Your jakfile's protected_files value is empty. It should be a list of files.
+Aborting...'''
+            raise JakException(msg)
+
     results = ''
-    for index, protected_file in enumerate(jakfile_dict['protected_files']):
+    for index, protected_file in enumerate(protected_files):
         try:
             result = callable_action(protected_file, password, password_file)
         except JakException as je:
