@@ -75,9 +75,13 @@ class AES256Cipher(object):
         fingerprint = binascii.hexlify(digest)
         return b(fingerprint)
 
+    def extract_iv(self, encrypted_secret):
+        """Extract the IV"""
+        return encrypted_secret[self.fingerprint_length:self.fingerprint_length + self.block_size]
+
     def decrypt(self, key, encrypted_secret):
         """Decrypts an encrypted secret."""
-        iv = encrypted_secret[self.fingerprint_length:self.fingerprint_length + self.block_size]
+        iv = self.extract_iv(encrypted_secret)
         if not self._has_integrity(key, encrypted_secret, iv):
             raise JakException('Wrong password. Aborting...')
 
@@ -90,14 +94,15 @@ class AES256Cipher(object):
         just_decrypted_secret = decrypted_secret_and_iv[self.block_size:]
         return just_decrypted_secret
 
-    def encrypt(self, key, secret):
+    def encrypt(self, key, secret, iv=False):
         """Encrypts a secret"""
         if len(key) != 32:
             raise JakException(
                 ("Password must be exactly 32 characters long. \n"
                  "I would recommend you use the genpass command to generate a strong password."))
 
-        iv = self._generate_iv()
+        if not iv:
+            iv = self._generate_iv()
 
         # For checking the integrity of password on decryption
         fingerprint = self._create_integrity_fingerprint(key, iv)
@@ -163,14 +168,29 @@ def encrypt_file(filepath, password, password_file=None, jakfile_dict=None):
     if ENCRYPTED_BY_HEADER in secret:
         raise JakException('I already encrypted the file: "{}".'.format(filepath))
 
-    # Encrypt
+    # FIXME REFACTOR
+    if helpers.is_there_a_backup(filepath):
+        backup_encrypted_secret = helpers.get_backup_content_for_file(filepath)
+    else:
+        backup_encrypted_secret = False
+
     aes256_cipher = AES256Cipher()
-    encrypted_secret = aes256_cipher.encrypt(key=password, secret=secret)
+    should_generate_new_secret = True
+    if backup_encrypted_secret:
+        ugly_backup_encrypted_secret = base64.urlsafe_b64decode(b(backup_encrypted_secret))
+        iv = aes256_cipher.extract_iv(encrypted_secret=ugly_backup_encrypted_secret)
+        encrypted_secret = aes256_cipher.encrypt(key=password, secret=secret, iv=iv)
 
-    # Make it prettier for the file
+        if encrypted_secret == ugly_backup_encrypted_secret:
+            should_generate_new_secret = False
+
+    if should_generate_new_secret:
+        encrypted_secret = aes256_cipher.encrypt(key=password, secret=secret)
+
+    # Prettier
     nice_enc_secret = base64.urlsafe_b64encode(encrypted_secret)
-    encrypted_chunks = helpers.grouper(nice_enc_secret.decode('utf-8'), 60)
 
+    encrypted_chunks = helpers.grouper(nice_enc_secret.decode('utf-8'), 60)
     with open(filepath, 'w', encoding='utf-8') as f:
         f.write(ENCRYPTED_BY_HEADER)
         for encrypted_chunk in encrypted_chunks:
@@ -180,7 +200,19 @@ def encrypt_file(filepath, password, password_file=None, jakfile_dict=None):
 
 
 def decrypt_file(filepath, password, password_file=None, jakfile_dict=None):
-    """Decrypts a file"""
+    """Decrypts a file
+
+    FIXME REFACTOR
+    This file is doing way too much:
+    - choose password
+    - open file and read it
+    - backup encrypted version
+    - decrypt content (probably still a wrapper around the cipher class)
+        - remove header
+        - b64decode
+        - setup->call cipher
+    - write back into file
+    """
     password = ps.get_password(password, password_file, jakfile_dict)
 
     try:
@@ -196,16 +228,25 @@ def decrypt_file(filepath, password, password_file=None, jakfile_dict=None):
     encrypted_secret = encrypted_secret.replace(ENCRYPTED_BY_HEADER, '')
 
     try:
-        encrypted_secret = base64.urlsafe_b64decode(b(encrypted_secret))
+        ugly_encrypted_secret = base64.urlsafe_b64decode(b(encrypted_secret))
     except (TypeError, binascii.Error):
         return 'The file "{}" is already decrypted, or is not in a format I recognize.'.format(filepath)
 
+    # Remember the encrypted file in the .jak folder
+    # FIXME will this have issues on WINDOWS?
+    # The reason to remember is because we don't want a re-encrypt
+    # of files to produce new encryptions if nothing has changed (which it would
+    # with a new IV). This way it works way better with VCS.
+    # import pdb; pdb.set_trace()
+    helpers.backup_file_content(filepath, encrypted_secret)
+
     # Perform Decrypt
     aes256_cipher = AES256Cipher()
-    decrypted_secret = aes256_cipher.decrypt(key=password, encrypted_secret=encrypted_secret)
+    decrypted_secret = aes256_cipher.decrypt(key=password, encrypted_secret=ugly_encrypted_secret)
 
     # Write back unencrypted content to the file
+    decrypted_secret_as_string = decrypted_secret.decode('utf-8')
     with open(filepath, 'w', encoding='utf-8') as f:
-        f.write(decrypted_secret.decode('utf-8'))
+        f.write(decrypted_secret_as_string)
 
     return '{} - is now decrypted.'.format(filepath)
