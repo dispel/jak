@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
-import pytest
-import jak.crypto_services as crypto
-import jak.password_services as ps
-from Crypto.Cipher import AES
+import os
 import six
-from jak.exceptions import JakException
+import pytest
 import binascii
+from Crypto.Cipher import AES
+import jak.password_services as ps
+import jak.crypto_services as crypto
+from jak.exceptions import JakException
 
 try:
     from unittest import mock
@@ -45,8 +46,8 @@ def test_encrypt_exceptions(cipher, password):
 
 
 def test_encrypt_decrypt(cipher):
-    key = 'ldsjfhdskjfhdskljfhdsklfjh347398'
-    secret = 'my secret'
+    key = 'fcd2da025fbe5cc39bf7b71143b4cc39'
+    secret = 'secret'
 
     encrypted = cipher.encrypt(key=key, secret=secret)
     decrypted = cipher.decrypt(key=key, encrypted_secret=encrypted)
@@ -55,6 +56,16 @@ def test_encrypt_decrypt(cipher):
     assert decrypted.decode('utf-8') == secret
     assert encrypted != secret
     assert encrypted != decrypted
+
+
+def test_extract_iv(cipher):
+    cipher.fingerprint_length = 1
+    cipher.block_size = 3
+    assert cipher.extract_iv("abcdefg") == "bcd"
+
+    # not an iterable.
+    with pytest.raises(TypeError):
+        cipher.extract_iv(5)
 
 
 def test_create_integrity_fingerprint(cipher):
@@ -131,6 +142,9 @@ DTHv3kq_ukiq7rO7MiJDgQ==
     crypto.decrypt_file(filepath=secretfile.strpath, password=key)
     assert secretfile.read() == "secret\n"
 
+    # FIXME temporary solution for cleanup
+    os.remove('.jak/hello_backup')
+
 
 def test_encrypt_and_decrypt_a_file(tmpdir):
     secretfile = tmpdir.mkdir("sub").join("hello")
@@ -151,6 +165,9 @@ def test_encrypt_and_decrypt_a_file(tmpdir):
 
     # Back to original
     assert secretfile.read() == secret_content
+
+    # FIXME temporary solution for cleanup
+    os.remove('.jak/hello_backup')
 
 
 def test_all():
