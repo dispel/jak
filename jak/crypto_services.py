@@ -119,20 +119,20 @@ def all(callable_action, password, password_file, jakfile_dict):
     password = ps.get_password(password, password_file, jakfile_dict)
 
     try:
-        protected_files = jakfile_dict['protected_files']
+        files_to_encrypt = jakfile_dict['files_to_encrypt']
     except KeyError:
-        raise JakException('This command requires a jakfile with a "protected_files" value.\nAborting...')
+        raise JakException('This command requires a jakfile with a "files_to_encrypt" value.\nAborting...')
     else:
-        if not isinstance(protected_files, list):
-            raise JakException("The jakfile's \"protected_files\" value must be a list (array).\nAborting...")
+        if not isinstance(files_to_encrypt, list):
+            raise JakException("The jakfile's \"files_to_encrypt\" value must be a list (array).\nAborting...")
 
-        if not protected_files:
-            msg = '''Your jakfile's protected_files value is empty. It should be a list of files.
+        if not files_to_encrypt:
+            msg = '''Your jakfile's files_to_encrypt value is empty. It should be a list of files.
 Aborting...'''
             raise JakException(msg)
 
     results = ''
-    for index, protected_file in enumerate(protected_files):
+    for index, protected_file in enumerate(files_to_encrypt):
         try:
             result = callable_action(protected_file, password, password_file)
         except JakException as je:
@@ -141,7 +141,7 @@ Aborting...'''
         results += result
 
         # Only add newline if we are not on the last protected file.
-        if index + 1 != len(jakfile_dict['protected_files']):
+        if index + 1 != len(jakfile_dict['files_to_encrypt']):
             results += '\n'
 
     return results

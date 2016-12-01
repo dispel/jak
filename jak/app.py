@@ -141,13 +141,13 @@ def shave():
 
 # @main.command()
 # def protect():
-#     """Add file to jakfiles "protected_files" list if it is not already in there"""
+#     """Add file to jakfiles "files_to_encrypt" list if it is not already in there"""
 #     click.echo("TODO")
 #
 #
 # @main.command()
 # def abandon():
-#     """Remove file from jakfile's "protected_files" list if it is in there"""
+#     """Remove file from jakfile's "files_to_encrypt" list if it is in there"""
 #     click.echo("TODO")
 #
 #

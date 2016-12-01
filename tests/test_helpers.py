@@ -9,7 +9,7 @@ jakfile_content_1 = """
 // Comment 2
 "password_file": "jakpassword",
 // Comment 3
-"protected_files": [ "env", "env2" ]  // Inline-Comment 4
+"files_to_encrypt": [ "env", "env2" ]  // Inline-Comment 4
 // "commented out line": 5
 } // Comment 5 (seriously?)
 // Comment 6
@@ -19,7 +19,7 @@ jakfile_content_1 = """
 
 def test_remove_comments_from_JSON():
     result = helpers._remove_comments_from_JSON(jakfile_content_1)
-    assert result == '{"password_file":"jakpassword","protected_files":["env","env2"]}'
+    assert result == '{"password_file":"jakpassword","files_to_encrypt":["env","env2"]}'
 
 
 def test_read_jakfile_to_dict(tmpdir):
@@ -30,7 +30,7 @@ def test_read_jakfile_to_dict(tmpdir):
     result = helpers.read_jakfile_to_dict(jakfile.strpath)
 
     assert isinstance(result, dict)
-    assert 'protected_files' in result
+    assert 'files_to_encrypt' in result
     assert 'password_file' in result
 
 

@@ -20,7 +20,7 @@ jak init
 nano jakfile
 
 # Encrypt/Decrypt all of the files that are specified as
-# "protected_files" in your jakfile.
+# "files_to_encrypt" in your jakfile.
 jak encrypt all
 jak decrypt all
 

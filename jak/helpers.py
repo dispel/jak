@@ -84,7 +84,7 @@ def create_jakfile(jakfile='jakfile'):
   // f.e.
   // $> jak encrypt all
   // $> jak decrypt all
-  "protected_files": ["examplefile1", "examplefile2.txt", "/Users/thedude/mysecrets.txt"] // EDIT ME
+  "files_to_encrypt": ["examplefile1", "examplefile2.txt", "/Users/thedude/mysecrets.txt"] // EDIT ME
 }}'''.format(password=password)
     try:
         with open(jakfile, 'r'):

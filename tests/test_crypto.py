@@ -161,18 +161,18 @@ def test_all():
     with mock.patch('jak.password_services.get_password') as gp:
         gp.return_value = 'get_password'
 
-        mock_jackfile_dict = {'protected_files': ['one', 'two']}
+        mock_jackfile_dict = {'files_to_encrypt': ['one', 'two']}
         results = crypto.all(callable_action=foo, password=None, password_file=None,
                              jakfile_dict=mock_jackfile_dict)
         assert results == 'one\ntwo'
 
 
 @pytest.mark.parametrize('jakdict, error_string_part', [
-    ({}, 'jakfile with a "protected_files"'),
-    ({'protected_files': []}, "protected_files value is empty"),
-    ({'protected_files': 'one'}, '"protected_files" value must be a list (array).'),
-    ({'protected_files': 5}, '"protected_files" value must be a list (array).'),
-    ({'protected_files': None}, '"protected_files" value must be a list (array).')])
+    ({}, 'jakfile with a "files_to_encrypt"'),
+    ({'files_to_encrypt': []}, "files_to_encrypt value is empty"),
+    ({'files_to_encrypt': 'one'}, '"files_to_encrypt" value must be a list (array).'),
+    ({'files_to_encrypt': 5}, '"files_to_encrypt" value must be a list (array).'),
+    ({'files_to_encrypt': None}, '"files_to_encrypt" value must be a list (array).')])
 def test_all_jakexceptions(jakdict, error_string_part):
     def foo(protected_file, p, pf):
         return protected_file
