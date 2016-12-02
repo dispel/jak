@@ -18,3 +18,10 @@ FRESH_JAKFILE = u'''// For more information visit https://github.com/dispel/jak/
 
   "files_to_encrypt": ["path/to/file"]
 }}'''
+
+GENPASS_RESPONSE = '''Here is your shiny new strong password.
+
+{password}
+
+Remember to keep this password secret and save it. Without it you will NOT be able
+to decrypt any file(s) you encrypt using it.'''

@@ -15,28 +15,60 @@ from . import password_services as ps
 from . import __version_full__
 from .exceptions import JakException
 from . import helpers
+from . import outputs
 
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
 
-@click.group(invoke_without_command=True, context_settings=CONTEXT_SETTINGS, no_args_is_help=True)
+class JakGroup(click.Group):
+    def list_commands(self, ctx):
+        """Override so we get them in the order we want in the help"""
+
+        # These are the ones we care about having first for usability reasons
+        show_at_top = ['start', 'genpass', 'encrypt', 'decrypt', 'stomp', 'shave']
+
+        # Append extra commands that are not in the priority list to the end.
+        all_commands = sorted(self.commands)
+        extras = set(all_commands) - set(show_at_top)
+        return show_at_top + sorted(list(extras))
+
+
+@click.group(invoke_without_command=True,
+             context_settings=CONTEXT_SETTINGS,
+             no_args_is_help=True,
+             cls=JakGroup)
 @click.option('-v', '--version', is_flag=True)
 def main(version):
     """(c) Dispel LLC (GPLv3)
 
-    Jak is a easy to use CLI tool for securely encrypting files.
+    Jak is a CLI tool for securely encrypting files.
 
-    All passwords must be exactly 32 characters so that jak can generate
-    a strong enough encryption (AES256).
+    To get started I recommend typing "jak start" to create a jakfile (settings).
 
     Jaks intended use is for files in git repos that developers do
     not want to enter their permanent git history. But nothing prevents
     jak from being used with arbitrary files on a case by case basis.
+
+    For full documentation see https://github.com/dispel/jak
     """
     if version:
         click.echo(__version_full__)
-    # TODO if possible show help text if they just type "$> jak"
+
+
+@main.command(help='Create a jakfile with some helpful examples.')
+def start():
+    """Create a jakfile with some helpful examples."""
+    result = helpers.create_jakfile()
+    click.echo(result)
+
+
+@main.command(help='Generates a valid secure password.')
+def genpass():
+    """Generate a strong password for use with jak."""
+    password = ps.generate_256bit_key().decode('utf-8')
+    output = outputs.GENPASS_RESPONSE.format(password=password)
+    click.echo(output)
 
 
 def encrypt_inner(filepath, password=None, password_file=None):
@@ -99,28 +131,6 @@ def decrypt_inner(filepath, password=None, password_file=None):
 def decrypt(filepath, password, password_file):
     """Decrypt file(s)"""
     decrypt_inner(filepath, password, password_file)
-
-
-@main.command(help='Generates a valid secure password.')
-def genpass():
-    """Generate a password for use with jak."""
-    password = ps.generate_256bit_key().decode('utf-8')
-    output = '''Here is your shiny new password. It is 32 characters (bytes) and will work just fine with AES256.
-
-
-{password}
-
-Remember to keep this password secret and save it. Without it you will NOT be able
-to decrypt any file(s) you encrypt using it.
-    '''.format(password=password)
-    click.echo(output)
-
-
-@main.command(help='Create a jakfile with some helpful examples.')
-def init():
-    """Create a jakfile with some helpful examples."""
-    result = helpers.create_jakfile()
-    click.echo(result)
 
 
 @main.command()

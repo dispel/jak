@@ -32,5 +32,5 @@ MINOR version when you add functionality in a backwards-compatible manner, and
 PATCH version when you make backwards-compatible bug fixes.
 """
 
-__version__ = '0.6.0'
+__version__ = '0.7.0'
 __version_full__ = "Jak v{0} ({1})".format(__version__, 'Troubled Toddler')
