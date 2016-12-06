@@ -64,10 +64,14 @@ def start():
 
 
 @main.command(help='Generates a valid secure password.')
-def genpass():
+@click.option('-m', '--minimal', is_flag=True)
+def genpass(minimal):
     """Generate a strong password for use with jak."""
     password = ps.generate_256bit_key().decode('utf-8')
-    output = outputs.GENPASS_RESPONSE.format(password=password)
+    if minimal:
+        output = password
+    else:
+        output = outputs.GENPASS_RESPONSE.format(password=password)
     click.echo(output)
 
 
