@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 
 """
-jak.password_services
----
-
-logic related to passwords.
+Copyright 2016 Dispel, LLC
+Apache 2.0 License, see https://github.com/dispel/jak/blob/master/LICENSE for details.
 """
 
 import os

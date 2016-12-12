@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 """
-jak.compat
+Copyright 2016 Dispel, LLC
+Apache 2.0 License, see https://github.com/dispel/jak/blob/master/LICENSE for details.
 
 This compat file is based on the one that the infamous requests library has.
 Thanks Kenneth!

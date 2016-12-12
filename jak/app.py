@@ -1,12 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-jak.app
----
-
-Jak is a easy to use CLI tool for securely encrypting files.
-
-TODOS
- - We have way too many functions named decrypt/encrypt now, it is straight up confusing.
+Copyright 2016 Dispel, LLC
+Apache 2.0 License, see https://github.com/dispel/jak/blob/master/LICENSE for details.
 """
 
 import click

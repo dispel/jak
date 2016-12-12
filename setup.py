@@ -1,7 +1,8 @@
 """
-jak makes encrypting files really easy. Its original purpose was to obscure
-files so they could securely be shared within git.
+Copyright 2016 Dispel, LLC
+Apache 2.0 License, see https://github.com/dispel/jak/blob/master/LICENSE for details.
 """
+
 from setuptools import find_packages, setup
 import re
 import ast
