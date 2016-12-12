@@ -32,17 +32,17 @@ def test_generate_iv(cipher):
     assert isinstance(result, six.binary_type)
 
 
-@pytest.mark.parametrize('password', [
+@pytest.mark.parametrize('key', [
     '',
     '1',
     '1111111111111111',  # 16
     '111111111111111111111111',  # 24
     '111111111111111111111111111111111111111',  # 39
 ])
-def test_encrypt_exceptions(cipher, password):
+def test_encrypt_exceptions(cipher, key):
     with pytest.raises(JakException) as excinfo:
-        cipher.encrypt(key=password, secret='my secret')
-    assert 'Password must be exactly 32 characters' in str(excinfo.value)
+        cipher.encrypt(key=key, secret='my secret')
+    assert 'Key must be exactly 32 characters' in str(excinfo.value)
 
 
 def test_encrypt_decrypt(cipher):
@@ -113,7 +113,7 @@ def test_encrypt_file(tmpdir):
     secretfile.write("secret")
     assert secretfile.read() == "secret"
     key = ps.generate_256bit_key().decode('utf-8')
-    crypto.encrypt_file(filepath=secretfile.strpath, password=key)
+    crypto.encrypt_file(filepath=secretfile.strpath, key=key)
     assert secretfile.read() != "secret"
     assert crypto.ENCRYPTED_BY_HEADER in secretfile.read()
 
@@ -121,11 +121,11 @@ def test_encrypt_file(tmpdir):
 def test_bad_encrypt_file_filepath(tmpdir):
     key = ps.generate_256bit_key().decode('utf-8')
 
-    # Good password, no filepath should freakout
-    result = crypto.encrypt_file(filepath="", password=key)
+    # Good key, no filepath should freakout
+    result = crypto.encrypt_file(filepath="", key=key)
     assert "can't find the file: " in result
 
-    # result = crypto.encrypt_file(filepath=None, password=key)
+    # result = crypto.encrypt_file(filepath=None, key=key)
     # assert "can't find the file: " in result
 
 
@@ -139,7 +139,7 @@ Y2FlNTQwZWI2ZmY2MzE5YTZiOGU1NTA5ZGVhNmY2OTMxNTAyZDUcDK2xUZxf
 DTHv3kq_ukiq7rO7MiJDgQ==
 """)
     key = '2a57929b3610ba53b96f472b0dca2740'
-    crypto.decrypt_file(filepath=secretfile.strpath, password=key)
+    crypto.decrypt_file(filepath=secretfile.strpath, key=key)
     assert secretfile.read() == "secret\n"
 
     # FIXME temporary solution for cleanup
@@ -152,7 +152,7 @@ def test_encrypt_and_decrypt_a_file(tmpdir):
     secretfile.write(secret_content)
     assert secretfile.read() == secret_content
     key = ps.generate_256bit_key().decode('utf-8')
-    crypto.encrypt_file(filepath=secretfile.strpath, password=key)
+    crypto.encrypt_file(filepath=secretfile.strpath, key=key)
 
     # File has changed
     assert secretfile.read() != secret_content
@@ -161,7 +161,7 @@ def test_encrypt_and_decrypt_a_file(tmpdir):
     # which might be presumptuous.)
     assert crypto.ENCRYPTED_BY_HEADER in secretfile.read()
 
-    crypto.decrypt_file(filepath=secretfile.strpath, password=key)
+    crypto.decrypt_file(filepath=secretfile.strpath, key=key)
 
     # Back to original
     assert secretfile.read() == secret_content
@@ -175,11 +175,11 @@ def test_all():
     def foo(protected_file, p, pf):
         return protected_file
 
-    with mock.patch('jak.password_services.get_password') as gp:
-        gp.return_value = 'get_password'
+    with mock.patch('jak.password_services.select_key') as sk:
+        sk.return_value = 'select_key'
 
         mock_jackfile_dict = {'files_to_encrypt': ['one', 'two']}
-        results = crypto.all(callable_action=foo, password=None, password_file=None,
+        results = crypto.all(callable_action=foo, key=None, key_file=None,
                              jakfile_dict=mock_jackfile_dict)
         assert results == 'one\ntwo'
 
@@ -194,9 +194,9 @@ def test_all_jakexceptions(jakdict, error_string_part):
     def foo(protected_file, p, pf):
         return protected_file
 
-    with mock.patch('jak.password_services.get_password') as gp:
-        gp.return_value = 'get_password'
+    with mock.patch('jak.password_services.select_key') as sk:
+        sk.return_value = 'select_key'
         with pytest.raises(JakException) as exception:
-            crypto.all(callable_action=foo, password=None, password_file=None,
+            crypto.all(callable_action=foo, key=None, key_file=None,
                        jakfile_dict=jakdict)
         assert error_string_part in exception.__str__()

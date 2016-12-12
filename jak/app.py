@@ -26,7 +26,7 @@ class JakGroup(click.Group):
         """Override so we get them in the order we want in the help"""
 
         # These are the ones we care about having first for usability reasons
-        show_at_top = ['start', 'genpass', 'encrypt', 'decrypt', 'stomp', 'shave']
+        show_at_top = ['start', 'keygen', 'encrypt', 'decrypt', 'stomp', 'shave']
 
         # Append extra commands that are not in the priority list to the end.
         all_commands = sorted(self.commands)
@@ -63,19 +63,19 @@ def start():
     click.echo(result)
 
 
-@main.command(help='Generates a valid secure password.')
+@main.command(help='Generates a valid secure secret key.')
 @click.option('-m', '--minimal', is_flag=True)
-def genpass(minimal):
-    """Generate a strong password for use with jak."""
-    password = ps.generate_256bit_key().decode('utf-8')
+def keygen(minimal):
+    """Generate a strong key for use with jak."""
+    key = ps.generate_256bit_key().decode('utf-8')
     if minimal:
-        output = password
+        output = key
     else:
-        output = outputs.GENPASS_RESPONSE.format(password=password)
+        output = outputs.KEYGEN_RESPONSE.format(key=key)
     click.echo(output)
 
 
-def encrypt_inner(filepath, password=None, password_file=None):
+def encrypt_inner(filepath, key=None, key_file=None):
     """shim with logic for encrypting file(s)"""
     try:
         jakfile_dict = helpers.read_jakfile_to_dict()
@@ -85,28 +85,28 @@ def encrypt_inner(filepath, password=None, password_file=None):
     try:
         if filepath == 'all':
             click.echo(cs.all(callable_action=cs.encrypt_file,
-                              password=password,
-                              password_file=password_file,
+                              key=key,
+                              key_file=key_file,
                               jakfile_dict=jakfile_dict))
         else:
             click.echo(cs.encrypt_file(filepath=filepath,
-                                       password=password,
-                                       password_file=password_file,
+                                       key=key,
+                                       key_file=key_file,
                                        jakfile_dict=jakfile_dict))
     except JakException as je:
         click.echo(je)
 
 
-@main.command(help='jak encrypt <file> (-p OR -pf) <pass>')
+@main.command(help='jak encrypt <file>')
 @click.argument('filepath')
-@click.option('-p', '--password', default=None)
-@click.option('-pf', '--password-file', default=None)
-def encrypt(filepath, password, password_file):
+@click.option('-k', '--key', default=None)
+@click.option('-kf', '--key-file', default=None)
+def encrypt(filepath, key, key_file):
     """Encrypts file(s)"""
-    encrypt_inner(filepath, password, password_file)
+    encrypt_inner(filepath, key, key_file)
 
 
-def decrypt_inner(filepath, password=None, password_file=None):
+def decrypt_inner(filepath, key=None, key_file=None):
     """Shim with logic for decrypting file(s)"""
     try:
         jakfile_dict = helpers.read_jakfile_to_dict()
@@ -116,25 +116,25 @@ def decrypt_inner(filepath, password=None, password_file=None):
     try:
         if filepath == 'all':
             click.echo(cs.all(callable_action=cs.decrypt_file,
-                              password=password,
-                              password_file=password_file,
+                              key=key,
+                              key_file=key_file,
                               jakfile_dict=jakfile_dict))
         else:
             click.echo(cs.decrypt_file(filepath=filepath,
-                                       password=password,
-                                       password_file=password_file,
+                                       key=key,
+                                       key_file=key_file,
                                        jakfile_dict=jakfile_dict))
     except JakException as je:
         click.echo(je)
 
 
-@main.command(help='jak decrypt <file> (-p OR -pf) <pass>')
+@main.command(help='jak decrypt <file>')
 @click.argument('filepath')
-@click.option('-p', '--password', default=None)
-@click.option('-pf', '--password-file', default=None)
-def decrypt(filepath, password, password_file):
+@click.option('-k', '--key', default=None)
+@click.option('-kf', '--key-file', default=None)
+def decrypt(filepath, key, key_file):
     """Decrypt file(s)"""
-    decrypt_inner(filepath, password, password_file)
+    decrypt_inner(filepath, key, key_file)
 
 
 @main.command()

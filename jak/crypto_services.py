@@ -33,12 +33,12 @@ class AES256Cipher(object):
         self.fingerprint_length = 128
 
     def _has_integrity(self, key, encrypted_secret, iv):
-        """Validate that the fingerprint (HMAC) will match (aka is the password correct?)"""
+        """Validate that the fingerprint (HMAC) will match (aka is the key correct?)"""
         existing_fingerprint = encrypted_secret[:self.fingerprint_length]
         new_fingerprint = self._create_integrity_fingerprint(key, iv)
         return b(new_fingerprint) == existing_fingerprint
 
-    def _old_python_create_integrity_fingerprint(self, password, salt):
+    def _old_python_create_integrity_fingerprint(self, key, salt):
         """Used to generate a PBKDF2 HMAC if python version doesn't have a
         pbkdf2_hmac package built in.
 
@@ -52,7 +52,7 @@ class AES256Cipher(object):
         def prf(p, s):
             return HMAC.new(key=p, msg=s, digestmod=SHA512).digest()
 
-        return PBKDF2(password=password, salt=salt, count=10000, prf=prf,
+        return PBKDF2(password=key, salt=salt, count=10000, prf=prf,
                       dkLen=int(self.fingerprint_length / 2))
 
     def _create_integrity_fingerprint(self, key, iv):
@@ -67,7 +67,7 @@ class AES256Cipher(object):
         except ImportError:
 
             # Must be on python older than 2.7.8...
-            digest = self._old_python_create_integrity_fingerprint(password=b(key), salt=iv)
+            digest = self._old_python_create_integrity_fingerprint(key=b(key), salt=iv)
         else:
             digest = pbkdf2_hmac(hash_name='SHA512', password=b(key),
                                  salt=iv, iterations=10000)
@@ -83,7 +83,7 @@ class AES256Cipher(object):
         """Decrypts an encrypted secret."""
         iv = self.extract_iv(encrypted_secret)
         if not self._has_integrity(key, encrypted_secret, iv):
-            raise JakException('Wrong password. Aborting...')
+            raise JakException('Wrong key. Aborting...')
 
         # Pop the fingerprint off
         encrypted_secret = encrypted_secret[self.fingerprint_length:]
@@ -98,13 +98,13 @@ class AES256Cipher(object):
         """Encrypts a secret"""
         if len(key) != 32:
             raise JakException(
-                ("Password must be exactly 32 characters long. \n"
-                 "I would recommend you use the genpass command to generate a strong password."))
+                ("Key must be exactly 32 characters long. \n"
+                 "I would recommend you use the genpass command to generate a strong key."))
 
         if not iv:
             iv = self._generate_iv()
 
-        # For checking the integrity of password on decryption
+        # For checking the integrity of key on decryption
         fingerprint = self._create_integrity_fingerprint(key, iv)
 
         cipher_instance = self.cipher.new(key=key, mode=self.mode, IV=iv)
@@ -116,12 +116,12 @@ class AES256Cipher(object):
         return Random.new().read(self.block_size)
 
 
-def all(callable_action, password, password_file, jakfile_dict):
+def all(callable_action, key, key_file, jakfile_dict):
     """Read the jakfile and decrypt all the files in it.
 
     callable_action MUST be one of encrypt_file or decrypt_file (FIXME, throw warning if not?)
     """
-    password = ps.get_password(password, password_file, jakfile_dict)
+    key = ps.select_key(key, key_file, jakfile_dict)
 
     try:
         files_to_encrypt = jakfile_dict['files_to_encrypt']
@@ -139,7 +139,7 @@ Aborting...'''
     results = ''
     for index, protected_file in enumerate(files_to_encrypt):
         try:
-            result = callable_action(protected_file, password, password_file)
+            result = callable_action(protected_file, key, key_file)
         except JakException as je:
             result = je.__str__()
 
@@ -152,9 +152,9 @@ Aborting...'''
     return results
 
 
-def encrypt_file(filepath, password, password_file=None, jakfile_dict=None):
+def encrypt_file(filepath, key, key_file=None, jakfile_dict=None):
     """Encrypts a file"""
-    password = ps.get_password(password, password_file, jakfile_dict)
+    key = ps.select_key(key, key_file, jakfile_dict)
 
     try:
         with open(filepath, 'rt', encoding='utf-8') as f:
@@ -179,13 +179,13 @@ def encrypt_file(filepath, password, password_file=None, jakfile_dict=None):
     if backup_encrypted_secret:
         ugly_backup_encrypted_secret = base64.urlsafe_b64decode(b(backup_encrypted_secret))
         iv = aes256_cipher.extract_iv(encrypted_secret=ugly_backup_encrypted_secret)
-        encrypted_secret = aes256_cipher.encrypt(key=password, secret=secret, iv=iv)
+        encrypted_secret = aes256_cipher.encrypt(key=key, secret=secret, iv=iv)
 
         if encrypted_secret == ugly_backup_encrypted_secret:
             should_generate_new_secret = False
 
     if should_generate_new_secret:
-        encrypted_secret = aes256_cipher.encrypt(key=password, secret=secret)
+        encrypted_secret = aes256_cipher.encrypt(key=key, secret=secret)
 
     # Prettier
     nice_enc_secret = base64.urlsafe_b64encode(encrypted_secret)
@@ -199,12 +199,12 @@ def encrypt_file(filepath, password, password_file=None, jakfile_dict=None):
     return '{} - is now encrypted.'.format(filepath)
 
 
-def decrypt_file(filepath, password, password_file=None, jakfile_dict=None):
+def decrypt_file(filepath, key, key_file=None, jakfile_dict=None):
     """Decrypts a file
 
     FIXME REFACTOR
     This file is doing way too much:
-    - choose password
+    - choose key
     - open file and read it
     - backup encrypted version
     - decrypt content (probably still a wrapper around the cipher class)
@@ -213,7 +213,7 @@ def decrypt_file(filepath, password, password_file=None, jakfile_dict=None):
         - setup->call cipher
     - write back into file
     """
-    password = ps.get_password(password, password_file, jakfile_dict)
+    key = ps.select_key(key, key_file, jakfile_dict)
 
     try:
         with open(filepath, 'rt', encoding='utf-8') as f:
@@ -242,10 +242,16 @@ def decrypt_file(filepath, password, password_file=None, jakfile_dict=None):
 
     # Perform Decrypt
     aes256_cipher = AES256Cipher()
-    decrypted_secret = aes256_cipher.decrypt(key=password, encrypted_secret=ugly_encrypted_secret)
+    decrypted_secret = aes256_cipher.decrypt(key=key, encrypted_secret=ugly_encrypted_secret)
 
     # Write back unencrypted content to the file
-    decrypted_secret_as_string = decrypted_secret.decode('utf-8')
+    try:
+        decrypted_secret_as_string = decrypted_secret.decode('utf-8')
+    except UnicodeDecodeError:
+        # This happens when the encrypted secret (not the fingerprint part)
+        # is edited, basically we decrypt into garbledygook and so the string
+        # reader freaks out.
+        return 'The output was not what I expected...'
     with open(filepath, 'w', encoding='utf-8') as f:
         f.write(decrypted_secret_as_string)
 

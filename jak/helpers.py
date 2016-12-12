@@ -47,8 +47,8 @@ def create_jakfile(jakfile='jakfile'):
     """"""
     from . import password_services as ps
     from . import outputs
-    password = ps.generate_256bit_key().decode('utf-8')
-    fresh_jakfile = outputs.FRESH_JAKFILE.format(password=password)
+    key = ps.generate_256bit_key().decode('utf-8')
+    fresh_jakfile = outputs.FRESH_JAKFILE.format(key=key)
     try:
         with open(jakfile, 'r'):
             return "You already seem to have a jakfile."

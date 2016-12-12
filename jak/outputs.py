@@ -7,19 +7,19 @@ FRESH_JAKFILE = u'''// For more information visit https://github.com/dispel/jak/
 
   "files_to_encrypt": ["path/to/file"],
 
-  // I created a secure 32 character password for you. You can make one yourself
-  // if you want by using the "$> jak genpass" command.
+  // I created a secure 32 character key for you. You can make one yourself
+  // if you want by using the "$> jak keygen" command.
 
-  "password": "{password}"
+  "key": "{key}"
 
-  // You can store your password in a file INSTEAD of having a "password" value.
-  // This allows you to commit the jakfile. (never commit your password!)
-  // "password_file": "path/to/jakpasswordfile"
+  // You can store your key in a file INSTEAD of having a "key" value.
+  // This allows you to commit the jakfile. (never commit your key!)
+  // "key_file": "path/to/jakkeyfile"
 }}'''
 
-GENPASS_RESPONSE = '''Here is your shiny new strong password.
+KEYGEN_RESPONSE = '''Here is your shiny new key.
 
-{password}
+{key}
 
 Remember to keep this password secret and save it. Without it you will NOT be able
 to decrypt any file(s) you encrypt using it.'''
