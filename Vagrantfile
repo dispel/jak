@@ -35,15 +35,9 @@ cd /vagrant
 # Create our two virtualenvironments
 # switch between them with "workon py27" for example.
 mkvirtualenv py27
-mkvirtualenv -p /usr/bin/python3.4 py34
 mkvirtualenv -p /usr/bin/python3.5 py35
 
 # We should now be in py35 so let's install our dependencies.
-pip install --editable .
-pip install -r requirements_dev.txt
-
-# py34
-workon py34
 pip install --editable .
 pip install -r requirements_dev.txt
 

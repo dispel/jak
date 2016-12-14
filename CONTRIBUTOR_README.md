@@ -11,32 +11,29 @@ We aim to be friendly to rookie devs, so if you are in doubt about proper operat
 3. See below.
 
 ```
-
 # Boot up the vagrant machine
+# This will run for quite some time, I HIGHLY recommend looking at the Vagrantfile
+# for a description of what is happening.
 vagrant up
 
 # Enter sandman
 vagrant ssh
 
-# Once inside the vagrant, if you know what you are doing you can make the call as to whether you want to use virtualenvironments or just something else to switch between python versions, or if you even feel the need to do so. So the rest of this is just a general guide.
-
-# Switch to root
-sudo su
-
-# Latest pip
-pip install --upgrade pip
-
 # This is where the project files are mirrorer on the virtual machine
 cd /vagrant
 
-# Install the package in editable mode
-pip install --editable .
+# Choose a virtualenv to work on, the the following two are pre-created
+# py27 --> python 2.7.6
+# py35 --> python 3.5.2
+# It is recommended you use py27 for development and then switching to py35 when
+# you have an issue in python 3.
+workon py27
 
-# Install the dev requirements
-pip install -r requirements_dev.txt
-
-# Run the tests
+# Run the tests (see tox.ini)
 tox
+
+# Or run tests in just the current environment
+pytest
 
 # $$$ Profit $$$
 # Let us know if you have any issues.
