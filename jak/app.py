@@ -11,6 +11,7 @@ from . import __version_full__
 from .exceptions import JakException
 from . import helpers
 from . import outputs
+from .diff import diff as perform_diff
 
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
@@ -71,7 +72,7 @@ def keygen(minimal):
 
 
 def encrypt_inner(filepath, key=None, key_file=None):
-    """shim with logic for encrypting file(s)"""
+    """Logic for encrypting file(s)"""
     try:
         jakfile_dict = helpers.read_jakfile_to_dict()
     except IOError:
@@ -102,7 +103,7 @@ def encrypt(filepath, key, key_file):
 
 
 def decrypt_inner(filepath, key=None, key_file=None):
-    """Shim with logic for decrypting file(s)"""
+    """Logic for decrypting file(s)"""
     try:
         jakfile_dict = helpers.read_jakfile_to_dict()
     except IOError:
@@ -142,6 +143,23 @@ def stomp():
 def shave():
     """alias for 'jak decrypt all'"""
     decrypt_inner(filepath='all')
+
+
+@main.command()
+@click.argument('filepath')
+@click.option('-k', '--key', default=None)
+@click.option('-kf', '--key-file', default=None)
+def diff(filepath, key, key_file):
+    """If there is a merge conflict decrypt for easier diffing.
+    The file needs to be in a git merge conflict format such as:
+
+    <<<<<< HEAD
+    <LOCAL>
+    ======
+    <REMOTE>
+    >>>>>>>>> <somehash>
+    """
+    perform_diff(filepath=filepath, key=key, key_file=key_file)
 
 
 #

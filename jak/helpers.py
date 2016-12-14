@@ -68,17 +68,22 @@ def backup_file_content(filepath, content):
 
     TODO Needs test
     """
-    filename = '.jak/' + filepath[filepath.rfind('/') + 1:] + '_backup'
-    if not os.path.exists(os.path.dirname(filename)):
+    filepath = '.jak/' + filepath[filepath.rfind('/') + 1:] + '_backup'
+    return create_or_overwrite_file(filepath=filepath, content=content)
+
+
+def create_or_overwrite_file(filepath, content):
+    """"""
+    if not os.path.exists(os.path.dirname(filepath)):
         try:
-            os.makedirs(os.path.dirname(filename))
+            os.makedirs(os.path.dirname(filepath))
 
         # Guard against race condition
         except OSError as exc:
             if exc.errno != errno.EEXIST:
                 raise
 
-    with open(filename, 'w') as f:
+    with open(filepath, 'w') as f:
         f.write(content)
 
     return True
