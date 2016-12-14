@@ -12,13 +12,14 @@ from .compat import b
 from io import open
 
 
-def diff(filename, key=None):
+def diff(filepath, key=None, key_file=None, jakfile_dict=None):
     """"""
-    if not key:
+    if not jakfile_dict:
         jakfile_dict = helpers.read_jakfile_to_dict()
-        key = ps.select_key(jakfile_dict=jakfile_dict)
 
-    with open(filename, 'rt') as f:
+    key = ps.select_key(key=key, key_file=key_file, jakfile_dict=jakfile_dict)
+
+    with open(filepath, 'rt') as f:
         encrypted_diff_file = f.read()
 
     # Strip the header
@@ -40,8 +41,11 @@ def diff(filename, key=None):
     aes256_cipher = cs.AES256Cipher()
     decrypted_local = aes256_cipher.decrypt(key=key, encrypted_secret=ugly_local)
     decrypted_remote = aes256_cipher.decrypt(key=key, encrypted_secret=ugly_remote)
-    decrypted_local = decrypted_local.rstrip('\n')
-    decrypted_remote = decrypted_remote.rstrip('\n')
+
+    # import pdb; pdb.set_trace()
+
+    decrypted_local = decrypted_local.decode('utf-8').rstrip('\n')
+    decrypted_remote = decrypted_remote.decode('utf-8').rstrip('\n')
 
     output = '''
 {git_start}
@@ -55,6 +59,14 @@ def diff(filename, key=None):
            decrypted_remote=decrypted_remote,
            git_end=git_end)
 
-    output = output.decode('utf-8')
-    with open(filename, 'w', encoding='utf-8') as f:
+    # Python 3 does not have a decode for this
+    # but it doesn't need to perform the decode so all is well here.
+    # Obviously once we give up on python 2 we won't have to
+    # do horrible stuff like this anymore.
+    try:
+        output = output.decode('utf-8')
+    except AttributeError:
+        pass
+
+    with open(filepath, 'w', encoding='utf-8') as f:
         f.write(output)

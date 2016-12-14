@@ -31,5 +31,5 @@ BOOM=SHAKA
 def test_diff(tmpdir):
     diff_file = tmpdir.join('env.yaml')
     diff_file.write(example_diff)
-    diff(filename=diff_file.strpath, key='1e1862c99f9211a01eebedb00ae1475a')
+    diff(filepath=diff_file.strpath, key='1e1862c99f9211a01eebedb00ae1475a')
     assert diff_file.read() == expected
