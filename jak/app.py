@@ -10,6 +10,7 @@ from . import password_services as ps
 from . import __version_full__
 from .exceptions import JakException
 from . import helpers
+from . import start as start_logic
 from . import outputs
 from .diff import diff as perform_diff
 
@@ -55,7 +56,9 @@ def main(version):
 @main.command(help='Create a jakfile with some helpful examples.')
 def start():
     """Create a jakfile with some helpful examples."""
-    result = helpers.create_jakfile()
+    result = start_logic.create_jakfile()
+    if start_logic.is_git_repository() and start_logic.want_to_add_pre_commit_encrypt_hook():
+        result += start_logic.add_pre_commit_encrypt_hook()
     click.echo(result)
 
 
