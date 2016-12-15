@@ -42,3 +42,11 @@ def test_grouper():
     # Raise error due to 2 not being iterable
     with pytest.raises(TypeError):
         helpers.grouper(2, 1)
+
+
+@pytest.mark.parametrize('input,expected', [
+    ('/hello/there.js', ('/hello/there', '.js')),
+    ('there.js', ('there', '.js')),
+    ('/hello/there', ('/hello/there', ''))])
+def test_get_filepath_and_extension(input, expected):
+    assert helpers.get_filepath_end_extension(full_filepath=input) == expected

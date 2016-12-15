@@ -59,14 +59,22 @@ def backup_file_content(filepath, content):
 
 def create_or_overwrite_file(filepath, content):
     """"""
-    if not os.path.exists(os.path.dirname(filepath)):
+    # If not a path and just a file default to a local folder.
+    dirname = os.path.dirname(filepath) or '.'
+
+    if not os.path.exists(dirname):
         try:
-            os.makedirs(os.path.dirname(filepath))
+            os.makedirs(dirname)
 
         # Guard against race condition
         except OSError as exc:
             if exc.errno != errno.EEXIST:
                 raise
+
+    try:
+        content = content.decode('utf-8')
+    except AttributeError:
+        pass
 
     with open(filepath, 'w') as f:
         f.write(content)
@@ -95,3 +103,19 @@ def get_backup_content_for_file(filepath):
     with open(filename, 'rt') as f:
         encrypted_secret = f.read()
     return encrypted_secret
+
+
+def get_filepath_end_extension(full_filepath):
+    """
+    /hello/there.ext > (/hello/there, .ext)
+    there > (there, '')
+    /hello/there > (/hello/there, '')
+    """
+    final_dot = full_filepath.rfind('.')
+    if final_dot != -1:
+        filepath = full_filepath[:full_filepath.rfind('.')]
+        ext = full_filepath[full_filepath.rfind('.'):]
+    else:
+        filepath = full_filepath
+        ext = ''
+    return filepath, ext

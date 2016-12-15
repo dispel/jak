@@ -29,10 +29,9 @@ def _create_local_remote_diff_files(filepath, local, remote):
     Returns their paths as a tuple
     """
     tag = random.randrange(10000, 99999)
-    filename = filepath[:filepath.rfind('.')]
-    ext = filepath[filepath.rfind('.'):]
-    local_file_path = './{}_LOCAL_{}{}'.format(filename, tag, ext)
-    remote_file_path = './{}_REMOTE_{}{}'.format(filename, tag, ext)
+    (filepath, ext) = helpers.get_filepath_end_extension(full_filepath=filepath)
+    local_file_path = '{}_LOCAL_{}{}'.format(filepath, tag, ext)
+    remote_file_path = '{}_REMOTE_{}{}'.format(filepath, tag, ext)
 
     helpers.create_or_overwrite_file(filepath=local_file_path, content=local)
     helpers.create_or_overwrite_file(filepath=remote_file_path, content=remote)
