@@ -41,21 +41,6 @@ def _remove_comments_from_JSON(raw_json):
     return tmp
 
 
-def create_jakfile(jakfile='jakfile'):
-    """"""
-    from . import password_services as ps
-    from . import outputs
-    key = ps.generate_256bit_key().decode('utf-8')
-    fresh_jakfile = outputs.FRESH_JAKFILE.format(key=key)
-    try:
-        with open(jakfile, 'r'):
-            return "You already seem to have a jakfile."
-    except IOError:
-        with open(jakfile, 'w') as f:
-            f.write(fresh_jakfile)
-        return "I created a fresh new jakfile for you. You should check it out!"
-
-
 def grouper(iterable, n):
     """split iterable data into n-length blocks
     grouper('aaa', 2) == ('aa', 'a')
