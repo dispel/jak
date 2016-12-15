@@ -20,7 +20,7 @@ FRESH_JAKFILE = u'''// For more information visit https://github.com/dispel/jak/
 
   // You can store your key in a file INSTEAD of having a "key" value.
   // This allows you to commit the jakfile. (never commit your key!)
-  // "key_file": "path/to/jakkeyfile"
+  // "keyfile": "path/to/jakkeyfile"
 }}'''
 
 KEYGEN_RESPONSE = '''Here is your shiny new key.

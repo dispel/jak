@@ -30,33 +30,33 @@ def test_select_key(tmpdir):
     # CLIPF
     keyfile = tmpdir.mkdir("a").join("keyfile")
     keyfile.write('abc')
-    assert 'abc' == ps.select_key(key_file=keyfile.strpath)
+    assert 'abc' == ps.select_key(keyfile=keyfile.strpath)
 
     # CLIP & JAKP
     assert ps.select_key(key='abc', jakfile_dict={'key': 'def'}) == 'abc'
 
     # CLIP & JAKPF
-    assert ps.select_key(key='abc', jakfile_dict={'key_file': 'def'}) == 'abc'
+    assert ps.select_key(key='abc', jakfile_dict={'keyfile': 'def'}) == 'abc'
 
     # CLIP & JAKPF & JAKP
     assert ps.select_key(
         key='abc',
-        jakfile_dict={'key': 'def', 'key_file': 'ghi'}
+        jakfile_dict={'key': 'def', 'keyfile': 'ghi'}
     ) == 'abc'
 
     # CLIPF & JAKPF
     keyfile = tmpdir.mkdir("b").join("keyfile")
     keyfile.write('clipfjakpf')
     assert ps.select_key(
-        key_file=keyfile.strpath,
-        jakfile_dict={'key_file': 'def'}
+        keyfile=keyfile.strpath,
+        jakfile_dict={'keyfile': 'def'}
     ) == 'clipfjakpf'
 
     # CLIPF & JAKP
     keyfile = tmpdir.mkdir("c").join("keyfile")
     keyfile.write('clipfjakpf')
     assert ps.select_key(
-        key_file=keyfile.strpath,
+        keyfile=keyfile.strpath,
         jakfile_dict={'key': 'def'}
     ) == 'clipfjakpf'
 
@@ -64,8 +64,8 @@ def test_select_key(tmpdir):
     keyfile = tmpdir.mkdir("d").join("keyfile")
     keyfile.write('clipfjakpfjakp')
     assert ps.select_key(
-        key_file=keyfile.strpath,
-        jakfile_dict={'key_file': 'def', 'key': 'ghi'}
+        keyfile=keyfile.strpath,
+        jakfile_dict={'keyfile': 'def', 'key': 'ghi'}
     ) == 'clipfjakpfjakp'
 
     # JAKP
@@ -73,16 +73,16 @@ def test_select_key(tmpdir):
 
     # JAKP & JAKPF
     with pytest.raises(JakException) as exception:
-        ps.select_key(jakfile_dict={'key': 'abc', 'key_file': 'def'})
-    assert 'Your jakfile should not contain a "key" and a "key_file"' in exception.__str__()
+        ps.select_key(jakfile_dict={'key': 'abc', 'keyfile': 'def'})
+    assert 'Your jakfile should not contain a "key" and a "keyfile"' in exception.__str__()
 
     # JAKPF
     keyfile = tmpdir.mkdir("e").join("keyfile")
     key = 'jakpf'
     keyfile.write(key)
-    assert ps.select_key(jakfile_dict={'key_file': keyfile.strpath}) == key
+    assert ps.select_key(jakfile_dict={'keyfile': keyfile.strpath}) == key
 
     # JAKPF but doesn't exist
     # with pytest.raises(IOError) as exception:
     with pytest.raises(JakException) as exception:
-        ps.select_key(jakfile_dict={'key_file': 'badpath'})
+        ps.select_key(jakfile_dict={'keyfile': 'badpath'})

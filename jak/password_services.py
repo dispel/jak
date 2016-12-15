@@ -16,7 +16,7 @@ def generate_256bit_key():
     return binascii.hexlify(os.urandom(16))
 
 
-def select_key(key=None, key_file=None, jakfile_dict=None):
+def select_key(key=None, keyfile=None, jakfile_dict=None):
     """Select a password or complain about passing too many.
 
     Pseudocode:
@@ -30,35 +30,35 @@ def select_key(key=None, key_file=None, jakfile_dict=None):
 
     Plaintext: CLI input keys override the jakfiles. Abort if 2 keys from CLI or jakfile.
     """
-    if not key and not key_file and not jakfile_dict:
+    if not key and not keyfile and not jakfile_dict:
         raise JakException('Please provide some sort of key for encrypting. Aborting...')
 
-    if key and key_file:
+    if key and keyfile:
         raise JakException('Please only pass me one key to avoid confusion. Aborting... ')
 
     if key:
         return key
 
-    if key_file:
+    if keyfile:
         try:
-            with open(key_file, 'rt', encoding='utf-8') as f:
+            with open(keyfile, 'rt', encoding='utf-8') as f:
                 key = f.read()
         except IOError:
-            raise JakException("Sorry I can't find the key file: {}".format(key_file))
+            raise JakException("Sorry I can't find the key file: {}".format(keyfile))
         else:
             key = key.replace('\n', '')
             return key
 
-    if 'key' in jakfile_dict and 'key_file' in jakfile_dict:
-        msg = '''Your jakfile should not contain a "key" and a "key_file" value. Choose one.
+    if 'key' in jakfile_dict and 'keyfile' in jakfile_dict:
+        msg = '''Your jakfile should not contain a "key" and a "keyfile" value. Choose one.
 Aborting...'''
         raise JakException(msg)
 
     if 'key' in jakfile_dict:
         return jakfile_dict['key']
 
-    if 'key_file' in jakfile_dict:
-        filepath = jakfile_dict['key_file']
+    if 'keyfile' in jakfile_dict:
+        filepath = jakfile_dict['keyfile']
         try:
             with open(filepath, 'rt', encoding='utf-8') as f:
                 key = f.read()

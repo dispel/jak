@@ -6,6 +6,7 @@ Apache 2.0 License, see https://github.com/dispel/jak/blob/master/LICENSE for de
 
 import os
 import re
+import click
 import base64
 import random
 import binascii
@@ -14,12 +15,19 @@ from io import open
 from . import helpers
 from .compat import b
 from . import crypto_services as cs
+from .exceptions import JakException
 from . import password_services as ps
-import click
 
 
 def _create_local_remote_diff_files(filepath, local, remote):
-    """"""
+    """
+    Generates two files for use with diffing.
+
+    <f>_LOCAL_<randint>.<ext>
+    <f>_REMOTE_<randint>.<ext>
+
+    Returns their paths as a tuple
+    """
     tag = random.randrange(10000, 99999)
     filename = filepath[:filepath.rfind('.')]
     ext = filepath[filepath.rfind('.'):]
@@ -32,17 +40,19 @@ def _create_local_remote_diff_files(filepath, local, remote):
 
 
 def _vimdiff(filepath, local_file_path, remote_file_path):
-    """"""
+    """
+    Tried for a ludicrous amount of time to get it to open vimdiff automagically.
+    Instead we settled on just letting user know what command they should run.
+    """
     command = "vimdiff -f -d -c 'wincmd J' {merged} {local} {remote}".format(
         merged=filepath, local=local_file_path, remote=remote_file_path)
 
-    msg = '''
+    return '''
 
 ~*Currently under development*~
 
 To open the diff use this command:
 $> {}'''.format(command)
-    click.echo(msg)
 
 
 def _opendiff(filepath, local_file_path, remote_file_path):
@@ -53,6 +63,7 @@ def _opendiff(filepath, local_file_path, remote_file_path):
     subprocess.Popen(['opendiff', local_file_path, remote_file_path, '-merge', filepath],
                      stdout=FNULL,
                      stderr=subprocess.STDOUT)
+    return "Opened opendiff."
 
 
 def _decrypt(key, local, remote):
@@ -78,8 +89,7 @@ ff9790b8cccd50e1276c4b9ac18475d4e048f2e0
 4e0034e782b64b1c9e1ac8c1cb81c3b4e43cb93f
 cyz>
 >>>>>>> SOMETHING'''
-        click.echo(msg)
-        return
+        raise JakException(msg)
 
     aes256_cipher = cs.AES256Cipher()
     decrypted_local = aes256_cipher.decrypt(key=key, encrypted_secret=ugly_local)
@@ -91,16 +101,16 @@ cyz>
 
 
 def _extract_merge_conflict_parts(content):
-    regex = re.compile(r'(<<<<<<<\s\S+.)(.+)(=======.)(.+)(>>>>>>>\s\S+)', re.DOTALL)
+    regex = re.compile(r'(<<<<<<<\s\S+.)(.+)(=======.)(.+)(>>>>>>>\s\S+.)', re.DOTALL)
     return regex.findall(content)[0]
 
 
-def diff(filepath, key=None, key_file=None, jakfile_dict=None):
+def diff(filepath, key=None, keyfile=None, jakfile_dict=None):
     """"""
     if not jakfile_dict:
         jakfile_dict = helpers.read_jakfile_to_dict()
 
-    key = ps.select_key(key=key, key_file=key_file, jakfile_dict=jakfile_dict)
+    key = ps.select_key(key=key, keyfile=keyfile, jakfile_dict=jakfile_dict)
 
     with open(filepath, 'rt') as f:
         encrypted_diff_file = f.read()
@@ -136,17 +146,27 @@ vimdiff: Hacker 4 life yo!
 
     if response == 'opendiff':
         (local_file_path, remote_file_path) = _create_local_remote_diff_files(
-            filepath=filepath, local=decrypted_local, remote=decrypted_remote)
-        _opendiff(filepath=filepath, local_file_path=local_file_path, remote_file_path=remote_file_path)
+            filepath=filepath,
+            local=decrypted_local,
+            remote=decrypted_remote)
+        result = _opendiff(filepath=filepath,
+                           local_file_path=local_file_path,
+                           remote_file_path=remote_file_path)
     elif response == 'vimdiff':
         (local_file_path, remote_file_path) = _create_local_remote_diff_files(
-            filepath=filepath, local=decrypted_local, remote=decrypted_remote)
-        _vimdiff(filepath=filepath, local_file_path=local_file_path, remote_file_path=remote_file_path)
+            filepath=filepath,
+            local=decrypted_local,
+            remote=decrypted_remote)
+        result = _vimdiff(filepath=filepath,
+                          local_file_path=local_file_path,
+                          remote_file_path=remote_file_path)
     elif response == 'plain':
-        click.echo("Ok, file decrypted, go ahead an edit it manually. Godspeed you master of the universe.")
+        result = "Ok, file decrypted, go ahead an edit it manually. Godspeed you master of the universe."
     else:
-        click.echo("")
+        return "Unrecognized choice. Aborting without changing anything."
 
     # Replace the original file with the decrypted output
     with open(filepath, 'w', encoding='utf-8') as f:
         f.write(output)
+
+    return result
