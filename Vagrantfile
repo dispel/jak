@@ -3,23 +3,19 @@
 
 $provisionScript = <<SCRIPT
 echo Beginning custom provisioning...
-sudo su
 
 # Don't expect stdin during provisioning
 export DEBIAN_FRONTEND=noninteractive
 
 # Let's install some pythons!
-apt-get update
-add-apt-repository ppa:fkrull/deadsnakes -y
-apt-get update
-apt-get install build-essential libssl-dev libffi-dev python-dev python3.5-dev python3-dev -y
-apt-get install python3.5 pypy python-pip git -y
+sudo apt-get update
+sudo add-apt-repository ppa:fkrull/deadsnakes -y
+sudo apt-get update
+sudo apt-get install build-essential libssl-dev libffi-dev python-dev python3.5-dev python3-dev -y
+sudo apt-get install python3.5 pypy python-pip git -y
 
 # Virtualenvs for quickly switching between python 2 and 3
-pip install virtualenvwrapper
-
-# Switch back to vagrant user instead of root
-su vagrant
+sudo pip install virtualenvwrapper
 
 # Add ye olden virtualenvwrapper settings to the .profile and load them in.
 # TODO: This is the one thing that is not idempotent...
@@ -28,6 +24,8 @@ sed -i "$ a export WORKON_HOME=/home/vagrant/.virtualenvs" /home/vagrant/.profil
 sed -i "$ a export PROJECT_HOME=/home/vagrant/Devel" /home/vagrant/.profile
 sed -i "$ a source /usr/local/bin/virtualenvwrapper.sh" /home/vagrant/.profile
 source /home/vagrant/.profile
+
+# TODO Run as vagrant user so that user gets the virtualenvs.
 
 # Pop into the folder where jak lives
 cd /vagrant
