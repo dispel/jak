@@ -5,6 +5,7 @@ Apache 2.0 License, see https://github.com/dispel/jak/blob/master/LICENSE for de
 """
 
 from . import outputs
+import subprocess
 from io import open
 import click
 import os
@@ -19,16 +20,51 @@ def create_jakfile(jakfile='jakfile'):
     else:
         from . import password_services as ps
         key = ps.generate_256bit_key().decode('utf-8')
-        fresh_jakfile = outputs.FRESH_JAKFILE.format(key=key)
+        keyfile_path = '.jak/keyfile'
+        fresh_jakfile = outputs.FRESH_JAKFILE.format(keyfile_path=keyfile_path)
         helpers.create_or_overwrite_file(filepath=jakfile, content=fresh_jakfile)
+        helpers.create_or_overwrite_file(filepath=keyfile_path, content=key)
         msg = helpers.two_column('Is there already a jakfile?', 'Nope!')
         msg += '\n' + helpers.two_column('  Creating ./jakfile', 'Done')
-        msg += '\n' + helpers.two_column('  TODO Creating ./keyfile', 'Done')
+        msg += '\n' + helpers.two_column('  Creating ./.jak/keyfile', 'Done')
     return msg + '\n'
 
 
+def move_jakfile_to_repo_root(filepath='./'):
+    new_jakfile_path = filepath + 'jakfile'
+    new_keyfile_path = filepath + '.jak'
+    subprocess.Popen(['mv', './jakfile', new_jakfile_path])
+    subprocess.Popen(['mv', './.jak', new_keyfile_path])
+
+
 def is_git_repository():
-    return os.path.exists('.git')
+    if not os.path.exists('.git'):
+        is_git_repository = False
+        iterator = 0
+        while (iterator <= len(os.getcwd().split('/'))):
+            prefix = '../'
+            if os.path.exists(iterator*prefix + '.git'):
+                click.echo("git repo, not in repo root folder")
+                return iterator*prefix
+            iterator += 1
+        return is_git_repository
+    else:
+        return os.path.exists('./')
+
+
+def has_gitignore(filepath='.gitignore'):
+    return os.path.exists(filepath)
+
+
+def add_keyfile_to_gitignore(filepath='.gitignore'):
+    with open(filepath, 'r+') as f:
+        gitignore = f.read()
+        appended_text = '# Jak KeyFile\n .jak/keyfile \n'
+        try:
+            appended_text = appended_text.decode('utf-8')
+        except AttributeError:
+            pass
+        f.write(appended_text)
 
 
 def want_to_add_pre_commit_encrypt_hook():
@@ -39,15 +75,16 @@ def want_to_add_pre_commit_encrypt_hook():
     return response == 'y' or response == 'yes'
 
 
-def add_pre_commit_encrypt_hook():
+def add_pre_commit_encrypt_hook(repo_root_filepath='./'):
     """"""
-    with open('.git/hooks/jak.pre-commit.py', 'w') as f:
-        f.write(outputs.PRE_COMMIT_ENCRYPT)
+    jak_pre_commit_path = repo_root_filepath + '.git/hooks/jak.pre-commit.py'
+    git_pre_commit_path = repo_root_filepath + '.git/hooks/pre-commit'
 
-    if not os.path.exists('.git/hooks/pre-commit'):
-        with open('.git/hooks/pre-commit', 'w') as f:
-            f.write(outputs.PRE_COMMIT_CALL)
-        os.chmod('.git/hooks/pre-commit', 0o755)
+    helpers.create_or_overwrite_file(filepath=jak_pre_commit_path, content=outputs.PRE_COMMIT_ENCRYPT)
+
+    if not os.path.exists(git_pre_commit_path):
+        helpers.create_or_overwrite_file(filepath=git_pre_commit_path, content=outputs.PRE_COMMIT_CALL)
+        os.chmod(git_pre_commit_path, 0o755)
         msg = helpers.two_column('Is there a pre-commit hook?', 'Nope!')
         msg += '\n' + helpers.two_column('  Creating pre-commit hook call (.git/hooks/pre-commit)', 'Done')
         msg += '\n' + helpers.two_column('  Creating encryption logic (.git/hooks/jak.pre-commit.py)', 'Done')

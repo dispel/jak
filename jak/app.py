@@ -67,30 +67,29 @@ def start():
 2. keyfile: Holds the key used to encrypt files.
     ''')
     click.echo(start_logic.create_jakfile())
-    if not start_logic.is_git_repository():
+    path_to_repo_root_folder = start_logic.is_git_repository()
+    if not path_to_repo_root_folder:
         msg = helpers.two_column('Is this a git repository?', 'Nope!')
         msg += '\n  jak says: I work great with git, but you do you.'
         click.echo(msg)
     else:
-        click.echo('Is this a git repository?...Yep!')
-
-        # if start_logic.has_gitignore():
-        if True:
+        click.echo(helpers.two_column('Is this a git repository?', 'Yep!'))
+        if not path_to_repo_root_folder == './':
+            click.echo(helpers.two_column('  Not in repo root folder, switching', 'Done!'))
+            start_logic.move_jakfile_to_repo_root(filepath=path_to_repo_root_folder)
+        if start_logic.has_gitignore(filepath=path_to_repo_root_folder + '.gitignore'):
             click.echo(helpers.two_column('  Is there a .gitignore?', 'Yep!'))
-
-            # TODO
+            start_logic.add_keyfile_to_gitignore(filepath=path_to_repo_root_folder + '.gitignore')
             click.echo(helpers.two_column('  Adding ./keyfile to .gitignore', 'Done'))
         else:
             click.echo(helpers.two_column('  Is there a .gitignore?', 'Nope!'))
-
-            # TODO
-            click.echo(helpers.two_column('Creating ./.gitignore', 'Done'))
-
-            # TODO
-            click.echo(helpers.two_column('Adding ./keyfile to .gitignore', 'Done'))
+            helpers.create_or_overwrite_file(filepath=path_to_repo_root_folder + '.gitignore',
+                                             content='# Jak KeyFile\n .jak/keyfile \n')
+            click.echo(helpers.two_column('  Creating ./.gitignore', 'Done'))
+            click.echo(helpers.two_column('  Adding ./keyfile to .gitignore', 'Done'))
 
         if start_logic.want_to_add_pre_commit_encrypt_hook():
-            click.echo('\n' + start_logic.add_pre_commit_encrypt_hook())
+            click.echo('\n' + start_logic.add_pre_commit_encrypt_hook(path_to_repo_root_folder))
 
     click.echo(outputs.FINAL_START_MESSAGE.format(version=__version_full__))
 
