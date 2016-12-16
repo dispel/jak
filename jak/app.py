@@ -67,6 +67,8 @@ def start():
 2. keyfile: Holds the key used to encrypt files.
     ''')
     click.echo(start_logic.create_jakfile())
+    # check filepath to see if parents are git repos, return that filepath
+    # is_git_repo will return false if no parent is a git repo.
     path_to_repo_root_folder = start_logic.is_git_repository()
     if not path_to_repo_root_folder:
         msg = helpers.two_column('Is this a git repository?', 'Nope!')
@@ -75,18 +77,22 @@ def start():
     else:
         click.echo(helpers.two_column('Is this a git repository?', 'Yep!'))
         if not path_to_repo_root_folder == './':
+            # note the switch here is really moving the jakfile & .jak folder to repo root
             click.echo(helpers.two_column('  Not in repo root folder, switching', 'Done!'))
             start_logic.move_jakfile_to_repo_root(filepath=path_to_repo_root_folder)
+            # for each function we need to specify not only the filename, but also the relative
+            # location
         if start_logic.has_gitignore(filepath=path_to_repo_root_folder + '.gitignore'):
             click.echo(helpers.two_column('  Is there a .gitignore?', 'Yep!'))
             start_logic.add_keyfile_to_gitignore(filepath=path_to_repo_root_folder + '.gitignore')
-            click.echo(helpers.two_column('  Adding ./keyfile to .gitignore', 'Done'))
+            click.echo(helpers.two_column('  Adding ./.jak/keyfile to .gitignore', 'Done'))
         else:
             click.echo(helpers.two_column('  Is there a .gitignore?', 'Nope!'))
+            # rather than create a needless function, we can re-use the helper as God intended
             helpers.create_or_overwrite_file(filepath=path_to_repo_root_folder + '.gitignore',
-                                             content='# Jak KeyFile\n .jak/keyfile \n')
+                                             content='# Jak KeyFile\n .jak \n')
             click.echo(helpers.two_column('  Creating ./.gitignore', 'Done'))
-            click.echo(helpers.two_column('  Adding ./keyfile to .gitignore', 'Done'))
+            click.echo(helpers.two_column('  Adding ./.jak/keyfile to .gitignore', 'Done'))
 
         if start_logic.want_to_add_pre_commit_encrypt_hook():
             click.echo('\n' + start_logic.add_pre_commit_encrypt_hook(path_to_repo_root_folder))

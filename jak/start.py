@@ -4,11 +4,11 @@ Copyright 2016 Dispel, LLC
 Apache 2.0 License, see https://github.com/dispel/jak/blob/master/LICENSE for details.
 """
 
-from . import outputs
+import os
+import click
 import subprocess
 from io import open
-import click
-import os
+from . import outputs
 from . import helpers
 
 
@@ -31,6 +31,9 @@ def create_jakfile(jakfile='jakfile'):
 
 
 def move_jakfile_to_repo_root(filepath='./'):
+    """If you run jak start in the wrong folder of the repo,
+we still want to recognize that it is a repo and put the jakfile/keyfile in the right spot"""
+
     new_jakfile_path = filepath + 'jakfile'
     new_keyfile_path = filepath + '.jak'
     subprocess.Popen(['mv', './jakfile', new_jakfile_path])
@@ -38,6 +41,12 @@ def move_jakfile_to_repo_root(filepath='./'):
 
 
 def is_git_repository():
+    """Just checking path exists is not enough, they might run a different
+directory other than the repo root. This recursively checks up the path to
+see if a parent directory is a git repo. This function should return the path
+[relative to cwd] of the repo root. It returns the path prefix needed to put
+all other files in the right spot."""
+
     if not os.path.exists('.git'):
         is_git_repository = False
         iterator = 0
@@ -53,18 +62,24 @@ def is_git_repository():
 
 
 def has_gitignore(filepath='.gitignore'):
+    """Note here add a file path in case they are not in the repo root"""
     return os.path.exists(filepath)
 
 
 def add_keyfile_to_gitignore(filepath='.gitignore'):
+    """This function should open the gitignore file and add the .jak
+folder [which contains the keyfile]. Note here add a file path in case
+they are not in the repo root"""
+
     with open(filepath, 'r+') as f:
         gitignore = f.read()
-        appended_text = '# Jak KeyFile\n .jak/keyfile \n'
+        appended_text = '# Jak KeyFile\n .jak \n'
         try:
             appended_text = appended_text.decode('utf-8')
         except AttributeError:
             pass
         f.write(appended_text)
+    return
 
 
 def want_to_add_pre_commit_encrypt_hook():
