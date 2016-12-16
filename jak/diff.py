@@ -29,7 +29,7 @@ def _create_local_remote_diff_files(filepath, local, remote):
     Returns their paths as a tuple
     """
     tag = random.randrange(10000, 99999)
-    (filepath, ext) = helpers.get_filepath_end_extension(full_filepath=filepath)
+    (filepath, ext) = os.path.splitext(filepath)
     local_file_path = '{}_LOCAL_{}{}'.format(filepath, tag, ext)
     remote_file_path = '{}_REMOTE_{}{}'.format(filepath, tag, ext)
 

@@ -79,8 +79,6 @@ def create_or_overwrite_file(filepath, content):
     with open(filepath, 'w') as f:
         f.write(content)
 
-    return True
-
 
 def is_there_a_backup(filepath):
     """Check if a backup for a file exists
@@ -105,17 +103,7 @@ def get_backup_content_for_file(filepath):
     return encrypted_secret
 
 
-def get_filepath_end_extension(full_filepath):
-    """
-    /hello/there.ext > (/hello/there, .ext)
-    there > (there, '')
-    /hello/there > (/hello/there, '')
-    """
-    final_dot = full_filepath.rfind('.')
-    if final_dot != -1:
-        filepath = full_filepath[:full_filepath.rfind('.')]
-        ext = full_filepath[full_filepath.rfind('.'):]
-    else:
-        filepath = full_filepath
-        ext = ''
-    return filepath, ext
+def two_column(left, right, col1_length=65, col2_length=1):
+    """"""
+    tmp = '%-{}s%-{}s'.format(col1_length, col2_length)
+    return tmp % (left, right)

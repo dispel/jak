@@ -60,10 +60,39 @@ def main(version):
 @main.command()
 def start():
     """Initializes jak in your working directory."""
-    result = start_logic.create_jakfile()
-    if start_logic.is_git_repository() and start_logic.want_to_add_pre_commit_encrypt_hook():
-        result += start_logic.add_pre_commit_encrypt_hook()
-    click.echo(result)
+    click.echo('''- - - Welcome to jak - - -
+
+"jak start" does a couple of things:
+1. jakfile: File with per working directory settings for jak.
+2. keyfile: Holds the key used to encrypt files.
+    ''')
+    click.echo(start_logic.create_jakfile())
+    if not start_logic.is_git_repository():
+        msg = helpers.two_column('Is this a git repository?', 'Nope!')
+        msg += '\n  jak says: I work great with git, but you do you.'
+        click.echo(msg)
+    else:
+        click.echo('Is this a git repository?...Yep!')
+
+        # if start_logic.has_gitignore():
+        if True:
+            click.echo(helpers.two_column('  Is there a .gitignore?', 'Yep!'))
+
+            # TODO
+            click.echo(helpers.two_column('  Adding ./keyfile to .gitignore', 'Done'))
+        else:
+            click.echo(helpers.two_column('  Is there a .gitignore?', 'Nope!'))
+
+            # TODO
+            click.echo(helpers.two_column('Creating ./.gitignore', 'Done'))
+
+            # TODO
+            click.echo(helpers.two_column('Adding ./keyfile to .gitignore', 'Done'))
+
+        if start_logic.want_to_add_pre_commit_encrypt_hook():
+            click.echo('\n' + start_logic.add_pre_commit_encrypt_hook())
+
+    click.echo(outputs.FINAL_START_MESSAGE.format(version=__version_full__))
 
 
 @main.command()
