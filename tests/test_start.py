@@ -47,7 +47,7 @@ def test_add_keyfile_to_gitignore(tmpdir):
     start.add_keyfile_to_gitignore(gitignore.strpath)
     with open(gitignore.strpath, 'r') as f:
         new_gitignore = f.read()
-    assert '.jak/keyfile' in new_gitignore
+    assert '.jak' in new_gitignore
 
 
 def test_create_jakfile_error(tmpdir):

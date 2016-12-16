@@ -46,7 +46,6 @@ directory other than the repo root. This recursively checks up the path to
 see if a parent directory is a git repo. This function should return the path
 [relative to cwd] of the repo root. It returns the path prefix needed to put
 all other files in the right spot."""
-
     if not os.path.exists('.git'):
         is_git_repository = False
         iterator = 0
@@ -56,9 +55,9 @@ all other files in the right spot."""
                 click.echo("git repo, not in repo root folder")
                 return iterator*prefix
             iterator += 1
-        return is_git_repository
+        return ''
     else:
-        return os.path.exists('./')
+        return './'
 
 
 def has_gitignore(filepath='.gitignore'):
