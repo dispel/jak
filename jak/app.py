@@ -8,9 +8,10 @@ import click
 from . import helpers
 from . import outputs
 from . import __version_full__
+from . import diff as diff_logic
+from . import decorators
 from . import start as start_logic
 from . import crypto_services as cs
-from . import diff as diff_logic
 from .exceptions import JakException
 from . import password_services as ps
 
@@ -126,26 +127,18 @@ def keygen(minimal):
     click.echo(output)
 
 
-def encrypt_inner(filepath, key=None, keyfile=None):
-    """Flow encrypting file(s)"""
-    try:
-        jakfile_dict = helpers.read_jakfile_to_dict()
-    except IOError:
-        jakfile_dict = None
-
-    try:
-        if filepath == 'all':
-            click.echo(cs.all(callable_action=cs.encrypt_file,
-                              key=key,
-                              keyfile=keyfile,
-                              jakfile_dict=jakfile_dict))
+@decorators.read_jakfile
+@decorators.select_key
+@decorators.select_files
+def encrypt_inner(files, key, **kwargs):
+    """Flow for encrypting file(s)"""
+    for filepath in files:
+        try:
+            result = cs.encrypt_file(filepath=filepath, key=key)
+        except JakException as je:
+            click.echo(je)
         else:
-            click.echo(cs.encrypt_file(filepath=filepath,
-                                       key=key,
-                                       keyfile=keyfile,
-                                       jakfile_dict=jakfile_dict))
-    except JakException as je:
-        click.echo(je)
+            click.echo(result)
 
 
 @main.command(help='jak encrypt <file>')
@@ -154,29 +147,21 @@ def encrypt_inner(filepath, key=None, keyfile=None):
 @click.option('-kf', '--keyfile', default=None, metavar='<file_path>')
 def encrypt(filepath, key, keyfile):
     """Encrypt file(s)"""
-    encrypt_inner(filepath, key, keyfile)
+    encrypt_inner(all_or_filepath=filepath, key=key, keyfile=keyfile)
 
 
-def decrypt_inner(filepath, key=None, keyfile=None):
+@decorators.read_jakfile
+@decorators.select_key
+@decorators.select_files
+def decrypt_inner(files, key, **kwargs):
     """Flow for decrypting file(s)"""
-    try:
-        jakfile_dict = helpers.read_jakfile_to_dict()
-    except IOError:
-        jakfile_dict = None
-
-    try:
-        if filepath == 'all':
-            click.echo(cs.all(callable_action=cs.decrypt_file,
-                              key=key,
-                              keyfile=keyfile,
-                              jakfile_dict=jakfile_dict))
+    for filepath in files:
+        try:
+            result = cs.decrypt_file(filepath=filepath, key=key)
+        except JakException as je:
+            click.echo(je)
         else:
-            click.echo(cs.decrypt_file(filepath=filepath,
-                                       key=key,
-                                       keyfile=keyfile,
-                                       jakfile_dict=jakfile_dict))
-    except JakException as je:
-        click.echo(je)
+            click.echo(result)
 
 
 @main.command(help='jak decrypt <file>')
@@ -185,19 +170,23 @@ def decrypt_inner(filepath, key=None, keyfile=None):
 @click.option('-kf', '--keyfile', default=None, metavar='<file_path>')
 def decrypt(filepath, key, keyfile):
     """Decrypt file(s)"""
-    decrypt_inner(filepath, key, keyfile)
+    decrypt_inner(all_or_filepath=filepath, key=key, keyfile=keyfile)
 
 
 @main.command()
-def stomp():
+@click.option('-k', '--key', default=None, metavar='<string>')
+@click.option('-kf', '--keyfile', default=None, metavar='<file_path>')
+def stomp(key, keyfile):
     """Alias for 'jak encrypt all'"""
-    encrypt_inner(filepath='all')
+    encrypt_inner(all_or_filepath='all', key=key, keyfile=keyfile)
 
 
 @main.command()
-def shave():
+@click.option('-k', '--key', default=None, metavar='<string>')
+@click.option('-kf', '--keyfile', default=None, metavar='<file_path>')
+def shave(key, keyfile):
     """Alias for 'jak decrypt all'"""
-    decrypt_inner(filepath='all')
+    decrypt_inner(all_or_filepath='all', key=key, keyfile=keyfile)
 
 
 @main.command(options_metavar='<options>')

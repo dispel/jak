@@ -18,6 +18,11 @@ from . import password_services as ps
 ENCRYPTED_BY_HEADER = u'- - - Encrypted by jak - - -\n\n'
 
 
+# TODO make this its own thing
+# What if it changes?
+# What if we add another cipher?
+# What if we want to move people between ciphers, because all security
+# eventually gets old.
 class AES256Cipher(object):
     """AES256 using CFB mode and a 16bit block size."""
 
@@ -114,45 +119,9 @@ class AES256Cipher(object):
         return Random.new().read(self.block_size)
 
 
-def all(callable_action, key, keyfile, jakfile_dict):
-    """Read the jakfile and decrypt all the files in it.
-
-    callable_action MUST be one of encrypt_file or decrypt_file (FIXME, throw warning if not?)
-    """
-    key = ps.select_key(key, keyfile, jakfile_dict)
-
-    try:
-        files_to_encrypt = jakfile_dict['files_to_encrypt']
-    except KeyError:
-        raise JakException('This command requires a jakfile with a "files_to_encrypt" value.\nAborting...')
-    else:
-        if not isinstance(files_to_encrypt, list):
-            raise JakException("The jakfile's \"files_to_encrypt\" value must be a list (array).\nAborting...")
-
-        if not files_to_encrypt:
-            msg = '''Your jakfile's files_to_encrypt value is empty. It should be a list of files.
-Aborting...'''
-            raise JakException(msg)
-
-    results = ''
-    for index, protected_file in enumerate(files_to_encrypt):
-        try:
-            result = callable_action(protected_file, key, keyfile)
-        except JakException as je:
-            result = je.__str__()
-
-        results += result
-
-        # Only add newline if we are not on the last protected file.
-        if index + 1 != len(jakfile_dict['files_to_encrypt']):
-            results += '\n'
-
-    return results
-
-
-def encrypt_file(filepath, key, keyfile=None, jakfile_dict=None):
+def encrypt_file(filepath, key):
     """Encrypts a file"""
-    key = ps.select_key(key, keyfile, jakfile_dict)
+    # key = ps.select_key(key, keyfile, jakfile_dict)
 
     try:
         with open(filepath, 'rt', encoding='utf-8') as f:
@@ -197,7 +166,7 @@ def encrypt_file(filepath, key, keyfile=None, jakfile_dict=None):
     return '{} - is now encrypted.'.format(filepath)
 
 
-def decrypt_file(filepath, key, keyfile=None, jakfile_dict=None):
+def decrypt_file(filepath, key):
     """Decrypts a file
 
     FIXME REFACTOR
@@ -211,7 +180,7 @@ def decrypt_file(filepath, key, keyfile=None, jakfile_dict=None):
         - setup->call cipher
     - write back into file
     """
-    key = ps.select_key(key, keyfile, jakfile_dict)
+    # key = ps.select_key(key, keyfile, jakfile_dict)
 
     try:
         with open(filepath, 'rt', encoding='utf-8') as f:
