@@ -20,7 +20,7 @@ FRESH_JAKFILE = u'''// For more information visit https://github.com/dispel/jak/
 
   // You can store your key in a file INSTEAD of having a "key" value.
   // This allows you to commit the jakfile. (never commit your key!)
-  // "key_file": "path/to/jakkeyfile"
+  // "keyfile": "path/to/jakkeyfile"
 }}'''
 
 KEYGEN_RESPONSE = '''Here is your shiny new key.
@@ -48,16 +48,39 @@ python .git/hooks/jak.pre-commit.py
 
 # ---- End jak Block ----
 
-# Place your custom pre-commit code below here
-
-exit 0
+# Place your custom pre-commit code here
 '''
+
+PRE_COMMIT_EXISTS = '''
+
+jak says: EXISTING PRE-COMMIT HOOK, I DON'T WANT TO OVERRIDE IT WILLY NILLY
+SEE .git/hooks/jak.pre-commit.py for further installation instructions.'''
 
 PRE_COMMIT_ENCRYPT = '''#!/usr/bin/env python
 
 """
 Copyright 2016 Dispel, LLC
 Apache 2.0 License, see https://github.com/dispel/jak/blob/master/LICENSE for details.
+
+INSTALLATION
+To enable the pre-commit hook,
+Please add the following block into your .git/hooks/pre-commit script manually:
+
+#----Begin jak Block ----
+
+PURPLE='\033[1;35m'
+NC='\033[0m' # No Color
+
+printf "🌰  ${PURPLE}jak: pre-commit > Encrypting files listed in jakfile.${NC}\n"
+
+# See http://click.pocoo.org/6/python3/ for more info
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
+
+# Encrypt any staged files that are protected by jak
+python .git/hooks/jak.pre-commit.py
+
+#----End jak Block ----
 """
 
 from __future__ import unicode_literals
@@ -124,3 +147,17 @@ if __name__ == '__main__':
             try_encrypt(staged_file)
             git_add(staged_file)
 '''
+
+
+FINAL_START_MESSAGE = '''- - - Setup complete! - - -
+
+TL;DR;
+1. If this is your first rodeo please look at your ./keyfile and your ./jakfile.
+2. Keep your keyfile secret at all costs. Don't commit it to any VCS, don't email it, don't put it in dropbox, definitely don't put it in google drive, etc...!
+
+{version}'''
+
+QUESTION_WANT_TO_ADD_PRE_COMMIT = '''
+Do you want to add a git pre-commit hook?
+The hook will encrypt files listed in your jakfile
+each time you git commit. [y/n]'''

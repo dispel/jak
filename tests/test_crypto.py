@@ -179,7 +179,7 @@ def test_all():
         sk.return_value = 'select_key'
 
         mock_jackfile_dict = {'files_to_encrypt': ['one', 'two']}
-        results = crypto.all(callable_action=foo, key=None, key_file=None,
+        results = crypto.all(callable_action=foo, key=None, keyfile=None,
                              jakfile_dict=mock_jackfile_dict)
         assert results == 'one\ntwo'
 
@@ -197,6 +197,6 @@ def test_all_jakexceptions(jakdict, error_string_part):
     with mock.patch('jak.password_services.select_key') as sk:
         sk.return_value = 'select_key'
         with pytest.raises(JakException) as exception:
-            crypto.all(callable_action=foo, key=None, key_file=None,
+            crypto.all(callable_action=foo, key=None, keyfile=None,
                        jakfile_dict=jakdict)
         assert error_string_part in exception.__str__()

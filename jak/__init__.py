@@ -35,5 +35,5 @@ Copyright 2016 Dispel, LLC
 Apache 2.0 License, see https://github.com/dispel/jak/blob/master/LICENSE for details.
 """
 
-__version__ = '0.8.0'
+__version__ = '0.9.1'
 __version_full__ = "Jak v{0} ({1})".format(__version__, 'Troubled Toddler')

@@ -53,20 +53,31 @@ def backup_file_content(filepath, content):
 
     TODO Needs test
     """
-    filename = '.jak/' + filepath[filepath.rfind('/') + 1:] + '_backup'
-    if not os.path.exists(os.path.dirname(filename)):
+    filepath = '.jak/' + filepath[filepath.rfind('/') + 1:] + '_backup'
+    return create_or_overwrite_file(filepath=filepath, content=content)
+
+
+def create_or_overwrite_file(filepath, content):
+    """"""
+    # If not a path and just a file default to a local folder.
+    dirname = os.path.dirname(filepath) or '.'
+
+    if not os.path.exists(dirname):
         try:
-            os.makedirs(os.path.dirname(filename))
+            os.makedirs(dirname)
 
         # Guard against race condition
         except OSError as exc:
             if exc.errno != errno.EEXIST:
                 raise
 
-    with open(filename, 'w') as f:
-        f.write(content)
+    try:
+        content = content.decode('utf-8')
+    except AttributeError:
+        pass
 
-    return True
+    with open(filepath, 'w') as f:
+        f.write(content)
 
 
 def is_there_a_backup(filepath):
@@ -90,3 +101,9 @@ def get_backup_content_for_file(filepath):
     with open(filename, 'rt') as f:
         encrypted_secret = f.read()
     return encrypted_secret
+
+
+def two_column(left, right, col1_length=65, col2_length=1):
+    """"""
+    tmp = '%-{}s%-{}s'.format(col1_length, col2_length)
+    return tmp % (left, right)

@@ -5,7 +5,9 @@ def test_create_jakfile_error(tmpdir):
     jakfile = tmpdir.join("jakfile")
     jakfile.write('gobbledigook')
     result = start.create_jakfile(jakfile.strpath)
-    assert result == "You already seem to have a jakfile."
+    assert 'jakfile?' in result
+    assert 'Yep!' in result
+    assert 'Doing nothing, but feeling good about life' in result
 
 
 def test_create_jakfile(tmpdir):
@@ -14,4 +16,5 @@ def test_create_jakfile(tmpdir):
     # I still want it to go in the tmpdir and not affect the actual location
     # without the jakfile.write it should not exist there.
     result = start.create_jakfile(jakfile.strpath)
-    assert result == "I created a fresh new jakfile for you. You should check it out!"
+    assert 'jakfile?' in result
+    assert 'Nope!' in result

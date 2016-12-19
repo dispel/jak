@@ -114,12 +114,12 @@ class AES256Cipher(object):
         return Random.new().read(self.block_size)
 
 
-def all(callable_action, key, key_file, jakfile_dict):
+def all(callable_action, key, keyfile, jakfile_dict):
     """Read the jakfile and decrypt all the files in it.
 
     callable_action MUST be one of encrypt_file or decrypt_file (FIXME, throw warning if not?)
     """
-    key = ps.select_key(key, key_file, jakfile_dict)
+    key = ps.select_key(key, keyfile, jakfile_dict)
 
     try:
         files_to_encrypt = jakfile_dict['files_to_encrypt']
@@ -137,7 +137,7 @@ Aborting...'''
     results = ''
     for index, protected_file in enumerate(files_to_encrypt):
         try:
-            result = callable_action(protected_file, key, key_file)
+            result = callable_action(protected_file, key, keyfile)
         except JakException as je:
             result = je.__str__()
 
@@ -150,9 +150,9 @@ Aborting...'''
     return results
 
 
-def encrypt_file(filepath, key, key_file=None, jakfile_dict=None):
+def encrypt_file(filepath, key, keyfile=None, jakfile_dict=None):
     """Encrypts a file"""
-    key = ps.select_key(key, key_file, jakfile_dict)
+    key = ps.select_key(key, keyfile, jakfile_dict)
 
     try:
         with open(filepath, 'rt', encoding='utf-8') as f:
@@ -197,7 +197,7 @@ def encrypt_file(filepath, key, key_file=None, jakfile_dict=None):
     return '{} - is now encrypted.'.format(filepath)
 
 
-def decrypt_file(filepath, key, key_file=None, jakfile_dict=None):
+def decrypt_file(filepath, key, keyfile=None, jakfile_dict=None):
     """Decrypts a file
 
     FIXME REFACTOR
@@ -211,7 +211,7 @@ def decrypt_file(filepath, key, key_file=None, jakfile_dict=None):
         - setup->call cipher
     - write back into file
     """
-    key = ps.select_key(key, key_file, jakfile_dict)
+    key = ps.select_key(key, keyfile, jakfile_dict)
 
     try:
         with open(filepath, 'rt', encoding='utf-8') as f:
