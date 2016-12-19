@@ -41,12 +41,12 @@ def want_to_add_pre_commit_encrypt_hook():
 
 def add_pre_commit_encrypt_hook():
     """"""
-    with open('.git/hooks/jak.pre-commit.py', 'w') as f:
-        f.write(outputs.PRE_COMMIT_ENCRYPT)
+    helpers.create_or_overwrite_file(filepath='./git/hooks/jak.pre-commit.py',
+                                     content=outputs.PRE_COMMIT_ENCRYPT)
 
     if not os.path.exists('.git/hooks/pre-commit'):
-        with open('.git/hooks/pre-commit', 'w') as f:
-            f.write(outputs.PRE_COMMIT_CALL)
+        helpers.create_or_overwrite_file(filepath='.git/hooks/pre-commit',
+                                         content=outputs.PRE_COMMIT_CALL)
         os.chmod('.git/hooks/pre-commit', 0o755)
         msg = helpers.two_column('Is there a pre-commit hook?', 'Nope!')
         msg += '\n' + helpers.two_column('  Creating pre-commit hook call (.git/hooks/pre-commit)', 'Done')
