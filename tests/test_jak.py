@@ -3,7 +3,7 @@
 import pytest
 from click.testing import CliRunner
 from jak.app import main as jak
-import jak.crypto_services as crypto
+import jak.crypto_services as cs
 
 
 @pytest.fixture
@@ -42,26 +42,33 @@ def test_encrypt_smoke(runner):
     with runner.isolated_filesystem():
         with open('secret.txt', 'w') as f:
             f.write('secret')
-        runner.invoke(jak, ['encrypt', 'secret.txt', '--key', 'f40ec5d3ef66166720b24b3f8716c2c31ffc6b45295ff72024a45d90e5fddb56'])
+        runner.invoke(jak,
+                      ['encrypt',
+                       'secret.txt',
+                       '--key',
+                       'f40ec5d3ef66166720b24b3f8716c2c31ffc6b45295ff72024a45d90e5fddb56'])
         with open('secret.txt', 'r') as f:
             result = f.read()
-        assert crypto.ENCRYPTED_BY_HEADER in result
+        assert cs.ENCRYPTED_BY_HEADER in result
 
 
 def test_decrypt_smoke(runner):
     contents = '''- - - Encrypted by jak - - -
 
-MTBjYjg4NGEyMmE3NDg1ZmFiYzJlZGNiNTQ2Y2ZjMzM4MGRiM2NmZDFmMzM5
-MWU5NjhhYjFiYzNhMDk3MGI1MjEyZjNiYWM3ZDNkMzEwYzBjMjBhOTU5OGRm
-NjVlNTJjMzA5OTY4ZTNiMzViYTg5YWMxNTk5ODY4ZjY1NTNmNTDNWQ1MkblC
-ATn69JrYbdhyhQNgpXpWQw==
-'''
+MjI1YTNmY2U3MjgzN2NjZjBlNDFiMmU5YmQ3NWNjZDBkODc2NmUyZTlkMzRk
+M2E0MmJjZDNhMmM0ZTMxMjY3ZTdiZWQzOWMwODRlYzRkOGNjMzFiMmUxOTFk
+Mjg3MmQyZmFiNmRiNjU3MDAyN2JkMjdlMzJjYzgyNGU3ZmI1ZjAKVEBKQmlE
+qt2YqCLn8eTRanMKg8IguQ=='''
     with runner.isolated_filesystem():
 
         with open('secret.txt', 'w') as f:
             f.write(contents)
-        runner.invoke(jak, ['decrypt', 'secret.txt', '--key', 'f40ec5d3ef66166720b24b3f8716c2c31ffc6b45295ff72024a45d90e5fddb56'])
+        runner.invoke(jak,
+                      ['decrypt',
+                       'secret.txt',
+                       '--key',
+                       'f40ec5d3ef66166720b24b3f8716c2c31ffc6b45295ff72024a45d90e5fddb56'])
         with open('secret.txt', 'r') as f:
             result = f.read()
-        assert crypto.ENCRYPTED_BY_HEADER not in result
-        assert result == 'secret'
+        assert cs.ENCRYPTED_BY_HEADER not in result
+        assert result.strip('\n') == 'secret'
