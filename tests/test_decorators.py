@@ -37,17 +37,8 @@ def test_select_key_logic(tmpdir):
     keyfile.write('abc')
     assert 'abc' == decorators.select_key_logic(keyfile=keyfile.strpath)
 
-    # CLIP & JAKP
-    assert decorators.select_key_logic(key='abc', jakfile_dict={'key': 'def'}) == 'abc'
-
     # CLIP & JAKPF
     assert decorators.select_key_logic(key='abc', jakfile_dict={'keyfile': 'def'}) == 'abc'
-
-    # CLIP & JAKPF & JAKP
-    assert decorators.select_key_logic(
-        key='abc',
-        jakfile_dict={'key': 'def', 'keyfile': 'ghi'}
-    ) == 'abc'
 
     # CLIPF & JAKPF
     keyfile = tmpdir.mkdir("b").join("keyfile")
@@ -56,30 +47,6 @@ def test_select_key_logic(tmpdir):
         keyfile=keyfile.strpath,
         jakfile_dict={'keyfile': 'def'}
     ) == 'clipfjakpf'
-
-    # CLIPF & JAKP
-    keyfile = tmpdir.mkdir("c").join("keyfile")
-    keyfile.write('clipfjakpf')
-    assert decorators.select_key_logic(
-        keyfile=keyfile.strpath,
-        jakfile_dict={'key': 'def'}
-    ) == 'clipfjakpf'
-
-    # CLIPF & JAKPF & JAKP
-    keyfile = tmpdir.mkdir("d").join("keyfile")
-    keyfile.write('clipfjakpfjakp')
-    assert decorators.select_key_logic(
-        keyfile=keyfile.strpath,
-        jakfile_dict={'keyfile': 'def', 'key': 'ghi'}
-    ) == 'clipfjakpfjakp'
-
-    # JAKP
-    assert decorators.select_key_logic(jakfile_dict={'key': 'abc'}) == 'abc'
-
-    # JAKP & JAKPF
-    with pytest.raises(JakException) as exception:
-        decorators.select_key_logic(jakfile_dict={'key': 'abc', 'keyfile': 'def'})
-    assert 'Your jakfile should not contain a "key" and a "keyfile"' in exception.__str__()
 
     # JAKPF
     keyfile = tmpdir.mkdir("e").join("keyfile")

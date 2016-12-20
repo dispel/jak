@@ -28,7 +28,10 @@ def read_jakfile(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
         # TODO, find the jakfile before read
-        kwargs['jakfile_dict'] = helpers.read_jakfile_to_dict(jakfile='jakfile')
+        try:
+            kwargs['jakfile_dict'] = helpers.read_jakfile_to_dict(jakfile='jakfile')
+        except IOError:
+            kwargs['jakfile_dict'] = {}
         return f(*args, **kwargs)
     return wrapper
 

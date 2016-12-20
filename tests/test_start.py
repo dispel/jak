@@ -53,7 +53,7 @@ def test_add_keyfile_to_gitignore(tmpdir):
 def test_create_jakfile_error(tmpdir):
     jakfile = tmpdir.join("jakfile")
     jakfile.write('gobbledigook')
-    result = start.create_jakfile(jakfile.strpath)
+    result = start.create_jakfile(jakfile.dirpath().strpath + '/')
     assert 'Doing nothing, but feeling good' in result
 
 

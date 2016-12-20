@@ -83,6 +83,7 @@ class AES256Cipher(object):
 
     def decrypt(self, key, encrypted_secret):
         """Decrypts an encrypted secret."""
+        key = binascii.unhexlify(key)
         iv = self.extract_iv(encrypted_secret)
         if not self._has_integrity(key, encrypted_secret, iv):
             raise JakException('Wrong key. Aborting...')
@@ -102,7 +103,7 @@ class AES256Cipher(object):
             raise JakException(
                 ("Key must be exactly 64 characters long. \n"
                  "I would recommend you use the genpass command to generate a strong key."))
-
+        key = binascii.unhexlify(key)
         if not iv:
             iv = self._generate_iv()
 

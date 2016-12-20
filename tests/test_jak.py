@@ -42,7 +42,7 @@ def test_encrypt_smoke(runner):
     with runner.isolated_filesystem():
         with open('secret.txt', 'w') as f:
             f.write('secret')
-        runner.invoke(jak, ['encrypt', 'secret.txt', '--key', '8aa07783be74904fa34be710a160325e'])
+        runner.invoke(jak, ['encrypt', 'secret.txt', '--key', 'f40ec5d3ef66166720b24b3f8716c2c31ffc6b45295ff72024a45d90e5fddb56'])
         with open('secret.txt', 'r') as f:
             result = f.read()
         assert crypto.ENCRYPTED_BY_HEADER in result
@@ -51,17 +51,16 @@ def test_encrypt_smoke(runner):
 def test_decrypt_smoke(runner):
     contents = '''- - - Encrypted by jak - - -
 
-NzBlNmNkMjg1NDQyZWY1YzljZTA0NWYzMWE1MzcxYzBiYzU0OTcxZGVkZjQy
-MDkwNWY0Yzc2ZDE3Y2E4ZDliYTQwMWZmNTEyNjFhYWZlNjRiNzlmYTAyZDg2
-ZWI2M2RlNzk2OGM3NDczNjBmMjIwOWQxMjg5OGM2NjIyZWNkYzLH7uJuJhZI
-ymTsQyVWEJwdMFLRmsjO
-
+MTBjYjg4NGEyMmE3NDg1ZmFiYzJlZGNiNTQ2Y2ZjMzM4MGRiM2NmZDFmMzM5
+MWU5NjhhYjFiYzNhMDk3MGI1MjEyZjNiYWM3ZDNkMzEwYzBjMjBhOTU5OGRm
+NjVlNTJjMzA5OTY4ZTNiMzViYTg5YWMxNTk5ODY4ZjY1NTNmNTDNWQ1MkblC
+ATn69JrYbdhyhQNgpXpWQw==
 '''
     with runner.isolated_filesystem():
 
         with open('secret.txt', 'w') as f:
             f.write(contents)
-        runner.invoke(jak, ['decrypt', 'secret.txt', '--key', '8aa07783be74904fa34be710a160325e'])
+        runner.invoke(jak, ['decrypt', 'secret.txt', '--key', 'f40ec5d3ef66166720b24b3f8716c2c31ffc6b45295ff72024a45d90e5fddb56'])
         with open('secret.txt', 'r') as f:
             result = f.read()
         assert crypto.ENCRYPTED_BY_HEADER not in result
