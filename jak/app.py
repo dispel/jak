@@ -66,22 +66,16 @@ def start():
 1. jakfile: File with per working directory settings for jak.
 2. keyfile: Holds the key used to encrypt files.
     ''')
-    click.echo(start_logic.create_jakfile())
+    path_to_repo_root_folder = start_logic.is_git_repository()
+    click.echo(start_logic.create_jakfile(jakfile=path_to_repo_root_folder))
     # check filepath to see if parents are git repos, return that filepath
     # is_git_repo will return false if no parent is a git repo.
-    path_to_repo_root_folder = start_logic.is_git_repository()
     if not path_to_repo_root_folder:
         msg = helpers.two_column('Is this a git repository?', 'Nope!')
         msg += '\n  jak says: I work great with git, but you do you.'
         click.echo(msg)
     else:
         click.echo(helpers.two_column('Is this a git repository?', 'Yep!'))
-        if not path_to_repo_root_folder == './':
-            # note the switch here is really moving the jakfile & .jak folder to repo root
-            click.echo(helpers.two_column('  Not in repo root folder, switching', 'Done!'))
-            start_logic.move_jakfile_to_repo_root(filepath=path_to_repo_root_folder)
-            # for each function we need to specify not only the filename, but also the relative
-            # location
         if start_logic.has_gitignore(filepath=path_to_repo_root_folder + '.gitignore'):
             click.echo(helpers.two_column('  Is there a .gitignore?', 'Yep!'))
             start_logic.add_keyfile_to_gitignore(filepath=path_to_repo_root_folder + '.gitignore')

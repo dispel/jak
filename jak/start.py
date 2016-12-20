@@ -12,9 +12,9 @@ from . import outputs
 from . import helpers
 
 
-def create_jakfile(jakfile='jakfile'):
+def create_jakfile(filepath):
     """Checks whether you have a jakfile or need a new one."""
-    if os.path.exists(jakfile):
+    if os.path.exists(filepath + 'jakfile'):
         msg = helpers.two_column('Is there already a jakfile?', 'Yep!')
         msg += '\n' + helpers.two_column('  Doing nothing, but feeling good about life', 'Done')
     else:
@@ -22,25 +22,15 @@ def create_jakfile(jakfile='jakfile'):
         key = ps.generate_256bit_key().decode('utf-8')
         keyfile_path = '.jak/keyfile'
         fresh_jakfile = outputs.FRESH_JAKFILE.format(keyfile_path=keyfile_path)
-        helpers.create_or_overwrite_file(filepath=jakfile, content=fresh_jakfile)
-        helpers.create_or_overwrite_file(filepath=keyfile_path, content=key)
+        helpers.create_or_overwrite_file(filepath=filepath + 'jakfile', content=fresh_jakfile)
+        helpers.create_or_overwrite_file(filepath=filepath + keyfile_path, content=key)
         msg = helpers.two_column('Is there already a jakfile?', 'Nope!')
         msg += '\n' + helpers.two_column('  Creating ./jakfile', 'Done')
         msg += '\n' + helpers.two_column('  Creating ./.jak/keyfile', 'Done')
     return msg + '\n'
 
 
-def move_jakfile_to_repo_root(filepath='./'):
-    """If you run jak start in the wrong folder of the repo,
-we still want to recognize that it is a repo and put the jakfile/keyfile in the right spot"""
-
-    new_jakfile_path = filepath + 'jakfile'
-    new_keyfile_path = filepath + '.jak'
-    subprocess.Popen(['mv', './jakfile', new_jakfile_path])
-    subprocess.Popen(['mv', './.jak', new_keyfile_path])
-
-
-def is_git_repository():
+def find_git_repository_parent():
     """Just checking path exists is not enough, they might run a different
 directory other than the repo root. This recursively checks up the path to
 see if a parent directory is a git repo. This function should return the path
@@ -50,6 +40,7 @@ all other files in the right spot."""
         is_git_repository = False
         iterator = 0
         while (iterator <= len(os.getcwd().split('/'))):
+            # TODO - go from the top down rather than bottom up - give full path info.
             prefix = '../'
             if os.path.exists(iterator*prefix + '.git'):
                 click.echo("git repo, not in repo root folder")
