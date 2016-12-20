@@ -49,3 +49,46 @@ def test_generate_256bit_key():
     key = helpers.generate_256bit_key()
     assert len(key) == 64
     assert isinstance(key, six.binary_type)
+
+
+def test_get_jak_working_directory(tmpdir):
+    '''
+    /repo/.git/gitfile
+    /repo/sub1/sub2/nestedfile
+    '''
+    # No parent .git
+    norepo = tmpdir.mkdir('norepo')
+    result = helpers.get_jak_working_directory(cwd=norepo.strpath)
+    assert result == norepo.strpath
+
+    # Current has .git
+    repo = tmpdir.mkdir('repo')
+    gitfile = repo.mkdir('.git').join('gitfile')
+    gitfile.write('this is a git repo')
+    result = helpers.get_jak_working_directory(cwd=repo.strpath)
+    assert result == repo.strpath
+
+    # Parent has a .git
+    nested = repo.mkdir('sub1').mkdir('sub2')
+    # nested.write('I am a nested file')
+    result = helpers.get_jak_working_directory(cwd=nested.strpath)
+    assert '/repo' in result
+    assert result.count('/') > 3
+
+
+def test_does_jwd_have_gitignore(tmpdir):
+    repo = tmpdir.mkdir("repo_folder")
+    git_ignore = repo.join(".gitignore")
+    git_ignore.write("i exist")
+
+    # this will pass because the .gitignore is in the CWD
+    assert helpers.does_jwd_have_gitignore(cwd=repo.strpath)
+
+    subdir = repo.mkdir('sub')
+    # This will fail because there is no .git folder in any parent
+    # and the CWD does not have a .gitignore
+    assert not helpers.does_jwd_have_gitignore(cwd=subdir.strpath)
+
+    repo.mkdir('.git')
+    # This will be true because the parent now has .git and .gitignore
+    assert helpers.does_jwd_have_gitignore(cwd=subdir.strpath)

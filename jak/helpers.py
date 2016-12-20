@@ -105,11 +105,51 @@ def get_backup_content_for_file(filepath):
 
 
 def two_column(left, right, col1_length=65, col2_length=1):
-    """"""
+    """Two column layout for printouts.
+    Example:
+    I did this thing             done!
+    """
     tmp = '%-{}s%-{}s'.format(col1_length, col2_length)
-    return tmp % (left, right)
+
+    # The space in front of the right column add minimal padding in case
+    # lefts content is very long (>col1_length)
+    return tmp % (left, ' ' + right)
 
 
 def generate_256bit_key():
     """Generate a secure cryptographically random key."""
     return binascii.hexlify(os.urandom(32))
+
+
+def get_jak_working_directory(cwd=os.getcwd()):
+    """Finds a git repository parent and returns the path to it.
+    if none is found default to current directory: './'"""
+
+    # They are probably in a .git repo so let's check that right off the bat.
+    if os.path.exists('{}/.git'.format(cwd)):
+        return cwd
+
+    cwd_path = cwd.split('/')
+
+    # Remove final one since we already checked current directory above.
+    del cwd_path[-1]
+
+    # Traverse up looking for a folder with a .git folder in it.
+    # For example if C has a .git in it
+    # /A/B/C/D/E/.git --> False
+    # /A/B/C/D/.git --> False
+    # /A/B/C/.git --> True, returns 'A/B/C'
+    for directory in reversed(cwd_path):
+        dirpath = '/'.join(cwd_path)
+        if os.path.exists('{}/.git'.format(dirpath)):
+            return dirpath
+        cwd_path.remove(directory)
+
+    # No parent git repo, let's just use the current directory
+    return cwd
+
+
+def does_jwd_have_gitignore(cwd=os.getcwd()):
+    """'' means they are in repo root."""
+    jwd = get_jak_working_directory(cwd=cwd)
+    return os.path.exists('{}/.gitignore'.format(jwd))

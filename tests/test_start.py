@@ -2,21 +2,6 @@ from jak import start
 import os
 
 
-def test_move_jakfile_to_repo_root():
-    # TODO
-    pass
-
-
-def test_is_git_repo(tmpdir):
-    repo = tmpdir.mkdir('repo_folder')
-    gitfile = repo.mkdir('.git').join('gitfile')
-    gitfile.write('this is a git repo')
-    nested = repo.mkdir('folder2').mkdir('folder3').join('nestedfile')
-    nested.write('I am a nested file')
-    # Need help here
-    pass
-
-
 def test_add_pre_commit_encrypt_hook(tmpdir):
     repo_hooks = tmpdir.mkdir('.git').mkdir('hooks')
     repo_hooks = repo_hooks.strpath
@@ -33,12 +18,6 @@ def test_pre_existing_pre_commit_hook(tmpdir):
     assert os.path.exists(repo_hooks[:repo_hooks.rfind('/pre-commit')] + '/pre-commit')
     assert 'EXISTING PRE-COMMIT HOOK' in result
     assert os.path.exists(repo_hooks[:repo_hooks.rfind('/pre-commit')] + '/jak.pre-commit.py')
-
-
-def test_has_git_ignore(tmpdir):
-    git_ignore = tmpdir.mkdir("repo_folder").join(".gitignore")
-    git_ignore.write("i exist")
-    assert start.has_gitignore(git_ignore.strpath)
 
 
 def test_add_keyfile_to_gitignore(tmpdir):
@@ -63,4 +42,6 @@ def test_create_jakfile(tmpdir):
     # I still want it to go in the tmpdir and not affect the actual location
     # without the jakfile.write it should not exist there.
     result = start.create_jakfile(jakfile.strpath)
-    assert "Creating ./jakfile" in result
+    assert "Creating" in result
+    assert '/jakfile' in result
+    assert 'Done' in result

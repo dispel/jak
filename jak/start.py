@@ -12,47 +12,23 @@ from . import outputs
 from . import helpers
 
 
-def create_jakfile(filepath):
-    """Checks whether you have a jakfile or need a new one."""
-    if os.path.exists(filepath + 'jakfile'):
+def create_jakfile(jwd=os.getcwd()):
+    """Create a jakfile if you do not already have one in your JWD"""
+    jakfile_path = '{}/jakfile'.format(jwd)
+    keyfile_path = '{}/.jak/keyfile'.format(jwd)
+
+    if os.path.exists(jakfile_path):
         msg = helpers.two_column('Is there already a jakfile?', 'Yep!')
         msg += '\n' + helpers.two_column('  Doing nothing, but feeling good about life', 'Done')
     else:
         key = helpers.generate_256bit_key().decode('utf-8')
-        keyfile_path = '.jak/keyfile'
         fresh_jakfile = outputs.FRESH_JAKFILE.format(keyfile_path=keyfile_path)
-        helpers.create_or_overwrite_file(filepath=filepath + 'jakfile', content=fresh_jakfile)
-        helpers.create_or_overwrite_file(filepath=filepath + keyfile_path, content=key)
+        helpers.create_or_overwrite_file(filepath=jakfile_path, content=fresh_jakfile)
+        helpers.create_or_overwrite_file(filepath=jakfile_path, content=key)
         msg = helpers.two_column('Is there already a jakfile?', 'Nope!')
-        msg += '\n' + helpers.two_column('  Creating ./jakfile', 'Done')
-        msg += '\n' + helpers.two_column('  Creating ./.jak/keyfile', 'Done')
+        msg += '\n' + helpers.two_column('  Creating {}'.format(jakfile_path), 'Done')
+        msg += '\n' + helpers.two_column('  Creating {}'.format(keyfile_path), 'Done')
     return msg + '\n'
-
-
-def find_git_repository_parent():
-    """Just checking path exists is not enough, they might run a different
-directory other than the repo root. This recursively checks up the path to
-see if a parent directory is a git repo. This function should return the path
-[relative to cwd] of the repo root. It returns the path prefix needed to put
-all other files in the right spot."""
-    if not os.path.exists('.git'):
-        is_git_repository = False
-        iterator = 0
-        while (iterator <= len(os.getcwd().split('/'))):
-            # TODO - go from the top down rather than bottom up - give full path info.
-            prefix = '../'
-            if os.path.exists(iterator*prefix + '.git'):
-                click.echo("git repo, not in repo root folder")
-                return iterator*prefix
-            iterator += 1
-        return ''
-    else:
-        return './'
-
-
-def has_gitignore(filepath='.gitignore'):
-    """Note here add a file path in case they are not in the repo root"""
-    return os.path.exists(filepath)
 
 
 def add_keyfile_to_gitignore(filepath='.gitignore'):
