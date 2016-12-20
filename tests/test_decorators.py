@@ -22,7 +22,7 @@ def test_select_key_logic(tmpdir):
     # !CLIP & !CLIPF
     with pytest.raises(JakException) as exception:
         decorators.select_key_logic()
-    assert 'Please provide some sort of key' in exception.__str__()
+    assert 'Please provide a key' in exception.__str__()
 
     # CLIP & CLIPF
     with pytest.raises(JakException) as exception:
