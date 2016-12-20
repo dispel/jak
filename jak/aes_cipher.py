@@ -92,8 +92,11 @@ class AES256Cipher(object):
         if len(key) != 64:
             raise JakException(
                 ("Key must be exactly 64 characters long. \n"
-                 "I would recommend you use the genpass command to generate a strong key."))
+                 "I would recommend you use the keygen command to generate a strong key."))
+
+        # Reduce the 64 hex digits to be 32 bytechars
         key = binascii.unhexlify(key)
+
         if not iv:
             iv = self._generate_iv()
 
