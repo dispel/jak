@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import os
 import six
 import pytest
 import binascii
@@ -146,25 +145,23 @@ def test_decrypt_file(runner, tmpdir):
         assert secretfile.read() == "secret\n"
 
 
-def test_encrypt_and_decrypt_a_file(tmpdir):
-    secretfile = tmpdir.mkdir("sub").join("hello")
-    secret_content = "supercalifragialisticexpialidocious"
-    secretfile.write(secret_content)
-    assert secretfile.read() == secret_content
-    key = helpers.generate_256bit_key().decode('utf-8')
-    crypto.encrypt_file(filepath=secretfile.strpath, key=key)
+def test_encrypt_and_decrypt_a_file(runner, tmpdir):
+    with runner.isolated_filesystem():
+        secretfile = tmpdir.mkdir("sub").join("hello")
+        secret_content = "supercalifragialisticexpialidocious"
+        secretfile.write(secret_content)
+        assert secretfile.read() == secret_content
+        key = helpers.generate_256bit_key().decode('utf-8')
+        crypto.encrypt_file(filepath=secretfile.strpath, key=key)
 
-    # File has changed
-    assert secretfile.read() != secret_content
+        # File has changed
+        assert secretfile.read() != secret_content
 
-    # File has the header (which we now assume means it is encrypted,
-    # which might be presumptuous.)
-    assert crypto.ENCRYPTED_BY_HEADER in secretfile.read()
+        # File has the header (which we now assume means it is encrypted,
+        # which might be presumptuous.)
+        assert crypto.ENCRYPTED_BY_HEADER in secretfile.read()
 
-    crypto.decrypt_file(filepath=secretfile.strpath, key=key)
+        crypto.decrypt_file(filepath=secretfile.strpath, key=key)
 
-    # Back to original
-    assert secretfile.read() == secret_content
-
-    # FIXME temporary solution for cleanup
-    os.remove('.jak/hello_backup')
+        # Back to original
+        assert secretfile.read() == secret_content
