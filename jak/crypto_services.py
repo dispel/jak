@@ -13,7 +13,6 @@ from .compat import b
 from Crypto import Random
 from Crypto.Cipher import AES
 from .exceptions import JakException
-from . import password_services as ps
 
 ENCRYPTED_BY_HEADER = u'- - - Encrypted by jak - - -\n\n'
 
@@ -99,9 +98,9 @@ class AES256Cipher(object):
 
     def encrypt(self, key, secret, iv=False):
         """Encrypts a secret"""
-        if len(key) != 32:
+        if len(key) != 64:
             raise JakException(
-                ("Key must be exactly 32 characters long. \n"
+                ("Key must be exactly 64 characters long. \n"
                  "I would recommend you use the genpass command to generate a strong key."))
 
         if not iv:
@@ -121,8 +120,6 @@ class AES256Cipher(object):
 
 def encrypt_file(filepath, key):
     """Encrypts a file"""
-    # key = ps.select_key(key, keyfile, jakfile_dict)
-
     try:
         with open(filepath, 'rt', encoding='utf-8') as f:
             secret = f.read()
@@ -180,8 +177,6 @@ def decrypt_file(filepath, key):
         - setup->call cipher
     - write back into file
     """
-    # key = ps.select_key(key, keyfile, jakfile_dict)
-
     try:
         with open(filepath, 'rt', encoding='utf-8') as f:
             encrypted_secret = f.read()

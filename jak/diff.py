@@ -16,7 +16,7 @@ from . import helpers
 from .compat import b
 from . import crypto_services as cs
 from .exceptions import JakException
-from . import password_services as ps
+from . import decorators
 
 
 def _create_local_remote_diff_files(filepath, local, remote):
@@ -104,12 +104,13 @@ def _extract_merge_conflict_parts(content):
     return regex.findall(content)[0]
 
 
-def diff(filepath, key=None, keyfile=None, jakfile_dict=None):
+@decorators.read_jakfile
+@decorators.select_key
+def diff(filepath, key, **kwargs):
     """"""
-    if not jakfile_dict:
-        jakfile_dict = helpers.read_jakfile_to_dict()
 
-    key = ps.select_key(key=key, keyfile=keyfile, jakfile_dict=jakfile_dict)
+    # TODO Make sure this works
+    # import pdb; pdb.set_trace()
 
     with open(filepath, 'rt') as f:
         encrypted_diff_file = f.read()

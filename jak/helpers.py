@@ -5,6 +5,7 @@ Apache 2.0 License, see https://github.com/dispel/jak/blob/master/LICENSE for de
 
 import os
 import errno
+import binascii
 from io import open
 
 
@@ -107,3 +108,8 @@ def two_column(left, right, col1_length=65, col2_length=1):
     """"""
     tmp = '%-{}s%-{}s'.format(col1_length, col2_length)
     return tmp % (left, right)
+
+
+def generate_256bit_key():
+    """Generate a secure cryptographically random key."""
+    return binascii.hexlify(os.urandom(32))

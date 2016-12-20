@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import pytest
+import six
 from jak import helpers
 
 jakfile_content_1 = """
@@ -42,3 +43,9 @@ def test_grouper():
     # Raise error due to 2 not being iterable
     with pytest.raises(TypeError):
         helpers.grouper(2, 1)
+
+
+def test_generate_256bit_key():
+    key = helpers.generate_256bit_key()
+    assert len(key) == 64
+    assert isinstance(key, six.binary_type)
