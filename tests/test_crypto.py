@@ -4,8 +4,8 @@ import os
 import six
 import pytest
 import binascii
+from jak import helpers
 from Crypto.Cipher import AES
-import jak.password_services as ps
 import jak.crypto_services as crypto
 from jak.exceptions import JakException
 
@@ -70,7 +70,7 @@ def test_extract_iv(cipher):
 
 def test_create_integrity_fingerprint(cipher):
     iv = cipher._generate_iv()
-    key = ps.generate_256bit_key().decode('utf-8')
+    key = helpers.generate_256bit_key().decode('utf-8')
 
     from datetime import datetime
     start = datetime.now()
@@ -88,7 +88,7 @@ def test_create_integrity_fingerprint_old_python(cipher):
     just comparing the exact same thing against itself."""
     if six.PY3:
         iv = cipher._generate_iv()
-        key = ps.generate_256bit_key().decode('utf-8')
+        key = helpers.generate_256bit_key().decode('utf-8')
         new_way = cipher._create_integrity_fingerprint(key, iv)
         old_way = cipher._old_python_create_integrity_fingerprint(key, iv)
         assert new_way == binascii.hexlify(old_way)
@@ -112,14 +112,14 @@ def test_encrypt_file(tmpdir):
     secretfile = tmpdir.mkdir("sub").join("hello")
     secretfile.write("secret")
     assert secretfile.read() == "secret"
-    key = ps.generate_256bit_key().decode('utf-8')
+    key = helpers.generate_256bit_key().decode('utf-8')
     crypto.encrypt_file(filepath=secretfile.strpath, key=key)
     assert secretfile.read() != "secret"
     assert crypto.ENCRYPTED_BY_HEADER in secretfile.read()
 
 
 def test_bad_encrypt_file_filepath(tmpdir):
-    key = ps.generate_256bit_key().decode('utf-8')
+    key = helpers.generate_256bit_key().decode('utf-8')
 
     # Good key, no filepath should freakout
     result = crypto.encrypt_file(filepath="", key=key)
@@ -151,7 +151,7 @@ def test_encrypt_and_decrypt_a_file(tmpdir):
     secret_content = "supercalifragialisticexpialidocious"
     secretfile.write(secret_content)
     assert secretfile.read() == secret_content
-    key = ps.generate_256bit_key().decode('utf-8')
+    key = helpers.generate_256bit_key().decode('utf-8')
     crypto.encrypt_file(filepath=secretfile.strpath, key=key)
 
     # File has changed

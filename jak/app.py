@@ -13,7 +13,6 @@ from . import decorators
 from . import start as start_logic
 from . import crypto_services as cs
 from .exceptions import JakException
-from . import password_services as ps
 
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
@@ -113,7 +112,7 @@ def keygen(minimal):
     anyway, just as a standard best practice. But in reality very few developers
     actually do this. =(
     """
-    key = ps.generate_256bit_key().decode('utf-8')
+    key = helpers.generate_256bit_key().decode('utf-8')
     if minimal:
         output = key
     else:

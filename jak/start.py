@@ -18,8 +18,7 @@ def create_jakfile(filepath):
         msg = helpers.two_column('Is there already a jakfile?', 'Yep!')
         msg += '\n' + helpers.two_column('  Doing nothing, but feeling good about life', 'Done')
     else:
-        from . import password_services as ps
-        key = ps.generate_256bit_key().decode('utf-8')
+        key = helpers.generate_256bit_key().decode('utf-8')
         keyfile_path = '.jak/keyfile'
         fresh_jakfile = outputs.FRESH_JAKFILE.format(keyfile_path=keyfile_path)
         helpers.create_or_overwrite_file(filepath=filepath + 'jakfile', content=fresh_jakfile)
