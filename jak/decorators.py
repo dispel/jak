@@ -12,26 +12,27 @@ from functools import wraps
 from .exceptions import JakException
 
 
+def _select_files_logic(**kwargs):
+    if kwargs['all_or_filepath'] == 'all':
+        filepaths = kwargs['jakfile_dict']['files_to_encrypt']
+    else:
+        filepaths = [kwargs['all_or_filepath']]
+
+    files = []
+    for fp in filepaths:
+
+        # Some OS expand this out automagically but in case one doesnt...
+        if fp[0] == '~':
+            fp = fp.replace('~', os.path.expanduser('~'))
+        files.append(os.path.abspath(fp))
+    return files
+
+
 def select_files(f):
     """Select which files you want to act upon"""
     @wraps(f)
     def wrapper(*args, **kwargs):
-        jwd = kwargs['jwd']
-        home = os.path.expanduser('~')
-        if kwargs['all_or_filepath'] == 'all':
-            kwargs['files'] = kwargs['jakfile_dict']['files_to_encrypt']
-        else:
-            kwargs['files'] = [kwargs['all_or_filepath']]
-        # TODO break out into function and test
-        new_list = []
-        for filepath in kwargs['files']:
-            if filepath[0] not in ['~', '/']:
-                new_list.append('{}/{}'.format(jwd, filepath))
-            elif filepath[0] == '~':
-                new_list.append(filepath.replace('~', home))
-            else:
-                new_list.append(filepath)
-        kwargs['files'] = new_list
+        kwargs['files'] = _select_files_logic(**kwargs)
         return f(*args, **kwargs)
     return wrapper
 

@@ -1,16 +1,41 @@
 # -*- coding: utf-8 -*-
 
+import os
 import pytest
 from jak import decorators
 from jak.exceptions import JakException
+
+CWD = os.getcwd()
 
 
 def test_select_key():
     pass
 
 
-def test_select_files():
-    pass
+@pytest.mark.parametrize('input, output', [
+    ({
+        'all_or_filepath': 'all',
+        'jakfile_dict': {'files_to_encrypt': []}
+    }, []
+    ),
+    ({
+        'all_or_filepath': 'all',
+        'jakfile_dict': {'files_to_encrypt': ['a', 'b/c', '../d', '/a/b/c']}
+    }, [
+        CWD + '/a',
+        CWD + '/b/c',
+        '/'.join(CWD.split('/')[:-1]) + '/d',
+        '/a/b/c']
+    ),
+    ({'all_or_filepath': 'filepath'}, [CWD + '/filepath']),
+    ({'all_or_filepath': '/a/b/c'}, ['/a/b/c']),
+    (
+        {'all_or_filepath': '~/dude/myfile'},
+        ['~/dude/myfile'.replace('~', os.path.expanduser('~'))]
+    )
+])
+def test_select_files(input, output):
+    assert decorators._select_files_logic(**input) == output
 
 
 def test_read_jakfile():
