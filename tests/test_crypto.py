@@ -120,14 +120,14 @@ def test_encrypt_file(tmpdir):
     secretfile.write("secret")
     assert secretfile.read() == "secret"
     key = helpers.generate_256bit_key().decode('utf-8')
-    crypto.encrypt_file(filepath=secretfile.strpath, key=key)
+    crypto.encrypt_file(jwd=secretfile.dirpath().strpath, filepath=secretfile.basename, key=key)
     assert secretfile.read() != "secret"
     assert crypto.ENCRYPTED_BY_HEADER in secretfile.read()
 
 
 def test_bad_encrypt_file_filepath(tmpdir):
     key = helpers.generate_256bit_key().decode('utf-8')
-    result = crypto.encrypt_file(filepath="", key=key)
+    result = crypto.encrypt_file(jwd='', filepath="", key=key)
     assert "can't find the file: " in result
 
 
@@ -141,7 +141,7 @@ def test_decrypt_file(runner, tmpdir):
     Y2JmMDdkN2VjOWQ2MDEzYTA5NmFlODM0OGUxMTI3Njk4YzA0MTn7m1e7RBW1
     DmeAbo2cg46cmhWwsKHbug==""")
         key = '2a57929b3610ba53b96f472b0dca27402a57929b3610ba53b96f472b0dca2740'
-        crypto.decrypt_file(filepath=secretfile.strpath, key=key)
+        crypto.decrypt_file(jwd=secretfile.dirpath().strpath, filepath=secretfile.basename, key=key)
         assert secretfile.read() == "secret\n"
 
 
@@ -152,7 +152,7 @@ def test_encrypt_and_decrypt_a_file(runner, tmpdir):
         secretfile.write(secret_content)
         assert secretfile.read() == secret_content
         key = helpers.generate_256bit_key().decode('utf-8')
-        crypto.encrypt_file(filepath=secretfile.strpath, key=key)
+        crypto.encrypt_file(jwd=secretfile.dirpath().strpath, filepath=secretfile.basename, key=key)
 
         # File has changed
         assert secretfile.read() != secret_content
@@ -161,7 +161,7 @@ def test_encrypt_and_decrypt_a_file(runner, tmpdir):
         # which might be presumptuous.)
         assert crypto.ENCRYPTED_BY_HEADER in secretfile.read()
 
-        crypto.decrypt_file(filepath=secretfile.strpath, key=key)
+        crypto.decrypt_file(jwd=secretfile.dirpath().strpath, filepath=secretfile.basename, key=key)
 
         # Back to original
         assert secretfile.read() == secret_content

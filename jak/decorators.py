@@ -23,13 +23,20 @@ def select_files(f):
     return wrapper
 
 
+def attach_jwd(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        kwargs['jwd'] = helpers.get_jak_working_directory()
+        return f(*args, **kwargs)
+    return wrapper
+
+
 def read_jakfile(f):
     """Parse the jakfile and assign it to the jakfile_dict value"""
     @wraps(f)
     def wrapper(*args, **kwargs):
-        # TODO, find the jakfile before read
         try:
-            kwargs['jakfile_dict'] = helpers.read_jakfile_to_dict(jakfile='jakfile')
+            kwargs['jakfile_dict'] = helpers.read_jakfile_to_dict()
         except IOError:
             kwargs['jakfile_dict'] = {}
         return f(*args, **kwargs)

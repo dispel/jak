@@ -4,42 +4,10 @@ Apache 2.0 License, see https://github.com/dispel/jak/blob/master/LICENSE for de
 """
 
 import os
+import json
 import errno
 import binascii
 from io import open
-
-
-def read_jakfile_to_dict(jakfile='jakfile'):
-    """Read the jakfile and dump its json comments into a dict for easy usage"""
-    with open(jakfile, 'rt') as f:
-        import json
-        contents_raw = f.read()
-
-    sans_comments = _remove_comments_from_JSON(contents_raw)
-    return json.loads(sans_comments)
-
-
-def _remove_comments_from_JSON(raw_json):
-    """Technically JSON does not have comments. But it is very user friendly to
-    allow for commenting so we strip the comments out in this function.
-
-    Example input:
-    // Comment 0
-    {
-        // Comment 1
-        "Ada": "Lovelace"  // Comment 2
-        // Comment 3
-    } // Comment 4
-
-    Expected output:
-    {
-        "Ada": "Lovelace"
-    }
-    """
-    import re
-    tmp = re.sub(r'//.*\n', '\n', raw_json)
-    tmp = "".join(tmp.replace('\n', '').split())
-    return tmp
 
 
 def grouper(iterable, n):
@@ -47,15 +15,6 @@ def grouper(iterable, n):
     grouper('aaa', 2) == ('aa', 'a')
     """
     return tuple(iterable[i:i + n] for i in range(0, len(iterable), n))
-
-
-def backup_file_content(filepath, content):
-    """backs up a string in the .jak folder.
-
-    TODO Needs test
-    """
-    filepath = '.jak/' + filepath[filepath.rfind('/') + 1:] + '_backup'
-    return create_or_overwrite_file(filepath=filepath, content=content)
 
 
 def create_or_overwrite_file(filepath, content):
@@ -81,16 +40,26 @@ def create_or_overwrite_file(filepath, content):
         f.write(content)
 
 
-def is_there_a_backup(filepath):
-    """Check if a backup for a file exists
+def create_backup_filename(jwd, filepath):
+    return '{}/.jak/{}_backup'.format(jwd, filepath[filepath.rfind('/') + 1:])
+
+
+def backup_file_content(jwd, filepath, content):
+    """backs up a string in the .jak folder.
 
     TODO Needs test
     """
-    filename = '.jak/' + filepath[filepath.rfind('/') + 1:] + '_backup'
+    filename = create_backup_filename(jwd=jwd, filepath=filepath)
+    return create_or_overwrite_file(filepath=filepath, content=content)
+
+
+def is_there_a_backup(jwd, filepath):
+    """Check if a backup for a file exists"""
+    filename = create_backup_filename(jwd=jwd, filepath=filepath)
     return os.path.exists(filename)
 
 
-def get_backup_content_for_file(filepath):
+def get_backup_content_for_file(jwd, filepath):
     """Get the value of a previously encrypted file.
     The original use case is to restore encrypted state instead of randomizing
     a new one (due to IV random generation). This makes jak way more friendly
@@ -98,7 +67,7 @@ def get_backup_content_for_file(filepath):
 
     TODO Needs test
     """
-    filename = '.jak/' + filepath[filepath.rfind('/') + 1:] + '_backup'
+    filename = create_backup_filename(jwd=jwd, filepath=filepath)
     with open(filename, 'rt') as f:
         encrypted_secret = f.read()
     return encrypted_secret
@@ -153,3 +122,35 @@ def does_jwd_have_gitignore(cwd=os.getcwd()):
     """'' means they are in repo root."""
     jwd = get_jak_working_directory(cwd=cwd)
     return os.path.exists('{}/.gitignore'.format(jwd))
+
+
+def read_jakfile_to_dict(jwd=get_jak_working_directory()):
+    """Read the jakfile and dump its json comments into a dict for easy usage"""
+    with open('{}/jakfile'.format(jwd), 'rt') as f:
+        contents_raw = f.read()
+
+    sans_comments = _remove_comments_from_JSON(contents_raw)
+    return json.loads(sans_comments)
+
+
+def _remove_comments_from_JSON(raw_json):
+    """Technically JSON does not have comments. But it is very user friendly to
+    allow for commenting so we strip the comments out in this function.
+
+    Example input:
+    // Comment 0
+    {
+        // Comment 1
+        "Ada": "Lovelace"  // Comment 2
+        // Comment 3
+    } // Comment 4
+
+    Expected output:
+    {
+        "Ada": "Lovelace"
+    }
+    """
+    import re
+    tmp = re.sub(r'//.*\n', '\n', raw_json)
+    tmp = "".join(tmp.replace('\n', '').split())
+    return tmp

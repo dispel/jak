@@ -105,9 +105,9 @@ def _remove_comments_from_JSON(raw_json):
     return tmp
 
 
-def read_jakfile_to_dict(jakfile='jakfile'):
+def read_jakfile_to_dict():
     """Read the jakfile and dump it's json comments into a dict"""
-    with open(jakfile, 'rt') as f:
+    with open('jakfile', 'rt') as f:
         import json
         contents_raw = f.read()
 

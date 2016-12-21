@@ -24,7 +24,7 @@ def create_jakfile(jwd=os.getcwd()):
         key = helpers.generate_256bit_key().decode('utf-8')
         fresh_jakfile = outputs.FRESH_JAKFILE.format(keyfile_path=keyfile_path)
         helpers.create_or_overwrite_file(filepath=jakfile_path, content=fresh_jakfile)
-        helpers.create_or_overwrite_file(filepath=jakfile_path, content=key)
+        helpers.create_or_overwrite_file(filepath=keyfile_path, content=key)
         msg = helpers.two_column('Is there already a jakfile?', 'Nope!')
         msg += '\n' + helpers.two_column('  Creating {}'.format(jakfile_path), 'Done')
         msg += '\n' + helpers.two_column('  Creating {}'.format(keyfile_path), 'Done')

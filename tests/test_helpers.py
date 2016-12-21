@@ -28,7 +28,7 @@ def test_read_jakfile_to_dict(tmpdir):
     jakfile.write(jakfile_content_1)
     assert jakfile.read() == jakfile_content_1
 
-    result = helpers.read_jakfile_to_dict(jakfile.strpath)
+    result = helpers.read_jakfile_to_dict(jwd=jakfile.dirpath().strpath)
 
     assert isinstance(result, dict)
     assert 'files_to_encrypt' in result

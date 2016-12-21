@@ -45,3 +45,6 @@ def test_create_jakfile(tmpdir):
     assert "Creating" in result
     assert '/jakfile' in result
     assert 'Done' in result
+
+    # TODO
+    # Make sure the files actually showed up and have content.

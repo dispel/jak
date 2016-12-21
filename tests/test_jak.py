@@ -47,6 +47,7 @@ def test_encrypt_smoke(runner):
                        'secret.txt',
                        '--key',
                        'f40ec5d3ef66166720b24b3f8716c2c31ffc6b45295ff72024a45d90e5fddb56'])
+
         with open('secret.txt', 'r') as f:
             result = f.read()
         assert cs.ENCRYPTED_BY_HEADER in result

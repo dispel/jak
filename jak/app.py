@@ -119,6 +119,7 @@ def keygen(minimal):
     click.echo(output)
 
 
+@decorators.attach_jwd
 @decorators.read_jakfile
 @decorators.select_key
 @decorators.select_files
@@ -126,7 +127,7 @@ def encrypt_inner(files, key, **kwargs):
     """Flow for encrypting file(s)"""
     for filepath in files:
         try:
-            result = cs.encrypt_file(filepath=filepath, key=key)
+            result = cs.encrypt_file(filepath=filepath, key=key, **kwargs)
         except JakException as je:
             click.echo(je)
         else:
@@ -142,6 +143,7 @@ def encrypt(filepath, key, keyfile):
     encrypt_inner(all_or_filepath=filepath, key=key, keyfile=keyfile)
 
 
+@decorators.attach_jwd
 @decorators.read_jakfile
 @decorators.select_key
 @decorators.select_files
@@ -149,7 +151,7 @@ def decrypt_inner(files, key, **kwargs):
     """Flow for decrypting file(s)"""
     for filepath in files:
         try:
-            result = cs.decrypt_file(filepath=filepath, key=key)
+            result = cs.decrypt_file(filepath=filepath, key=key, **kwargs)
         except JakException as je:
             click.echo(je)
         else:
