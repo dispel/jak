@@ -213,25 +213,3 @@ def diff(conflicted_file, key, keyfile):
     except JakException as je:
         result = je
     click.echo(result)
-
-
-#
-# TODO FUTURE(?)
-#
-
-# @main.command()
-# def protect():
-#     """Add file to jakfiles "files_to_encrypt" list if it is not already in there"""
-#     click.echo("TODO")
-#
-#
-# @main.command()
-# def abandon():
-#     """Remove file from jakfile's "files_to_encrypt" list if it is in there"""
-#     click.echo("TODO")
-#
-#
-# @main.command()
-# def unprotect():
-#     """alias for abandon"""
-#     click.echo("TODO")
