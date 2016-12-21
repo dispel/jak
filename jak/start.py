@@ -55,10 +55,11 @@ def want_to_add_pre_commit_encrypt_hook():
     return response == 'y' or response == 'yes'
 
 
-def add_pre_commit_encrypt_hook(repo_root_filepath='./'):
+def add_pre_commit_encrypt_hook(jwd='./'):
     """"""
-    jak_pre_commit_path = repo_root_filepath + '.git/hooks/jak.pre-commit.py'
-    git_pre_commit_path = repo_root_filepath + '.git/hooks/pre-commit'
+
+    jak_pre_commit_path = jwd + '/.git/hooks/jak.pre-commit.py'
+    git_pre_commit_path = jwd + '/.git/hooks/pre-commit'
 
     helpers.create_or_overwrite_file(filepath=jak_pre_commit_path, content=outputs.PRE_COMMIT_ENCRYPT)
 

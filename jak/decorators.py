@@ -5,20 +5,33 @@ Copyright 2016 Dispel, LLC
 Apache 2.0 License, see https://github.com/dispel/jak/blob/master/LICENSE for details.
 """
 
-from functools import wraps
-from .exceptions import JakException
+import os
 from io import open
 from . import helpers
+from functools import wraps
+from .exceptions import JakException
 
 
 def select_files(f):
     """Select which files you want to act upon"""
     @wraps(f)
     def wrapper(*args, **kwargs):
+        jwd = kwargs['jwd']
+        home = os.path.expanduser('~')
         if kwargs['all_or_filepath'] == 'all':
             kwargs['files'] = kwargs['jakfile_dict']['files_to_encrypt']
         else:
             kwargs['files'] = [kwargs['all_or_filepath']]
+        # TODO break out into function and test
+        new_list = []
+        for filepath in kwargs['files']:
+            if filepath[0] not in ['~', '/']:
+                new_list.append('{}/{}'.format(jwd, filepath))
+            elif filepath[0] == '~':
+                new_list.append(filepath.replace('~', home))
+            else:
+                new_list.append(filepath)
+        kwargs['files'] = new_list
         return f(*args, **kwargs)
     return wrapper
 

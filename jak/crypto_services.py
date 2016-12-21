@@ -18,19 +18,18 @@ ENCRYPTED_BY_HEADER = u'- - - Encrypted by jak - - -\n\n'
 
 def encrypt_file(jwd, filepath, key, **kwargs):
     """Encrypts a file"""
-    absolute_filepath = '{}/{}'.format(jwd, filepath)
 
     try:
-        with open(absolute_filepath, 'rt', encoding='utf-8') as f:
+        with open(filepath, 'rt', encoding='utf-8') as f:
             secret = f.read()
     except IOError:
-        return "Sorry I can't find the file: {}".format(absolute_filepath)
+        return "Sorry I can't find the file: {}".format(filepath)
 
     if len(secret) == 0:
-        raise JakException('Hmmmm "{}" seems to be completely empty, skipping...'.format(absolute_filepath))
+        raise JakException('Hmmmm "{}" seems to be completely empty, skipping...'.format(filepath))
 
     if ENCRYPTED_BY_HEADER in secret:
-        raise JakException('I already encrypted the file: "{}".'.format(absolute_filepath))
+        raise JakException('I already encrypted the file: "{}".'.format(filepath))
 
     # FIXME REFACTOR
     if helpers.is_there_a_backup(jwd=jwd, filepath=filepath):
@@ -55,12 +54,12 @@ def encrypt_file(jwd, filepath, key, **kwargs):
     nice_enc_secret = base64.urlsafe_b64encode(encrypted_secret)
 
     encrypted_chunks = helpers.grouper(nice_enc_secret.decode('utf-8'), 60)
-    with open(absolute_filepath, 'w', encoding='utf-8') as f:
+    with open(filepath, 'w', encoding='utf-8') as f:
         f.write(ENCRYPTED_BY_HEADER)
         for encrypted_chunk in encrypted_chunks:
             f.write(encrypted_chunk + '\n')
 
-    return '{}/{} - is now encrypted.'.format(jwd.rsplit('/')[-1], filepath)
+    return '{} - is now encrypted.'.format(filepath)
 
 
 def decrypt_file(jwd, filepath, key, **kwargs):
@@ -77,15 +76,14 @@ def decrypt_file(jwd, filepath, key, **kwargs):
         - setup->call cipher
     - write back into file
     """
-    absolute_filepath = '{}/{}'.format(jwd, filepath)
     try:
-        with open(absolute_filepath, 'rt', encoding='utf-8') as f:
+        with open(filepath, 'rt', encoding='utf-8') as f:
             encrypted_secret = f.read()
     except IOError:
-        return "Sorry I can't find the file: {}".format(absolute_filepath)
+        return "Sorry I can't find the file: {}".format(filepath)
 
     if len(encrypted_secret) == 0:
-        raise JakException('The file "{}" is empty, aborting...'.format(absolute_filepath))
+        raise JakException('The file "{}" is empty, aborting...'.format(filepath))
 
     # Remove header.
     encrypted_secret = encrypted_secret.replace(ENCRYPTED_BY_HEADER, '')
@@ -94,7 +92,7 @@ def decrypt_file(jwd, filepath, key, **kwargs):
         ugly_encrypted_secret = base64.urlsafe_b64decode(b(encrypted_secret))
     except (TypeError, binascii.Error):
         return 'The file "{}" is already decrypted, or is not in a format I recognize.'.format(
-            absolute_filepath)
+            filepath)
 
     # Remember the encrypted file in the .jak folder
     # FIXME will this have issues on WINDOWS?
@@ -116,7 +114,7 @@ def decrypt_file(jwd, filepath, key, **kwargs):
         # is edited, basically we decrypt into garbledygook and so the string
         # reader freaks out.
         return 'The output was not what I expected...'
-    with open(absolute_filepath, 'w', encoding='utf-8') as f:
+    with open(filepath, 'w', encoding='utf-8') as f:
         f.write(decrypted_secret_as_string)
 
-    return '{}/{} - is now decrypted.'.format(jwd.rsplit('/')[-1], filepath)
+    return '{} - is now decrypted.'.format(filepath)

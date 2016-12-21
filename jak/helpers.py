@@ -107,7 +107,7 @@ def get_jak_working_directory(cwd=os.getcwd()):
     # For example if C has a .git in it
     # /A/B/C/D/E/.git --> False
     # /A/B/C/D/.git --> False
-    # /A/B/C/.git --> True, returns 'A/B/C'
+    # /A/B/C/.git --> True, returns '/A/B/C'
     for directory in reversed(cwd_path):
         dirpath = '/'.join(cwd_path)
         if os.path.exists('{}/.git'.format(dirpath)):

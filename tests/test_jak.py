@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import os
 import pytest
 from click.testing import CliRunner
 from jak.app import main as jak
@@ -30,12 +31,7 @@ def test_version(runner, version_flag):
     ('decrypt', 'filethatdoesnotexist2')])
 def test_file_not_found(runner, cmd, filepath):
     result = runner.invoke(jak, [cmd, filepath, '-k', 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'])
-    assert 'find the file: {}'.format(filepath) in result.output
-
-
-def test_jakfile_valid_json():
-    # TODO
-    pass
+    assert 'find the file:' in result.output
 
 
 def test_encrypt_smoke(runner):
@@ -44,7 +40,7 @@ def test_encrypt_smoke(runner):
             f.write('secret')
         runner.invoke(jak,
                       ['encrypt',
-                       'secret.txt',
+                       os.path.abspath('secret.txt'),
                        '--key',
                        'f40ec5d3ef66166720b24b3f8716c2c31ffc6b45295ff72024a45d90e5fddb56'])
 
@@ -66,7 +62,7 @@ qt2YqCLn8eTRanMKg8IguQ=='''
             f.write(contents)
         runner.invoke(jak,
                       ['decrypt',
-                       'secret.txt',
+                       os.path.abspath('secret.txt'),
                        '--key',
                        'f40ec5d3ef66166720b24b3f8716c2c31ffc6b45295ff72024a45d90e5fddb56'])
         with open('secret.txt', 'r') as f:
