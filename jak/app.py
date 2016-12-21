@@ -140,7 +140,10 @@ def encrypt_inner(files, key, **kwargs):
 @click.option('-kf', '--keyfile', default=None, metavar='<file_path>')
 def encrypt(filepath, key, keyfile):
     """Encrypt file(s)"""
-    encrypt_inner(all_or_filepath=filepath, key=key, keyfile=keyfile)
+    try:
+        encrypt_inner(all_or_filepath=filepath, key=key, keyfile=keyfile)
+    except JakException as je:
+        click.echo(je)
 
 
 @decorators.attach_jwd
@@ -164,7 +167,10 @@ def decrypt_inner(files, key, **kwargs):
 @click.option('-kf', '--keyfile', default=None, metavar='<file_path>')
 def decrypt(filepath, key, keyfile):
     """Decrypt file(s)"""
-    decrypt_inner(all_or_filepath=filepath, key=key, keyfile=keyfile)
+    try:
+        decrypt_inner(all_or_filepath=filepath, key=key, keyfile=keyfile)
+    except JakException as je:
+        click.echo(je)
 
 
 @main.command()
@@ -172,7 +178,10 @@ def decrypt(filepath, key, keyfile):
 @click.option('-kf', '--keyfile', default=None, metavar='<file_path>')
 def stomp(key, keyfile):
     """Alias for 'jak encrypt all'"""
-    encrypt_inner(all_or_filepath='all', key=key, keyfile=keyfile)
+    try:
+        encrypt_inner(all_or_filepath='all', key=key, keyfile=keyfile)
+    except JakException as je:
+        click.echo(je)
 
 
 @main.command()
@@ -180,7 +189,10 @@ def stomp(key, keyfile):
 @click.option('-kf', '--keyfile', default=None, metavar='<file_path>')
 def shave(key, keyfile):
     """Alias for 'jak decrypt all'"""
-    decrypt_inner(all_or_filepath='all', key=key, keyfile=keyfile)
+    try:
+        decrypt_inner(all_or_filepath='all', key=key, keyfile=keyfile)
+    except JakException as je:
+        click.echo(je)
 
 
 @main.command(options_metavar='<options>')
