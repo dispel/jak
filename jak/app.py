@@ -4,15 +4,16 @@ Copyright 2016 Dispel, LLC
 Apache 2.0 License, see https://github.com/dispel/jak/blob/master/LICENSE for details.
 """
 
+import os
 import click
 from . import helpers
 from . import outputs
 from . import __version_full__
+from . import diff as diff_logic
+from . import decorators
 from . import start as start_logic
 from . import crypto_services as cs
-from . import diff as diff_logic
 from .exceptions import JakException
-from . import password_services as ps
 
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
@@ -66,31 +67,28 @@ def start():
 1. jakfile: File with per working directory settings for jak.
 2. keyfile: Holds the key used to encrypt files.
     ''')
-    click.echo(start_logic.create_jakfile())
-    if not start_logic.is_git_repository():
+    jwd = helpers.get_jak_working_directory()
+    click.echo(start_logic.create_jakfile(jwd=jwd))
+
+    if not os.path.exists('{}/.git'.format(jwd)):
         msg = helpers.two_column('Is this a git repository?', 'Nope!')
         msg += '\n  jak says: I work great with git, but you do you.'
         click.echo(msg)
     else:
-        click.echo('Is this a git repository?...Yep!')
-
-        # if start_logic.has_gitignore():
-        if True:
+        click.echo(helpers.two_column('Is this a git repository?', 'Yep!'))
+        if helpers.does_jwd_have_gitignore(cwd=jwd):
             click.echo(helpers.two_column('  Is there a .gitignore?', 'Yep!'))
-
-            # TODO
-            click.echo(helpers.two_column('  Adding ./keyfile to .gitignore', 'Done'))
+            start_logic.add_keyfile_to_gitignore(filepath=jwd + '/.gitignore')
+            click.echo(helpers.two_column('  Adding ".jak" to .gitignore', 'Done'))
         else:
             click.echo(helpers.two_column('  Is there a .gitignore?', 'Nope!'))
-
-            # TODO
-            click.echo(helpers.two_column('Creating ./.gitignore', 'Done'))
-
-            # TODO
-            click.echo(helpers.two_column('Adding ./keyfile to .gitignore', 'Done'))
+            helpers.create_or_overwrite_file(filepath=jwd + '/.gitignore',
+                                             content='# Jak KeyFile\n .jak \n')
+            click.echo(helpers.two_column('  Creating ./.gitignore', 'Done'))
+            click.echo(helpers.two_column('  Adding ".jak" to .gitignore', 'Done'))
 
         if start_logic.want_to_add_pre_commit_encrypt_hook():
-            click.echo('\n' + start_logic.add_pre_commit_encrypt_hook())
+            click.echo('\n' + start_logic.add_pre_commit_encrypt_hook(jwd))
 
     click.echo(outputs.FINAL_START_MESSAGE.format(version=__version_full__))
 
@@ -113,7 +111,7 @@ def keygen(minimal):
     anyway, just as a standard best practice. But in reality very few developers
     actually do this. =(
     """
-    key = ps.generate_256bit_key().decode('utf-8')
+    key = helpers.generate_256bit_key().decode('utf-8')
     if minimal:
         output = key
     else:
@@ -121,26 +119,19 @@ def keygen(minimal):
     click.echo(output)
 
 
-def encrypt_inner(filepath, key=None, keyfile=None):
-    """Flow encrypting file(s)"""
-    try:
-        jakfile_dict = helpers.read_jakfile_to_dict()
-    except IOError:
-        jakfile_dict = None
-
-    try:
-        if filepath == 'all':
-            click.echo(cs.all(callable_action=cs.encrypt_file,
-                              key=key,
-                              keyfile=keyfile,
-                              jakfile_dict=jakfile_dict))
+@decorators.attach_jwd
+@decorators.read_jakfile
+@decorators.select_key
+@decorators.select_files
+def encrypt_inner(files, key, **kwargs):
+    """Flow for encrypting file(s)"""
+    for filepath in files:
+        try:
+            result = cs.encrypt_file(filepath=filepath, key=key, **kwargs)
+        except JakException as je:
+            click.echo(je)
         else:
-            click.echo(cs.encrypt_file(filepath=filepath,
-                                       key=key,
-                                       keyfile=keyfile,
-                                       jakfile_dict=jakfile_dict))
-    except JakException as je:
-        click.echo(je)
+            click.echo(result)
 
 
 @main.command(help='jak encrypt <file>')
@@ -149,29 +140,25 @@ def encrypt_inner(filepath, key=None, keyfile=None):
 @click.option('-kf', '--keyfile', default=None, metavar='<file_path>')
 def encrypt(filepath, key, keyfile):
     """Encrypt file(s)"""
-    encrypt_inner(filepath, key, keyfile)
-
-
-def decrypt_inner(filepath, key=None, keyfile=None):
-    """Flow for decrypting file(s)"""
     try:
-        jakfile_dict = helpers.read_jakfile_to_dict()
-    except IOError:
-        jakfile_dict = None
-
-    try:
-        if filepath == 'all':
-            click.echo(cs.all(callable_action=cs.decrypt_file,
-                              key=key,
-                              keyfile=keyfile,
-                              jakfile_dict=jakfile_dict))
-        else:
-            click.echo(cs.decrypt_file(filepath=filepath,
-                                       key=key,
-                                       keyfile=keyfile,
-                                       jakfile_dict=jakfile_dict))
+        encrypt_inner(all_or_filepath=filepath, key=key, keyfile=keyfile)
     except JakException as je:
         click.echo(je)
+
+
+@decorators.attach_jwd
+@decorators.read_jakfile
+@decorators.select_key
+@decorators.select_files
+def decrypt_inner(files, key, **kwargs):
+    """Flow for decrypting file(s)"""
+    for filepath in files:
+        try:
+            result = cs.decrypt_file(filepath=filepath, key=key, **kwargs)
+        except JakException as je:
+            click.echo(je)
+        else:
+            click.echo(result)
 
 
 @main.command(help='jak decrypt <file>')
@@ -180,19 +167,32 @@ def decrypt_inner(filepath, key=None, keyfile=None):
 @click.option('-kf', '--keyfile', default=None, metavar='<file_path>')
 def decrypt(filepath, key, keyfile):
     """Decrypt file(s)"""
-    decrypt_inner(filepath, key, keyfile)
+    try:
+        decrypt_inner(all_or_filepath=filepath, key=key, keyfile=keyfile)
+    except JakException as je:
+        click.echo(je)
 
 
 @main.command()
-def stomp():
+@click.option('-k', '--key', default=None, metavar='<string>')
+@click.option('-kf', '--keyfile', default=None, metavar='<file_path>')
+def stomp(key, keyfile):
     """Alias for 'jak encrypt all'"""
-    encrypt_inner(filepath='all')
+    try:
+        encrypt_inner(all_or_filepath='all', key=key, keyfile=keyfile)
+    except JakException as je:
+        click.echo(je)
 
 
 @main.command()
-def shave():
+@click.option('-k', '--key', default=None, metavar='<string>')
+@click.option('-kf', '--keyfile', default=None, metavar='<file_path>')
+def shave(key, keyfile):
     """Alias for 'jak decrypt all'"""
-    decrypt_inner(filepath='all')
+    try:
+        decrypt_inner(all_or_filepath='all', key=key, keyfile=keyfile)
+    except JakException as je:
+        click.echo(je)
 
 
 @main.command(options_metavar='<options>')
@@ -213,25 +213,3 @@ def diff(conflicted_file, key, keyfile):
     except JakException as je:
         result = je
     click.echo(result)
-
-
-#
-# TODO FUTURE(?)
-#
-
-# @main.command()
-# def protect():
-#     """Add file to jakfiles "files_to_encrypt" list if it is not already in there"""
-#     click.echo("TODO")
-#
-#
-# @main.command()
-# def abandon():
-#     """Remove file from jakfile's "files_to_encrypt" list if it is in there"""
-#     click.echo("TODO")
-#
-#
-# @main.command()
-# def unprotect():
-#     """alias for abandon"""
-#     click.echo("TODO")

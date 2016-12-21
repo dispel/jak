@@ -35,13 +35,16 @@ BOOM=SHAKA
 #     assert diff_file.read() == expected
 
 @pytest.mark.parametrize('local,remote,expected_local,expected_remote', [
-    ('NDNmZWYyZDU1YWMyYzU3NTRkMGNjY2RlNDA4ZmE3YmQ5ODQ1YzFlOWYzMWI0OTIzMmViYjAzY2E3ZTRiMmIyMDgwZDdjZGNiYWM1ZGQ2Y2YyNTcwMzQ4MmFkZWZlZmY4Yjg2NjhkODIzZTNmMzkxMTg2OGM5Y2M0NDhhODFiMmNf2cIoHpUqK9eXWuZk-kS_2egEM9AYGSXl',  # noqa
-     'OGE1N2Q4NDg0NjZiODc4NTg2MDZlOWIzZWVmYzk3NzAyYTBhOWM2ZjZiMzM2MTNmMWQwYmZiZmI4ZGZlOTI1N2ZkZjhhYTcyYjczN2RhYTc5MGEyOWQxNmMwY2I5N2I4NWIyNGU0MjM0ZTVhZmI5OTE0NzNkNjViOGQ1OTc5Yza31SqTBr-zoGQH_ozKRmU7of50xspI4o76BL8=',  # noqa
+    ('MGFlZDIzNGJmOTRjZWRiMTRkZjFhOWIyNWZjMzdkZGVmMzE0YjMzNTEzZGNmN2UxOGM2ZGRlNGE4YWRkYzdjMGZhMWVmMWJkZGQwNGQwYjIzZWQ5ZGJmMGJjNGE2YzZkMGQxZDMwNWI0YzAyZjZlNThlNzY2NjcwNzg1ODc0Y2ExP5X-vEPkWOx9cXjyODjeqpN0r0xTCqrs',  # noqa
+     'ZDQzOWY3NzZhYzY2MTFhZmEzNjE0ZThjMzg1OGJkZWE4YjE4NWFhYTVjYTY0ODYxZGQ3ZGM4OWQ2ODY0OTIxOWE2ODA4MDVlNjg0NTAwOGNiNzE2OGNlNjA3ODI0ZTEwYzU0MjVmOTY4NDNiMzc3NTMzZjVjYzdjZTgwMjg5NWUJ_mcEwsoD-DsobpE3eeIAlfZfR-b47VTrRN8=',  # noqa
      'API=TRUE',
      'BOOM=SHAKA')
 ])
 def test_diff_decrypt(local, remote, expected_local, expected_remote):
-    (dlocal, dremote) = difflib._decrypt(key='1e1862c99f9211a01eebedb00ae1475a', local=local, remote=remote)
+    (dlocal, dremote) = difflib._decrypt(
+        key='1e1862c99f9211a01eebedb00ae1475a1e1862c99f9211a01eebedb00ae1475a',
+        local=local,
+        remote=remote)
     assert dlocal == expected_local
     assert dremote == expected_remote
 

@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
-import os
 import six
 import pytest
 import binascii
+from jak import helpers
 from Crypto.Cipher import AES
-import jak.password_services as ps
+from click.testing import CliRunner
 import jak.crypto_services as crypto
 from jak.exceptions import JakException
 
@@ -13,6 +13,11 @@ try:
     from unittest import mock
 except ImportError:
     import mock
+
+
+@pytest.fixture
+def runner():
+    return CliRunner()
 
 
 @pytest.fixture
@@ -37,16 +42,18 @@ def test_generate_iv(cipher):
     '1',
     '1111111111111111',  # 16
     '111111111111111111111111',  # 24
-    '111111111111111111111111111111111111111',  # 39
+    '11111111111111111111111111111111',  # 32
+    '111111111111111111111111111111111111111111111111111111111111111',  # 63
+    '11111111111111111111111111111111111111111111111111111111111111111',  # 65
 ])
 def test_encrypt_exceptions(cipher, key):
     with pytest.raises(JakException) as excinfo:
         cipher.encrypt(key=key, secret='my secret')
-    assert 'Key must be exactly 32 characters' in str(excinfo.value)
+    assert 'Key must be exactly 64 characters' in str(excinfo.value)
 
 
 def test_encrypt_decrypt(cipher):
-    key = 'fcd2da025fbe5cc39bf7b71143b4cc39'
+    key = 'f2f3222f8b1c799b6abc78e26e5a9378814bc23f04a10576610827569e956b42'
     secret = 'secret'
 
     encrypted = cipher.encrypt(key=key, secret=secret)
@@ -70,7 +77,7 @@ def test_extract_iv(cipher):
 
 def test_create_integrity_fingerprint(cipher):
     iv = cipher._generate_iv()
-    key = ps.generate_256bit_key().decode('utf-8')
+    key = helpers.generate_256bit_key().decode('utf-8')
 
     from datetime import datetime
     start = datetime.now()
@@ -88,7 +95,7 @@ def test_create_integrity_fingerprint_old_python(cipher):
     just comparing the exact same thing against itself."""
     if six.PY3:
         iv = cipher._generate_iv()
-        key = ps.generate_256bit_key().decode('utf-8')
+        key = helpers.generate_256bit_key().decode('utf-8')
         new_way = cipher._create_integrity_fingerprint(key, iv)
         old_way = cipher._old_python_create_integrity_fingerprint(key, iv)
         assert new_way == binascii.hexlify(old_way)
@@ -97,106 +104,64 @@ def test_create_integrity_fingerprint_old_python(cipher):
 
 
 def test_has_integrity(cipher):
-    key = 'lds3fhdskj2hdskl1fhdsklfjh347398'
+    key = 'd2944c68b750474b85609147ce6d3aae875e6ae8ac63618086a58b1c1716402d'
     secret = 'integrity'
     encrypted = cipher.encrypt(key, secret)
     iv = encrypted[cipher.fingerprint_length:cipher.fingerprint_length + cipher.block_size]
-    assert cipher._has_integrity(key, encrypted, iv) is True
+    assert cipher._has_integrity(binascii.unhexlify(key), encrypted, iv) is True
 
-    bad_key = '0ds3fhdskj2hdskl1fhdsklfjh347398'
+    bad_key = '02944c68b750474b85609147ce6d3aae875e6ae8ac63618086a58b1c1716402d'
     assert bad_key != key
-    assert cipher._has_integrity(bad_key, encrypted, iv) is False
+    assert cipher._has_integrity(binascii.unhexlify(bad_key), encrypted, iv) is False
 
 
 def test_encrypt_file(tmpdir):
     secretfile = tmpdir.mkdir("sub").join("hello")
     secretfile.write("secret")
     assert secretfile.read() == "secret"
-    key = ps.generate_256bit_key().decode('utf-8')
-    crypto.encrypt_file(filepath=secretfile.strpath, key=key)
+    key = helpers.generate_256bit_key().decode('utf-8')
+    crypto.encrypt_file(jwd=secretfile.dirpath().strpath, filepath=secretfile.strpath, key=key)
     assert secretfile.read() != "secret"
     assert crypto.ENCRYPTED_BY_HEADER in secretfile.read()
 
 
 def test_bad_encrypt_file_filepath(tmpdir):
-    key = ps.generate_256bit_key().decode('utf-8')
-
-    # Good key, no filepath should freakout
-    result = crypto.encrypt_file(filepath="", key=key)
+    key = helpers.generate_256bit_key().decode('utf-8')
+    result = crypto.encrypt_file(jwd='', filepath="", key=key)
     assert "can't find the file: " in result
 
-    # result = crypto.encrypt_file(filepath=None, key=key)
-    # assert "can't find the file: " in result
+
+def test_decrypt_file(runner, tmpdir):
+    with runner.isolated_filesystem():
+        secretfile = tmpdir.mkdir("sub").join("hello")
+        secretfile.write("""- - - Encrypted by jak - - -
+
+    Y2JjMzYxYzM4YzZhNWMwMjEwMGQ2ZTI4ZDUzYmFlMTUxMjMxMTNlNmEyNjVi
+    N2RhYTE1MDkxYmMxMjUzOWQ3NTA2ZDRhZDRlOTUwNGQ3MDUyYTUzMzhkNTk3
+    Y2JmMDdkN2VjOWQ2MDEzYTA5NmFlODM0OGUxMTI3Njk4YzA0MTn7m1e7RBW1
+    DmeAbo2cg46cmhWwsKHbug==""")
+        key = '2a57929b3610ba53b96f472b0dca27402a57929b3610ba53b96f472b0dca2740'
+        crypto.decrypt_file(jwd=secretfile.dirpath().strpath, filepath=secretfile.strpath, key=key)
+        assert secretfile.read() == "secret\n"
 
 
-def test_decrypt_file(tmpdir):
-    secretfile = tmpdir.mkdir("sub").join("hello")
-    secretfile.write("""- - - Encrypted by jak - - -
+def test_encrypt_and_decrypt_a_file(runner, tmpdir):
+    with runner.isolated_filesystem():
+        secretfile = tmpdir.mkdir("sub").join("hello")
+        secret_content = "supercalifragialisticexpialidocious"
+        secretfile.write(secret_content)
+        assert secretfile.read() == secret_content
+        key = helpers.generate_256bit_key().decode('utf-8')
+        crypto.encrypt_file(jwd=secretfile.dirpath().strpath, filepath=secretfile.strpath, key=key)
 
-NzIyMzVkODc3ZWFhM2VlMTg5MTYyZTllNTFlNGMxZmQzMzhmN2IwM2YxNmEz
-OGNiMTI5MjI2ODA1ZWRmNDg5M2IxNGI5ZjNmNDk0ODVjNDcwOTE5MWI3N2Q5
-Y2FlNTQwZWI2ZmY2MzE5YTZiOGU1NTA5ZGVhNmY2OTMxNTAyZDUcDK2xUZxf
-DTHv3kq_ukiq7rO7MiJDgQ==
-""")
-    key = '2a57929b3610ba53b96f472b0dca2740'
-    crypto.decrypt_file(filepath=secretfile.strpath, key=key)
-    assert secretfile.read() == "secret\n"
+        # File has changed
+        assert secretfile.read() != secret_content
 
-    # FIXME temporary solution for cleanup
-    os.remove('.jak/hello_backup')
+        # File has the header (which we now assume means it is encrypted,
+        # which might be presumptuous.)
+        assert crypto.ENCRYPTED_BY_HEADER in secretfile.read()
 
+        crypto.decrypt_file(jwd=secretfile.dirpath().strpath, filepath=secretfile.strpath, key=key)
 
-def test_encrypt_and_decrypt_a_file(tmpdir):
-    secretfile = tmpdir.mkdir("sub").join("hello")
-    secret_content = "supercalifragialisticexpialidocious"
-    secretfile.write(secret_content)
-    assert secretfile.read() == secret_content
-    key = ps.generate_256bit_key().decode('utf-8')
-    crypto.encrypt_file(filepath=secretfile.strpath, key=key)
-
-    # File has changed
-    assert secretfile.read() != secret_content
-
-    # File has the header (which we now assume means it is encrypted,
-    # which might be presumptuous.)
-    assert crypto.ENCRYPTED_BY_HEADER in secretfile.read()
-
-    crypto.decrypt_file(filepath=secretfile.strpath, key=key)
-
-    # Back to original
-    assert secretfile.read() == secret_content
-
-    # FIXME temporary solution for cleanup
-    os.remove('.jak/hello_backup')
-
-
-def test_all():
-    """tests the 'all' function which allows you to encrypt/decrypt multiple files"""
-    def foo(protected_file, p, pf):
-        return protected_file
-
-    with mock.patch('jak.password_services.select_key') as sk:
-        sk.return_value = 'select_key'
-
-        mock_jackfile_dict = {'files_to_encrypt': ['one', 'two']}
-        results = crypto.all(callable_action=foo, key=None, keyfile=None,
-                             jakfile_dict=mock_jackfile_dict)
-        assert results == 'one\ntwo'
-
-
-@pytest.mark.parametrize('jakdict, error_string_part', [
-    ({}, 'jakfile with a "files_to_encrypt"'),
-    ({'files_to_encrypt': []}, "files_to_encrypt value is empty"),
-    ({'files_to_encrypt': 'one'}, '"files_to_encrypt" value must be a list (array).'),
-    ({'files_to_encrypt': 5}, '"files_to_encrypt" value must be a list (array).'),
-    ({'files_to_encrypt': None}, '"files_to_encrypt" value must be a list (array).')])
-def test_all_jakexceptions(jakdict, error_string_part):
-    def foo(protected_file, p, pf):
-        return protected_file
-
-    with mock.patch('jak.password_services.select_key') as sk:
-        sk.return_value = 'select_key'
-        with pytest.raises(JakException) as exception:
-            crypto.all(callable_action=foo, key=None, keyfile=None,
-                       jakfile_dict=jakdict)
-        assert error_string_part in exception.__str__()
+        # Back to original
+        assert secretfile.read() == secret_content

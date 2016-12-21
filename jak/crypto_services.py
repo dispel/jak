@@ -10,149 +10,14 @@ import binascii
 from io import open
 from . import helpers
 from .compat import b
-from Crypto import Random
-from Crypto.Cipher import AES
+from .aes_cipher import AES256Cipher
 from .exceptions import JakException
-from . import password_services as ps
 
 ENCRYPTED_BY_HEADER = u'- - - Encrypted by jak - - -\n\n'
 
 
-class AES256Cipher(object):
-    """AES256 using CFB mode and a 16bit block size."""
-
-    def __init__(self, mode=AES.MODE_CFB):
-        """You can override the mode if you want, But you had better know
-        what you are doing."""
-
-        self.cipher = AES
-        self.block_size = AES.block_size
-        self.mode = mode
-        self.fingerprint_length = 128
-
-    def _has_integrity(self, key, encrypted_secret, iv):
-        """Validate that the fingerprint (HMAC) will match (aka is the key correct?)"""
-        existing_fingerprint = encrypted_secret[:self.fingerprint_length]
-        new_fingerprint = self._create_integrity_fingerprint(key, iv)
-        return b(new_fingerprint) == existing_fingerprint
-
-    def _old_python_create_integrity_fingerprint(self, key, salt):
-        """Used to generate a PBKDF2 HMAC if python version doesn't have a
-        pbkdf2_hmac package built in.
-
-        Only reason we keep this is because of old ubuntu LTS. Come 2018 or so
-        we can probably remove this. And throw a "upgrade your python plz" message instead.
-        https://www.dlitz.net/software/pycrypto/api/current/Crypto.Protocol.KDF-module.html#PBKDF2
-        """
-        from Crypto.Protocol.KDF import PBKDF2
-        from Crypto.Hash import HMAC, SHA512
-
-        def prf(p, s):
-            return HMAC.new(key=p, msg=s, digestmod=SHA512).digest()
-
-        return PBKDF2(password=key, salt=salt, count=10000, prf=prf,
-                      dkLen=int(self.fingerprint_length / 2))
-
-    def _create_integrity_fingerprint(self, key, iv):
-        """Generate a fingerprint during encrypt to check integrity on decrypt
-        uses PBKDF2 (PKCS #5 v2.0)
-
-        for more info see source code here:
-        https://hg.python.org/cpython/file/2.7/Lib/hashlib.py
-        """
-        try:
-            from hashlib import pbkdf2_hmac
-        except ImportError:
-
-            # Must be on python older than 2.7.8...
-            digest = self._old_python_create_integrity_fingerprint(key=b(key), salt=iv)
-        else:
-            digest = pbkdf2_hmac(hash_name='SHA512', password=b(key),
-                                 salt=iv, iterations=10000)
-
-        fingerprint = binascii.hexlify(digest)
-        return b(fingerprint)
-
-    def extract_iv(self, encrypted_secret):
-        """Extract the IV"""
-        return encrypted_secret[self.fingerprint_length:self.fingerprint_length + self.block_size]
-
-    def decrypt(self, key, encrypted_secret):
-        """Decrypts an encrypted secret."""
-        iv = self.extract_iv(encrypted_secret)
-        if not self._has_integrity(key, encrypted_secret, iv):
-            raise JakException('Wrong key. Aborting...')
-
-        # Pop the fingerprint off
-        encrypted_secret = encrypted_secret[self.fingerprint_length:]
-
-        # Setup cipher and perform actual decryption
-        cipher_instance = self.cipher.new(key=key, mode=self.mode, IV=iv)
-        decrypted_secret_and_iv = cipher_instance.decrypt(encrypted_secret)
-        just_decrypted_secret = decrypted_secret_and_iv[self.block_size:]
-        return just_decrypted_secret
-
-    def encrypt(self, key, secret, iv=False):
-        """Encrypts a secret"""
-        if len(key) != 32:
-            raise JakException(
-                ("Key must be exactly 32 characters long. \n"
-                 "I would recommend you use the genpass command to generate a strong key."))
-
-        if not iv:
-            iv = self._generate_iv()
-
-        # For checking the integrity of key on decryption
-        fingerprint = self._create_integrity_fingerprint(key, iv)
-
-        cipher_instance = self.cipher.new(key=key, mode=self.mode, IV=iv)
-        encrypted_secret = cipher_instance.encrypt(secret)
-        return fingerprint + iv + encrypted_secret
-
-    def _generate_iv(self):
-        """Generates an Initialization Vector (IV)."""
-        return Random.new().read(self.block_size)
-
-
-def all(callable_action, key, keyfile, jakfile_dict):
-    """Read the jakfile and decrypt all the files in it.
-
-    callable_action MUST be one of encrypt_file or decrypt_file (FIXME, throw warning if not?)
-    """
-    key = ps.select_key(key, keyfile, jakfile_dict)
-
-    try:
-        files_to_encrypt = jakfile_dict['files_to_encrypt']
-    except KeyError:
-        raise JakException('This command requires a jakfile with a "files_to_encrypt" value.\nAborting...')
-    else:
-        if not isinstance(files_to_encrypt, list):
-            raise JakException("The jakfile's \"files_to_encrypt\" value must be a list (array).\nAborting...")
-
-        if not files_to_encrypt:
-            msg = '''Your jakfile's files_to_encrypt value is empty. It should be a list of files.
-Aborting...'''
-            raise JakException(msg)
-
-    results = ''
-    for index, protected_file in enumerate(files_to_encrypt):
-        try:
-            result = callable_action(protected_file, key, keyfile)
-        except JakException as je:
-            result = je.__str__()
-
-        results += result
-
-        # Only add newline if we are not on the last protected file.
-        if index + 1 != len(jakfile_dict['files_to_encrypt']):
-            results += '\n'
-
-    return results
-
-
-def encrypt_file(filepath, key, keyfile=None, jakfile_dict=None):
+def encrypt_file(jwd, filepath, key, **kwargs):
     """Encrypts a file"""
-    key = ps.select_key(key, keyfile, jakfile_dict)
 
     try:
         with open(filepath, 'rt', encoding='utf-8') as f:
@@ -167,8 +32,8 @@ def encrypt_file(filepath, key, keyfile=None, jakfile_dict=None):
         raise JakException('I already encrypted the file: "{}".'.format(filepath))
 
     # FIXME REFACTOR
-    if helpers.is_there_a_backup(filepath):
-        backup_encrypted_secret = helpers.get_backup_content_for_file(filepath)
+    if helpers.is_there_a_backup(jwd=jwd, filepath=filepath):
+        backup_encrypted_secret = helpers.get_backup_content_for_file(jwd=jwd, filepath=filepath)
     else:
         backup_encrypted_secret = False
 
@@ -197,7 +62,7 @@ def encrypt_file(filepath, key, keyfile=None, jakfile_dict=None):
     return '{} - is now encrypted.'.format(filepath)
 
 
-def decrypt_file(filepath, key, keyfile=None, jakfile_dict=None):
+def decrypt_file(jwd, filepath, key, **kwargs):
     """Decrypts a file
 
     FIXME REFACTOR
@@ -211,8 +76,6 @@ def decrypt_file(filepath, key, keyfile=None, jakfile_dict=None):
         - setup->call cipher
     - write back into file
     """
-    key = ps.select_key(key, keyfile, jakfile_dict)
-
     try:
         with open(filepath, 'rt', encoding='utf-8') as f:
             encrypted_secret = f.read()
@@ -228,7 +91,8 @@ def decrypt_file(filepath, key, keyfile=None, jakfile_dict=None):
     try:
         ugly_encrypted_secret = base64.urlsafe_b64decode(b(encrypted_secret))
     except (TypeError, binascii.Error):
-        return 'The file "{}" is already decrypted, or is not in a format I recognize.'.format(filepath)
+        return 'The file "{}" is already decrypted, or is not in a format I recognize.'.format(
+            filepath)
 
     # Remember the encrypted file in the .jak folder
     # FIXME will this have issues on WINDOWS?
@@ -236,7 +100,7 @@ def decrypt_file(filepath, key, keyfile=None, jakfile_dict=None):
     # of files to produce new encryptions if nothing has changed (which it would
     # with a new IV). This way it works way better with VCS.
     # import pdb; pdb.set_trace()
-    helpers.backup_file_content(filepath, encrypted_secret)
+    helpers.backup_file_content(jwd, filepath, encrypted_secret)
 
     # Perform Decrypt
     aes256_cipher = AES256Cipher()

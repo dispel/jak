@@ -14,9 +14,9 @@ import subprocess
 from io import open
 from . import helpers
 from .compat import b
-from . import crypto_services as cs
+from .aes_cipher import AES256Cipher
 from .exceptions import JakException
-from . import password_services as ps
+from . import decorators
 
 
 def _create_local_remote_diff_files(filepath, local, remote):
@@ -90,7 +90,7 @@ cyz>
 >>>>>>> SOMETHING'''
         raise JakException(msg)
 
-    aes256_cipher = cs.AES256Cipher()
+    aes256_cipher = AES256Cipher()
     decrypted_local = aes256_cipher.decrypt(key=key, encrypted_secret=ugly_local)
     decrypted_remote = aes256_cipher.decrypt(key=key, encrypted_secret=ugly_remote)
 
@@ -104,13 +104,10 @@ def _extract_merge_conflict_parts(content):
     return regex.findall(content)[0]
 
 
-def diff(filepath, key=None, keyfile=None, jakfile_dict=None):
-    """"""
-    if not jakfile_dict:
-        jakfile_dict = helpers.read_jakfile_to_dict()
-
-    key = ps.select_key(key=key, keyfile=keyfile, jakfile_dict=jakfile_dict)
-
+@decorators.read_jakfile
+@decorators.select_key
+def diff(filepath, key, **kwargs):
+    """Diff and merge a file that has a merge conflict."""
     with open(filepath, 'rt') as f:
         encrypted_diff_file = f.read()
 
