@@ -16,6 +16,29 @@ from .exceptions import JakException
 ENCRYPTED_BY_HEADER = u'- - - Encrypted by jak - - -\n\n'
 
 
+def check_secret_against_backup(jwd, filepath, secret, aes256_cipher):
+    if helpers.is_there_a_backup(jwd=jwd, filepath=filepath):
+        backup_encrypted_secret = helpers.get_backup_content_for_file(jwd=jwd, filepath=filepath)
+        ugly_backup_encrypted_secret = base64.urlsafe_b64decode(b(backup_encrypted_secret))
+        iv = aes256_cipher.extract_iv(encrypted_secret=ugly_backup_encrypted_secret)
+        encrypted_secret = aes256_cipher.encrypt(key=key, secret=secret, iv=iv)
+
+        if encrypted_secret == ugly_backup_encrypted_secret:
+            return (False, ugly_backup_encrypted_secret)
+        else:
+            return (True, secret)
+    else:
+        return (True, secret)
+
+
+def write_secret_to_file(filepath, nice_enc_secret):
+    encrypted_chunks = helpers.grouper(nice_enc_secret.decode('utf-8'), 60)
+    with open(filepath, 'w', encoding='utf-8') as f:
+        f.write(ENCRYPTED_BY_HEADER)
+        for encrypted_chunk in encrypted_chunks:
+            f.write(encrypted_chunk + '\n')
+
+
 def encrypt_file(jwd, filepath, key, **kwargs):
     """Encrypts a file"""
 
@@ -32,33 +55,20 @@ def encrypt_file(jwd, filepath, key, **kwargs):
         raise JakException('I already encrypted the file: "{}".'.format(filepath))
 
     # FIXME REFACTOR
-    if helpers.is_there_a_backup(jwd=jwd, filepath=filepath):
-        backup_encrypted_secret = helpers.get_backup_content_for_file(jwd=jwd, filepath=filepath)
-    else:
-        backup_encrypted_secret = False
-
     aes256_cipher = AES256Cipher()
-    should_generate_new_secret = True
-    if backup_encrypted_secret:
-        ugly_backup_encrypted_secret = base64.urlsafe_b64decode(b(backup_encrypted_secret))
-        iv = aes256_cipher.extract_iv(encrypted_secret=ugly_backup_encrypted_secret)
-        encrypted_secret = aes256_cipher.encrypt(key=key, secret=secret, iv=iv)
-
-        if encrypted_secret == ugly_backup_encrypted_secret:
-            should_generate_new_secret = False
-
+    (should_generate_new_secret,
+        backup_encrypted_secret) = check_secret_against_backup(jwd=jwd,
+                                                               filepath=filepath,
+                                                               secret=secret,
+                                                               aes256_cipher=aes256_cipher)
     if should_generate_new_secret:
         encrypted_secret = aes256_cipher.encrypt(key=key, secret=secret)
+    else:
+        encrypted_secret = backup_encrypted_secret
 
-    # Prettier
+    # Base 64 is Prettier
     nice_enc_secret = base64.urlsafe_b64encode(encrypted_secret)
-
-    encrypted_chunks = helpers.grouper(nice_enc_secret.decode('utf-8'), 60)
-    with open(filepath, 'w', encoding='utf-8') as f:
-        f.write(ENCRYPTED_BY_HEADER)
-        for encrypted_chunk in encrypted_chunks:
-            f.write(encrypted_chunk + '\n')
-
+    write_secret_to_file(filepath=filepath, nice_enc_secret=nice_enc_secret)
     return '{} - is now encrypted.'.format(filepath)
 
 
@@ -76,12 +86,14 @@ def decrypt_file(jwd, filepath, key, **kwargs):
         - setup->call cipher
     - write back into file
     """
+    # try open file to get content
     try:
         with open(filepath, 'rt', encoding='utf-8') as f:
             encrypted_secret = f.read()
     except IOError:
         return "Sorry I can't find the file: {}".format(filepath)
 
+    # check that file has content
     if len(encrypted_secret) == 0:
         raise JakException('The file "{}" is empty, aborting...'.format(filepath))
 
