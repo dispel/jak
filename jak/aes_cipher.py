@@ -91,6 +91,10 @@ class AES256Cipher(object):
 
     def encrypt(self, key, secret, iv=False):
         """Encrypts a secret"""
+
+        # Convert secret to bytes
+        secret = secret.encode()
+
         if len(key) != 64:
             raise JakException(
                 ("Key must be exactly 64 characters long. \n"
