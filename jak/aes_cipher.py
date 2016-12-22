@@ -9,13 +9,14 @@ import binascii
 from .compat import b
 from Crypto import Random
 from Crypto.Cipher import AES
+from .padding import pad, unpad
 from .exceptions import JakException
 
 
 class AES256Cipher(object):
-    """AES256 using CFB mode and a 16bit block size."""
+    """AES256 using CBC mode and a 16bit block size."""
 
-    def __init__(self, mode=AES.MODE_CFB):
+    def __init__(self, mode=AES.MODE_CBC):
         """You can override the mode if you want, But you had better know
         what you are doing."""
 
@@ -84,7 +85,8 @@ class AES256Cipher(object):
         # Setup cipher and perform actual decryption
         cipher_instance = self.cipher.new(key=key, mode=self.mode, IV=iv)
         decrypted_secret_and_iv = cipher_instance.decrypt(encrypted_secret)
-        just_decrypted_secret = decrypted_secret_and_iv[self.block_size:]
+        unpadded_decrypted_secret_and_iv = unpad(data=decrypted_secret_and_iv)
+        just_decrypted_secret = unpadded_decrypted_secret_and_iv[self.block_size:]
         return just_decrypted_secret
 
     def encrypt(self, key, secret, iv=False):
@@ -104,7 +106,8 @@ class AES256Cipher(object):
         fingerprint = self._create_integrity_fingerprint(key, iv)
 
         cipher_instance = self.cipher.new(key=key, mode=self.mode, IV=iv)
-        encrypted_secret = cipher_instance.encrypt(secret)
+        padded_secret = pad(data=secret)
+        encrypted_secret = cipher_instance.encrypt(padded_secret)
         return fingerprint + iv + encrypted_secret
 
     def _generate_iv(self):
