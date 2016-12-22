@@ -1,3 +1,9 @@
+# -*- coding: utf-8 -*-
+"""
+Copyright 2016 Dispel, LLC
+Apache 2.0 License, see https://github.com/dispel/jak/blob/master/LICENSE for details.
+"""
+
 import six
 
 
@@ -9,7 +15,7 @@ def pad(data, bs=16):
     'aa\x02\x02'
     """
     length = bs - len(data) % bs
-    data += chr(length) * length
+    data += six.int2byte(length) * length
     return data
 
 
@@ -17,5 +23,5 @@ def unpad(data):
     """remove PKCS#7 padding by removing as many digits as
     the padding indicates are padding.
     """
-    amount_of_padding = ord(data[-1])
+    amount_of_padding = six.byte2int(data[-1])
     return data[:-amount_of_padding]
