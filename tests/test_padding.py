@@ -6,6 +6,7 @@ def test_pad():
     assert pad('a') == 'a\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f\x0f'
     assert pad('aaaaaaaaa') == 'aaaaaaaaa\x07\x07\x07\x07\x07\x07\x07'
     assert pad('aaaaaaaaaaaaaaa') == 'aaaaaaaaaaaaaaa\x01'
+    assert pad('aaaaaaaaaaaaaaaa') == 'aaaaaaaaaaaaaaaa\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10'  # noqa
 
 
 def test_unpad():

@@ -7,15 +7,15 @@ example_diff = '''
 - - - Encrypted by jak - - -
 
 <<<<<<< HEAD
-NDNmZWYyZDU1YWMyYzU3NTRkMGNjY2RlNDA4ZmE3YmQ5ODQ1YzFlOWYzMWI0
-OTIzMmViYjAzY2E3ZTRiMmIyMDgwZDdjZGNiYWM1ZGQ2Y2YyNTcwMzQ4MmFk
-ZWZlZmY4Yjg2NjhkODIzZTNmMzkxMTg2OGM5Y2M0NDhhODFiMmNf2cIoHpUq
-K9eXWuZk-kS_2egEM9AYGSXl
+ZDRiM2Q0Yjg0ZTFkNDg3NzRhOTljOWVmYjAxOTE4NmI4Y2UzMTkwNTM5N2Nj
+YjdiYmQyZDU3MjI1MDkwY2ExYmU0NTMzOGYxYTViY2I0YWNlYzdmOWM2OTgz
+NmI5ODkxOWNhNjc5YjdiNGQ5ZDJiMTYyNDFhMzcwMWYxNDVmMWO8ttnsUSsa
+iDNgzDF18NB5RMHOOxjt13wRdV_RHxtZgw==
 =======
-OGE1N2Q4NDg0NjZiODc4NTg2MDZlOWIzZWVmYzk3NzAyYTBhOWM2ZjZiMzM2
-MTNmMWQwYmZiZmI4ZGZlOTI1N2ZkZjhhYTcyYjczN2RhYTc5MGEyOWQxNmMw
-Y2I5N2I4NWIyNGU0MjM0ZTVhZmI5OTE0NzNkNjViOGQ1OTc5Yza31SqTBr-z
-oGQH_ozKRmU7of50xspI4o76BL8=
+MGUwMWJhYjgxNDcyMjY2MjhmMzMzNWFlYTMwZDYzYzc5ZDc0NzVhMDc0M2Ji
+ZWUyMDc2NTAyZWM5MTRkMzQ5MmU4NTBlYzY1YjlmYTUwYTdlN2M2MDg3ZTI4
+NGMxNDZjYzJiZDczNGE1ZDEzYmRkZDMyY2IwMDI5Mjc3MWJmOWNXRvFeiNn8
+b6JFJwpATrZOE2srs1sc3p2TM529sw-11Q==
 >>>>>>> f8eb651525b7403aa5ed93c251374ddef8796dee
 '''
 
@@ -28,15 +28,9 @@ BOOM=SHAKA
 '''
 
 
-# def test_diff(tmpdir):
-#     diff_file = tmpdir.join('env.yaml')
-#     diff_file.write(example_diff)
-#     diff(filepath=diff_file.strpath, key='1e1862c99f9211a01eebedb00ae1475a')
-#     assert diff_file.read() == expected
-
 @pytest.mark.parametrize('local,remote,expected_local,expected_remote', [
-    ('MGFlZDIzNGJmOTRjZWRiMTRkZjFhOWIyNWZjMzdkZGVmMzE0YjMzNTEzZGNmN2UxOGM2ZGRlNGE4YWRkYzdjMGZhMWVmMWJkZGQwNGQwYjIzZWQ5ZGJmMGJjNGE2YzZkMGQxZDMwNWI0YzAyZjZlNThlNzY2NjcwNzg1ODc0Y2ExP5X-vEPkWOx9cXjyODjeqpN0r0xTCqrs',  # noqa
-     'ZDQzOWY3NzZhYzY2MTFhZmEzNjE0ZThjMzg1OGJkZWE4YjE4NWFhYTVjYTY0ODYxZGQ3ZGM4OWQ2ODY0OTIxOWE2ODA4MDVlNjg0NTAwOGNiNzE2OGNlNjA3ODI0ZTEwYzU0MjVmOTY4NDNiMzc3NTMzZjVjYzdjZTgwMjg5NWUJ_mcEwsoD-DsobpE3eeIAlfZfR-b47VTrRN8=',  # noqa
+    ('ZDRiM2Q0Yjg0ZTFkNDg3NzRhOTljOWVmYjAxOTE4NmI4Y2UzMTkwNTM5N2NjYjdiYmQyZDU3MjI1MDkwY2ExYmU0NTMzOGYxYTViY2I0YWNlYzdmOWM2OTgzNmI5ODkxOWNhNjc5YjdiNGQ5ZDJiMTYyNDFhMzcwMWYxNDVmMWO8ttnsUSsaiDNgzDF18NB5RMHOOxjt13wRdV_RHxtZgw==',  # noqa
+     'MGUwMWJhYjgxNDcyMjY2MjhmMzMzNWFlYTMwZDYzYzc5ZDc0NzVhMDc0M2JiZWUyMDc2NTAyZWM5MTRkMzQ5MmU4NTBlYzY1YjlmYTUwYTdlN2M2MDg3ZTI4NGMxNDZjYzJiZDczNGE1ZDEzYmRkZDMyY2IwMDI5Mjc3MWJmOWNXRvFeiNn8b6JFJwpATrZOE2srs1sc3p2TM529sw-11Q==',  # noqa
      'API=TRUE',
      'BOOM=SHAKA')
 ])
@@ -49,34 +43,22 @@ def test_diff_decrypt(local, remote, expected_local, expected_remote):
     assert dremote == expected_remote
 
 
-# @pytest.mark.parametrize('local,remote,expected_local,expected_remote', [
-#     ('',
-#      '',
-#      'API=TRUE',
-#      'BOOM=SHAKA')
-# ])
-# def test_diff_decrypt_bad(local, remote, expected_local, expected_remote):
-#     (dlocal, dremote) = difflib._decrypt(key='1e1862c99f9211a01eebedb00ae1475a', local=local, remote=remote)
-#     assert dlocal != expected_local
-#     assert dremote != expected_remote
-
-
 def test_extract_merge_conflict_parts():
 
     result = difflib._extract_merge_conflict_parts(content=example_diff)
     assert len(result) == 5
     assert result[0] == '<<<<<<< HEAD\n'
-    expected = '''NDNmZWYyZDU1YWMyYzU3NTRkMGNjY2RlNDA4ZmE3YmQ5ODQ1YzFlOWYzMWI0
-OTIzMmViYjAzY2E3ZTRiMmIyMDgwZDdjZGNiYWM1ZGQ2Y2YyNTcwMzQ4MmFk
-ZWZlZmY4Yjg2NjhkODIzZTNmMzkxMTg2OGM5Y2M0NDhhODFiMmNf2cIoHpUq
-K9eXWuZk-kS_2egEM9AYGSXl
+    expected = '''ZDRiM2Q0Yjg0ZTFkNDg3NzRhOTljOWVmYjAxOTE4NmI4Y2UzMTkwNTM5N2Nj
+YjdiYmQyZDU3MjI1MDkwY2ExYmU0NTMzOGYxYTViY2I0YWNlYzdmOWM2OTgz
+NmI5ODkxOWNhNjc5YjdiNGQ5ZDJiMTYyNDFhMzcwMWYxNDVmMWO8ttnsUSsa
+iDNgzDF18NB5RMHOOxjt13wRdV_RHxtZgw==
 '''
     assert result[1] == expected
     assert result[2] == '=======\n'
-    expected = '''OGE1N2Q4NDg0NjZiODc4NTg2MDZlOWIzZWVmYzk3NzAyYTBhOWM2ZjZiMzM2
-MTNmMWQwYmZiZmI4ZGZlOTI1N2ZkZjhhYTcyYjczN2RhYTc5MGEyOWQxNmMw
-Y2I5N2I4NWIyNGU0MjM0ZTVhZmI5OTE0NzNkNjViOGQ1OTc5Yza31SqTBr-z
-oGQH_ozKRmU7of50xspI4o76BL8=
+    expected = '''MGUwMWJhYjgxNDcyMjY2MjhmMzMzNWFlYTMwZDYzYzc5ZDc0NzVhMDc0M2Ji
+ZWUyMDc2NTAyZWM5MTRkMzQ5MmU4NTBlYzY1YjlmYTUwYTdlN2M2MDg3ZTI4
+NGMxNDZjYzJiZDczNGE1ZDEzYmRkZDMyY2IwMDI5Mjc3MWJmOWNXRvFeiNn8
+b6JFJwpATrZOE2srs1sc3p2TM529sw-11Q==
 '''
     assert result[3] == expected
     assert result[4] == '>>>>>>> f8eb651525b7403aa5ed93c251374ddef8796dee\n'
