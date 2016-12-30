@@ -52,10 +52,10 @@ def test_encrypt_smoke(runner):
 def test_decrypt_smoke(runner):
     contents = '''- - - Encrypted by jak - - -
 
-MjI1YTNmY2U3MjgzN2NjZjBlNDFiMmU5YmQ3NWNjZDBkODc2NmUyZTlkMzRk
-M2E0MmJjZDNhMmM0ZTMxMjY3ZTdiZWQzOWMwODRlYzRkOGNjMzFiMmUxOTFk
-Mjg3MmQyZmFiNmRiNjU3MDAyN2JkMjdlMzJjYzgyNGU3ZmI1ZjAKVEBKQmlE
-qt2YqCLn8eTRanMKg8IguQ=='''
+ZDVkZTE2ZGMyN2M5MTMzNGNkZWVjMjY0ZWNjNzMyZjAyMzkxOWM0NzMzN2Jm
+MThiMTU2ODg1MzVlY2Y5MjNiNjQ1YmE1Yzc4NTEwMjU1YWRlMWI4YjFlNzU2
+Y2I3MGNlNWZlM2UyZmUzZTI4ZmE5YTA5Zjk2NDBhZmRiOWViZjkemFsYx8cn
+oU05MMawaL5g7zkI_XFFml8NSrXoIgTJ4g=='''
     with runner.isolated_filesystem():
 
         with open('secret.txt', 'w') as f:
@@ -68,4 +68,4 @@ qt2YqCLn8eTRanMKg8IguQ=='''
         with open('secret.txt', 'r') as f:
             result = f.read()
         assert cs.ENCRYPTED_BY_HEADER not in result
-        assert result.strip('\n') == 'secret'
+        assert result.strip('\n') == 'attack at dawn'

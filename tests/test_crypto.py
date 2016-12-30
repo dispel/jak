@@ -28,7 +28,7 @@ def cipher():
 def test_cipher(cipher):
     assert cipher.cipher == AES
     assert cipher.block_size == AES.block_size
-    assert cipher.mode == AES.MODE_CFB
+    assert cipher.mode == AES.MODE_CBC
 
 
 def test_generate_iv(cipher):
@@ -70,7 +70,7 @@ def test_extract_iv(cipher):
     cipher.block_size = 3
     assert cipher.extract_iv("abcdefg") == "bcd"
 
-    # not an iterable.
+    # Not an iterable.
     with pytest.raises(TypeError):
         cipher.extract_iv(5)
 
@@ -137,13 +137,13 @@ def test_decrypt_file(runner, tmpdir):
         secretfile = tmpdir.mkdir("sub").join("hello")
         secretfile.write("""- - - Encrypted by jak - - -
 
-    Y2JjMzYxYzM4YzZhNWMwMjEwMGQ2ZTI4ZDUzYmFlMTUxMjMxMTNlNmEyNjVi
-    N2RhYTE1MDkxYmMxMjUzOWQ3NTA2ZDRhZDRlOTUwNGQ3MDUyYTUzMzhkNTk3
-    Y2JmMDdkN2VjOWQ2MDEzYTA5NmFlODM0OGUxMTI3Njk4YzA0MTn7m1e7RBW1
-    DmeAbo2cg46cmhWwsKHbug==""")
+NjExY2Y3ZTM3YTczMTFjYjlmNDZlNWIxNDU4YWM4YWJhMWVkMjkwODUyYzZm
+YmJmZWVlMzJiODZhNjRjMGM0YzMxNGYxYjQzMzdjOTQzN2Q3OTFhNTFjYmM0
+ODhlMzJjY2NkZmI0NDE0ZTFjNGRiNDc1OGUxZDczNzdkMjk5NTaqHe8gr7gg
+upwlXs23zQA7Rsr-hOV7ENKehgvS67wyuA==""")
         key = '2a57929b3610ba53b96f472b0dca27402a57929b3610ba53b96f472b0dca2740'
         crypto.decrypt_file(jwd=secretfile.dirpath().strpath, filepath=secretfile.strpath, key=key)
-        assert secretfile.read() == "secret\n"
+        assert secretfile.read() == "attack at dawn\n"
 
 
 def test_encrypt_and_decrypt_a_file(runner, tmpdir):
