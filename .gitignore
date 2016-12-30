@@ -68,6 +68,7 @@ var/
 .installed.cfg
 *.egg
 setup.cfg
+.pypirc
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -107,6 +108,3 @@ ENV/
 
 ### Vagrant ###
 .vagrant/
-
-# PyPi
-.pypirc
