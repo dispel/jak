@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # jak documentation build configuration file, created by
-# sphinx-quickstart on Mon Jan  9 13:16:07 2017.
+# sphinx-quickstart on Mon Jan 9 13:37:00 2017.
 #
 # This file is execfile()d with the current directory set to its
 # containing dir.
@@ -23,10 +23,6 @@ sys.path.insert(0, os.path.abspath('..'))
 
 
 # -- General configuration ------------------------------------------------
-
-# If your documentation needs a minimal Sphinx version, state it here.
-#
-# needs_sphinx = '1.0'
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
@@ -85,16 +81,24 @@ todo_include_todos = False
 
 # -- Options for HTML output ----------------------------------------------
 
-# The theme to use for HTML and HTML Help pages.  See the documentation for
-# a list of builtin themes.
-#
-html_theme = 'alabaster'
+# on_rtd is whether we are on readthedocs.org, this line of code grabbed from docs.readthedocs.org
+on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
+
+if not on_rtd:  # only import and set the theme if we're building docs locally
+    import sphinx_rtd_theme
+    html_theme = 'sphinx_rtd_theme'
+    html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
 #
-# html_theme_options = {}
+html_theme_options = {
+    # 'show_powered_by': False,
+    # 'github_user': 'dispel',
+    # 'github_repo': 'jak',
+    # 'github_banner': True
+}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
