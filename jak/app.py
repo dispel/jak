@@ -20,6 +20,9 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
 
 class JakGroup(click.Group):
+    """An override of the list_commands logic of click.Group so as to order the commands
+    in the help text more logically."""
+
     def list_commands(self, ctx):
         """Override so we get commands in help file them in the order we want in the help"""
 
@@ -53,7 +56,8 @@ def main(version):
     For more information about a certain command use:
       $> jak COMMAND --help
 
-    For full documentation see https://github.com/dispel/jak"""
+    For full documentation see https://github.com/dispel/jak
+    """
     if version:
         click.echo(__version_full__)
 
@@ -124,7 +128,7 @@ def keygen(minimal):
 @decorators.select_key
 @decorators.select_files
 def encrypt_inner(files, key, **kwargs):
-    """Flow for encrypting file(s)"""
+    """Logic for encrypting file(s)"""
     for filepath in files:
         try:
             result = cs.encrypt_file(filepath=filepath, key=key, **kwargs)
@@ -151,7 +155,7 @@ def encrypt(filepath, key, keyfile):
 @decorators.select_key
 @decorators.select_files
 def decrypt_inner(files, key, **kwargs):
-    """Flow for decrypting file(s)"""
+    """Logic for decrypting file(s)"""
     for filepath in files:
         try:
             result = cs.decrypt_file(filepath=filepath, key=key, **kwargs)
