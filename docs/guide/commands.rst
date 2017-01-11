@@ -124,13 +124,6 @@ so you can solve it yourself using your favorite text editor.
 :ref:`Read more here. <diffing>`
 
 
-
-Aliases
-=======
-
-jak is a big believer in keeping things simple, especially commonly used commands.
-
-
 stomp
 -----
 
