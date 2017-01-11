@@ -51,6 +51,7 @@ jak says: EXISTING PRE-COMMIT HOOK, I DON'T WANT TO OVERRIDE IT WILLY NILLY
 SEE .git/hooks/jak.pre-commit.py for further installation instructions.'''
 
 PRE_COMMIT_ENCRYPT = '''#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 """
 Copyright 2016 Dispel, LLC
