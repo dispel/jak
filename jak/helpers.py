@@ -40,7 +40,7 @@ def create_or_overwrite_file(filepath, content):
         f.write(content)
 
 
-def create_backup_filename(jwd, filepath):
+def create_backup_filepath(jwd, filepath):
     return '{}/.jak/{}_backup'.format(jwd, filepath[filepath.rfind('/') + 1:])
 
 
@@ -49,13 +49,13 @@ def backup_file_content(jwd, filepath, content):
 
     TODO Needs test
     """
-    filename = create_backup_filename(jwd=jwd, filepath=filepath)
-    return create_or_overwrite_file(filepath=filepath, content=content)
+    backup_filepath = create_backup_filepath(jwd=jwd, filepath=filepath)
+    return create_or_overwrite_file(filepath=backup_filepath, content=content)
 
 
 def is_there_a_backup(jwd, filepath):
     """Check if a backup for a file exists"""
-    filename = create_backup_filename(jwd=jwd, filepath=filepath)
+    filename = create_backup_filepath(jwd=jwd, filepath=filepath)
     return os.path.exists(filename)
 
 
@@ -67,7 +67,7 @@ def get_backup_content_for_file(jwd, filepath):
 
     TODO Needs test
     """
-    filename = create_backup_filename(jwd=jwd, filepath=filepath)
+    filename = create_backup_filepath(jwd=jwd, filepath=filepath)
     with open(filename, 'rt') as f:
         encrypted_secret = f.read()
     return encrypted_secret
