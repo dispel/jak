@@ -11,8 +11,13 @@ export DEBIAN_FRONTEND=noninteractive
 sudo apt-get update
 sudo add-apt-repository ppa:fkrull/deadsnakes -y
 sudo apt-get update
-sudo apt-get install build-essential libssl-dev libffi-dev python-dev python3.5-dev python3-dev -y
-sudo apt-get install python3.5 pypy python-pip git -y
+sudo apt-get install build-essential libssl-dev libffi-dev -y
+sudo apt-get install python3-dev python-dev -y
+sudo apt-get install python3.3-dev python3.3 -y
+sudo apt-get install python3.4-dev python3.4 -y
+sudo apt-get install python3.5-dev python3.5 -y
+# sudo apt-get install python3.6-dev python3.6 -y
+sudo apt-get install pypy python-pip git -y
 
 # Virtualenvs for quickly switching between python 2 and 3
 sudo pip install virtualenvwrapper
@@ -32,6 +37,7 @@ cd /vagrant
 # switch between them with "workon py27" for example.
 mkvirtualenv py27
 mkvirtualenv -p /usr/bin/python3.5 py35
+mkvirtualenv -p /usr/bin/pypy pypy
 
 # We should now be in py35 so let's install our dependencies.
 pip install --editable .
@@ -39,6 +45,11 @@ pip install -r requirements_dev.txt
 
 # py27
 workon py27
+pip install --editable .
+pip install -r requirements_dev.txt
+
+# PyPy
+workon pypy
 pip install --editable .
 pip install -r requirements_dev.txt
 
