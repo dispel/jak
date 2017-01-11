@@ -29,7 +29,7 @@ jak encrypt <file> --key <key from keygen command>
 jak decrypt <file> --key <key from keygen command>
 
 # If you put the generated key in a file
-jak encrypt <file> --key-file <key file location>
+jak encrypt <file> --keyfile <key file location>
 etc.
 ```
 

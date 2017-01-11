@@ -13,7 +13,7 @@ Commands are given in the format ``jak <COMMAND> <ARGUMENTS> <OPTIONS>``. Some e
    jak keygen -m
    jak encrypt file
    jak encrypt file --key 64af685c12bf9f2245b851c528bdd6f41e351c8dbe614db4ea81d3486fc0ee5c
-   jak decrypt file --key-file secrets/jak/keyfile
+   jak decrypt file --keyfile secrets/jak/keyfile
    jak encrypt all
    jak stomp
    jak decrypt all
@@ -73,7 +73,7 @@ The ``all`` command requires a :ref:`jakfile <jakfile>` to exist, and will encry
    -k, --key
       jak encrypt <FILE> -k <KEY>
 
-   -kf, --key-file
+   -kf, --keyfile
       jak encrypt <FILE> -kf <PATH TO KEYFILE THAT MUST HAVE A 32 BYTE KEY IN IT>
 
 
@@ -91,7 +91,7 @@ The ``all`` command requires a :ref:`jakfile <jakfile>` to exist, and will decry
    -k, --key
       jak decrypt <FILE> -k <KEY>
 
-   -kf, --key-file
+   -kf, --keyfile
       jak decrypt <FILE> -kf <PATH TO KEYFILE THAT MUST HAVE A 32 BYTE KEY IN IT>
 
 
