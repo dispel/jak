@@ -127,8 +127,9 @@ def test_encrypt_file(tmpdir):
 
 def test_bad_encrypt_file_filepath(tmpdir):
     key = helpers.generate_256bit_key().decode('utf-8')
-    result = crypto.encrypt_file(jwd='', filepath="", key=key)
-    assert "can't find the file: " in result
+    with pytest.raises(JakException) as excinfo:
+        crypto.encrypt_file(jwd='', filepath='', key=key)
+    assert "can't find the file: " in str(excinfo.value)
 
 
 def test_decrypt_file(runner, tmpdir):
