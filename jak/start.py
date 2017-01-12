@@ -22,7 +22,7 @@ def create_jakfile(jwd=os.getcwd()):
         msg += '\n' + helpers.two_column('  Doing nothing, but feeling good about life', 'Done')
     else:
         key = helpers.generate_256bit_key().decode('utf-8')
-        fresh_jakfile = outputs.FRESH_JAKFILE.format(keyfile_path=keyfile_path)
+        fresh_jakfile = outputs.FRESH_JAKFILE.format(keyfile_path='.jak/keyfile')
         helpers.create_or_overwrite_file(filepath=jakfile_path, content=fresh_jakfile)
         helpers.create_or_overwrite_file(filepath=keyfile_path, content=key)
         msg = helpers.two_column('Is there already a jakfile?', 'Nope!')
