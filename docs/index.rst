@@ -44,6 +44,12 @@ Quickstart
 TODO: (have a video here of jak usage)
 
 
+Stewardship
+-----------
+
+`Dispel <https://dispel.io>`_ is the main steward of jaks development. But all contributions are encouraged and welcome. Please read the contribution guide for more information on contributing.
+
+
 Table of contents
 -----------------
 
