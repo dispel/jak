@@ -4,6 +4,12 @@ Basic usage
 ===========
 
 
+Installation
+------------
+
+Assuming you :ref:`fullfill the basic support requirements <support_short>` all you need to do is ``pip install jak``.
+
+
 Getting started
 ---------------
 
