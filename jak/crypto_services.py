@@ -16,78 +16,78 @@ from .exceptions import JakException, WrongKeyException
 ENCRYPTED_BY_HEADER = u'- - - Encrypted by jak - - -\n\n'
 
 
-def encrypt_file(jwd, filepath, key, **kwargs):
-    """Encrypts a file"""
-
+def _read_file(filepath):
+    """Helper for reading a file and making sure it has content."""
     try:
         with open(filepath, 'rt', encoding='utf-8') as f:
-            secret = f.read()
+            contents = f.read()
     except IOError:
-        return "Sorry I can't find the file: {}".format(filepath)
+        raise JakException("Sorry I can't find the file: {}".format(filepath))
 
-    if len(secret) == 0:
-        raise JakException('Hmmmm "{}" seems to be completely empty, skipping...'.format(filepath))
+    if len(contents) == 0:
+        raise JakException('The file "{}" is empty, aborting...'.format(filepath))
 
-    if ENCRYPTED_BY_HEADER in secret:
-        raise JakException('I already encrypted the file: "{}".'.format(filepath))
+    return contents
 
-    # FIXME REFACTOR
+
+def _restore_from_backup(jwd, filepath, secret, aes256_cipher):
+    """Return backup value (if such exists and content in file has not changed)
+
+    We may want to replace this with a simpler "check last modified time" lookup
+    that could happen in constant time instead.
+    """
     if helpers.is_there_a_backup(jwd=jwd, filepath=filepath):
         backup_encrypted_secret = helpers.get_backup_content_for_file(jwd=jwd, filepath=filepath)
-    else:
-        backup_encrypted_secret = False
+        previous_enc = base64.urlsafe_b64decode(b(backup_encrypted_secret))
+        iv = aes256_cipher.extract_iv(encrypted_secret=previous_enc)
+        new_secret_w_same_iv = aes256_cipher.encrypt(key=key, secret=secret, iv=iv)
 
-    aes256_cipher = AES256Cipher()
-    should_generate_new_secret = True
-    if backup_encrypted_secret:
-        ugly_backup_encrypted_secret = base64.urlsafe_b64decode(b(backup_encrypted_secret))
-        iv = aes256_cipher.extract_iv(encrypted_secret=ugly_backup_encrypted_secret)
-        encrypted_secret = aes256_cipher.encrypt(key=key, secret=secret, iv=iv)
+        if new_secret_w_same_iv == previous_enc:
+            return backup_encrypted_secret
 
-        if encrypted_secret == ugly_backup_encrypted_secret:
-            should_generate_new_secret = False
+    return None
 
-    if should_generate_new_secret:
-        encrypted_secret = aes256_cipher.encrypt(key=key, secret=secret)
 
-    # Prettier
-    nice_enc_secret = base64.urlsafe_b64encode(encrypted_secret)
-
+def write_secret_to_file(filepath, nice_enc_secret):
     encrypted_chunks = helpers.grouper(nice_enc_secret.decode('utf-8'), 60)
     with open(filepath, 'w', encoding='utf-8') as f:
         f.write(ENCRYPTED_BY_HEADER)
         for encrypted_chunk in encrypted_chunks:
             f.write(encrypted_chunk + '\n')
 
+
+def encrypt_file(jwd, filepath, key, **kwargs):
+    """Encrypts a file"""
+    secret = _read_file(filepath=filepath)
+
+    if ENCRYPTED_BY_HEADER in secret:
+        raise JakException('I already encrypted the file: "{}".'.format(filepath))
+
+    aes256_cipher = AES256Cipher()
+
+    # Try to restore from backup.
+    nice_enc_secret = _restore_from_backup(jwd=jwd,
+                                           filepath=filepath,
+                                           secret=secret,
+                                           aes256_cipher=aes256_cipher)
+
+    if not nice_enc_secret:
+        encrypted_secret = aes256_cipher.encrypt(key=key, secret=secret)
+
+        # Base64 is prettier
+        nice_enc_secret = base64.urlsafe_b64encode(encrypted_secret)
+
+    write_secret_to_file(filepath=filepath, nice_enc_secret=nice_enc_secret)
     return '{} - is now encrypted.'.format(filepath)
 
 
-def decrypt_file(jwd, filepath, key, **kwargs):
-    """Decrypts a file
+def decrypt_file(filepath, key, jwd, **kwargs):
+    """Decrypts a file"""
+    encrypted_secret = _read_file(filepath=filepath)
 
-    FIXME REFACTOR
-    This file is doing way too much:
-    - choose key
-    - open file and read it
-    - backup encrypted version
-    - decrypt content (probably still a wrapper around the cipher class)
-        - remove header
-        - b64decode
-        - setup->call cipher
-    - write back into file
-    """
-    try:
-        with open(filepath, 'rt', encoding='utf-8') as f:
-            encrypted_secret = f.read()
-    except IOError:
-        return "Sorry I can't find the file: {}".format(filepath)
-
-    if len(encrypted_secret) == 0:
-        raise JakException('The file "{}" is empty, aborting...'.format(filepath))
-
-    # Remove header.
     encrypted_secret = encrypted_secret.replace(ENCRYPTED_BY_HEADER, '')
 
+    # Remove the base64 encoding which is applied to make output prettier after encryption.
     try:
         ugly_encrypted_secret = base64.urlsafe_b64decode(b(encrypted_secret))
     except (TypeError, binascii.Error):
@@ -95,14 +95,12 @@ def decrypt_file(jwd, filepath, key, **kwargs):
             filepath)
 
     # Remember the encrypted file in the .jak folder
-    # FIXME will this have issues on WINDOWS?
-    # The reason to remember is because we don't want a re-encrypt
-    # of files to produce new encryptions if nothing has changed (which it would
-    # with a new IV). This way it works way better with VCS.
-    # import pdb; pdb.set_trace()
-    helpers.backup_file_content(jwd, filepath, encrypted_secret)
+    # The reason to remember is because we don't want re-encryption of files to
+    # be different from previous ones if the content has not changed (which it would
+    # with a new random IV). This way it works way better with VCS systems like git.
+    helpers.backup_file_content(jwd=jwd, filepath=filepath, content=encrypted_secret)
 
-    # Perform Decrypt
+    # Perform decryption
     aes256_cipher = AES256Cipher()
     try:
         decrypted_secret = aes256_cipher.decrypt(key=key, encrypted_secret=ugly_encrypted_secret)
@@ -113,10 +111,12 @@ def decrypt_file(jwd, filepath, key, **kwargs):
     try:
         decrypted_secret_as_string = decrypted_secret.decode('utf-8')
     except UnicodeDecodeError:
+
         # This happens when the encrypted secret (not the fingerprint part)
         # is edited, basically we decrypt into garbledygook and so the string
         # reader freaks out.
-        return 'The output was not what I expected...'
+        return 'The encrypted content is malformatted and I cannot decrypt it.'
+
     with open(filepath, 'w', encoding='utf-8') as f:
         f.write(decrypted_secret_as_string)
 
