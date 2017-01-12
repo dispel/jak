@@ -69,10 +69,6 @@ jak --help
 jak keygen --help
 ```
 
-# Contributor Guide
-
-See [CONTRIBUTOR_README.md](https://github.com/dispel/jak/blob/master/CONTRIBUTOR_README.md)
-
 # Authors
 
 jak is stewarded and sponsored by [Dispel](https://dispel.io) but all of the contributors are the authors.

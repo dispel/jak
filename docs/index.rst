@@ -16,12 +16,14 @@ Jak is a tool for encrypting text files. It works extra well if used in a git re
 
 ****JAK IS NOT READY YET, YOU ARE WELCOME TO CHECK IT OUT BUT WE HIGHLY RECOMMEND AGAINST USING IT ON ANY ACTUAL SECRETS YET!****
 
+
 Install
 -------
 
 .. sourcecode:: shell
 
    pip install jak
+
 
 
 Quickstart
@@ -51,6 +53,7 @@ Table of contents
    guide/usage
    guide/advanced
    guide/commands
+   guide/contributor
 
 
 Python Support
