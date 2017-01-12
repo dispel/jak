@@ -85,7 +85,6 @@ def decrypt_file(filepath, key, jwd, **kwargs):
     """Decrypts a file"""
     encrypted_secret = _read_file(filepath=filepath)
 
-    # Remove header.
     encrypted_secret = encrypted_secret.replace(ENCRYPTED_BY_HEADER, '')
 
     # Remove the base64 encoding which is applied to make output prettier after encryption.
@@ -97,7 +96,7 @@ def decrypt_file(filepath, key, jwd, **kwargs):
 
     # Remember the encrypted file in the .jak folder
     # The reason to remember is because we don't want re-encryption of files to
-    # be different from previous ones if the content has notchanged (which it would
+    # be different from previous ones if the content has not changed (which it would
     # with a new random IV). This way it works way better with VCS systems like git.
     helpers.backup_file_content(jwd=jwd, filepath=filepath, content=encrypted_secret)
 
