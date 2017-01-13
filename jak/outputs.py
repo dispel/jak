@@ -6,6 +6,9 @@ Apache 2.0 License, see https://github.com/dispel/jak/blob/master/LICENSE for de
 
 FRESH_JAKFILE = u'''
 {{
+
+  // This list is for the encrypt/decrypt all commands and for the
+  // pre-commit hook (optional) protection.
   "files_to_encrypt": ["path/to/file"],
   "keyfile": "{keyfile_path}"
 }}'''
