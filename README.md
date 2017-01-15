@@ -29,7 +29,7 @@ jak encrypt <file> --key <key from keygen command>
 jak decrypt <file> --key <key from keygen command>
 
 # If you put the generated key in a file
-jak encrypt <file> --key-file <key file location>
+jak encrypt <file> --keyfile <key file location>
 etc.
 ```
 
@@ -68,10 +68,6 @@ jak --help
 # It works for specific commands as well
 jak keygen --help
 ```
-
-# Contributor Guide
-
-See [CONTRIBUTOR_README.md](https://github.com/dispel/jak/blob/master/CONTRIBUTOR_README.md)
 
 # Authors
 
