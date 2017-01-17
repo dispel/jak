@@ -54,24 +54,9 @@ Copyright 2016 Dispel, LLC
 Apache 2.0 License, see https://github.com/dispel/jak/blob/master/LICENSE for details.
 
 INSTALLATION
-To enable the pre-commit hook,
-Please add the following block into your .git/hooks/pre-commit script manually:
-
-#----Begin jak Block ----
-
-PURPLE='\033[1;35m'
-NC='\033[0m' # No Color
-
-printf "🌰  ${PURPLE}jak: pre-commit > Encrypting files listed in jakfile.${NC}\n"
-
-# See http://click.pocoo.org/6/python3/ for more info
-export LC_ALL=en_US.UTF-8
-export LANG=en_US.UTF-8
-
-# Encrypt any staged files that are protected by jak
-python .git/hooks/jak.pre-commit.py
-
-#----End jak Block ----
+The pre-commit hook is usually added with the jak start command.
+If you want to add it manually I would recommend running jak start in a temp.
+local git repository and copying the files from the .git/hooks folder.
 """
 
 from __future__ import unicode_literals

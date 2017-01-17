@@ -4,10 +4,12 @@ Basic usage
 ===========
 
 
+
 Installation
 ------------
 
 Assuming you :ref:`fullfill the basic support requirements <support_short>` all you need to do is ``pip install jak``.
+
 
 
 Getting started
@@ -31,20 +33,22 @@ Let's say we have the project ``flowers`` which has two secret files we want to 
 
    $> jak encrypt all
 
-   # you can also do it one by one
+   # you can also encrypt/decrypt specific files
    $> jak decrypt .env
 
 Easy peasy lemon squeeze! :ref:`Read more about initializing jak here. <start_cmd>`
 
 
-Which jak files can be committed?
----------------------------------
+
+Which jak files should be committed?
+------------------------------------
 
 **commit:** jakfile
 
-**ignore:** .jak folder (which by default includes the keyfile), the keyfile (if you don't have it in your .jak folder).
+**ignore:** .jak folder (which by default includes the keyfile)
 
 **NEVER EVER COMMIT YOUR KEYFILE! IT IS WHAT ENCRYPTS/DECRYPTS YOUR SECRETS!**
+
 
 
 .. _keyfile:
@@ -52,7 +56,24 @@ Which jak files can be committed?
 keyfile
 -------
 
-The keyfile is optional, as you can always pass through a key if you wish.
+The keyfile is optional, as you can always pass through a key if you wish. This means you can store the key somewhere else if you are worried about having it in plaintext, in a file, on your computer. Which is a really bad idea if someone else has access to your computer, or you suspect your computer has been in some other way compromised. However, since you do need to use the key in some fashion to decrypt/encrypt files with jak an argument can definitely be made that having it in a file as opposed to having it in your command history (``$> history``) is about the same level of security. Passing keys to jak in a more secure way is something we are actively thinking about, and if you have opinions you should get in touch.
+
+A Keyfile can be referenced from the jakfile (see below) or directly ``jak encrypt --keyfile /path/to/keyfile``.
+
+The keyfile should have NO INFORMATION other than a :ref:`secure key <key>`.
+
+
+
+.. _key:
+
+key
+---
+
+Generate a new key by issuing the :ref:`jak keygen <keygen_cmd>` command.
+
+Since jak generates a key 32 byte key (64 characters, which jak generates as `Nibbles <https://en.wikipedia.org/wiki/Nibble>`_ (4bit) to keep things easy to read. If you really know what you are doing there is nothing stopping you from feeding jak 64 characters where each is a full byte though, so you could theoretically go for AES512 under this scheme.
+
+
 
 
 .. _jakfile:
