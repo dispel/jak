@@ -21,6 +21,7 @@ Commands are given in the format ``jak <COMMAND> <ARGUMENTS> <OPTIONS>``. Some e
    jak diff
 
 
+
 --help
 ------
 
@@ -31,6 +32,16 @@ More information about jak or a jak command.
 ``jak == jak -h == jak --help``
 
 ``jak <COMMAND> -h == jak <COMMAND> --help``
+
+
+
+--version, -v
+-------------
+
+``jak -v``
+
+Prints out the version.
+
 
 
 .. _start_cmd:
@@ -59,6 +70,7 @@ It should give you very detailed output about what is happening.
 The start command is idempotent, so you can run it many times if you (for example) on second thought would like to add the git pre-commit hook.
 
 
+
 encrypt
 -------
 
@@ -75,6 +87,7 @@ The ``all`` command requires a :ref:`jakfile <jakfile>` to exist, and will encry
 
    -kf, --keyfile
       jak encrypt <FILE> -kf <PATH TO KEYFILE THAT MUST HAVE A 32 BYTE KEY IN IT>
+
 
 
 decrypt
@@ -95,6 +108,9 @@ The ``all`` command requires a :ref:`jakfile <jakfile>` to exist, and will decry
       jak decrypt <FILE> -kf <PATH TO KEYFILE THAT MUST HAVE A 32 BYTE KEY IN IT>
 
 
+
+.. _keygen_cmd:
+
 keygen
 ------
 
@@ -106,6 +122,7 @@ Generate a 32byte key that jak will accept. Returns it to the command line.
 
    -m, --minimal
       Makes the command only return the key with no comments
+
 
 
 .. _diff_cmd:
@@ -121,7 +138,18 @@ It will then prompt you for if you want to open the conflict in a merge tool
 such as vimdiff or opendiff (default on macOS) or if you simply want the decrypted content written back into the file
 so you can solve it yourself using your favorite text editor.
 
+**optional arguments:**
+
+.. sourcecode:: text
+
+   -k, --key
+      jak encrypt <FILE> -k <KEY>
+
+   -kf, --keyfile
+      jak encrypt <FILE> -kf <PATH TO KEYFILE THAT MUST HAVE A 32 BYTE KEY IN IT>
+
 :ref:`Read more here. <diffing>`
+
 
 
 stomp
@@ -132,6 +160,7 @@ stomp
 Alias for ``jak encrypt all``.
 
 **Has the same options as the encrypt/decrypt commands.**
+
 
 
 shave

@@ -17,6 +17,7 @@ Jak is a tool for encrypting text files. It works extra well if used in a git re
 ****JAK IS NOT READY YET, YOU ARE WELCOME TO CHECK IT OUT BUT WE HIGHLY RECOMMEND AGAINST USING IT ON ANY ACTUAL SECRETS YET!****
 
 
+
 Install
 -------
 
@@ -38,16 +39,19 @@ Quickstart
 
    jak encrypt all
 
-   # All files should now be encrypted.
+   # All files listen in the jakfile should now be encrypted.
 
+We also made this video that might be helpful for running through a basic setup in a git repository.
 
-TODO: (have a video here of jak usage)
+.. raw:: html
+
+   <asciinema-player src="/_static/videos/quickstart.json"></asciinema-player>
 
 
 Stewardship
 -----------
 
-`Dispel <https://dispel.io>`_ is the main steward of jaks development. But all contributions are encouraged and welcome. Please read the contribution guide for more information on contributing.
+`Dispel <https://dispel.io>`_ is the main steward of jaks development. But all contributions are encouraged and welcome. Please read the :ref:`contribution guide <contributor>` for more information on contributing.
 
 
 Table of contents
@@ -61,6 +65,7 @@ Table of contents
    guide/commands
    guide/contributor
    support
+   changelog
 
 
 .. _support_short:

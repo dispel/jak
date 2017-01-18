@@ -1,0 +1,562 @@
+{
+  "version": 1,
+  "width": 92,
+  "height": 23,
+  "duration": 27.8602,
+  "command": null,
+  "title": "diffmerge",
+  "env": {
+    "TERM": "xterm-256color",
+    "SHELL": "/bin/zsh"
+  },
+  "stdout": [
+    [
+      2.316494,
+      "\u001b[1m\u001b[7m%\u001b[27m\u001b[1m\u001b[0m                                                                                           \r \r\u001b]2;chris@pauling: ~/diff\u0007\u001b]1;~/diff\u0007"
+    ],
+    [
+      0.020861,
+      "\r\u001b[0m\u001b[27m\u001b[24m\u001b[J\u001b[38;5;237m------------------------------------------------------------\u001b[00m\r\n\u001b[38;5;032m~/diff \u001b[38;5;105m»\u001b[00m \u001b[K\u001b[69C\u001b[38;5;237mchris@pauling\u001b[00m\u001b[82D"
+    ],
+    [
+      0.000472,
+      "\u001b[?1h\u001b="
+    ],
+    [
+      0.000732,
+      "\u001b[?2004h"
+    ],
+    [
+      2.313995,
+      "\u001b[32ml\u001b[39m"
+    ],
+    [
+      0.098671,
+      "\b\u001b[32ml\u001b[32ms\u001b[39m"
+    ],
+    [
+      0.557072,
+      "\u001b[?1l\u001b>"
+    ],
+    [
+      0.001124,
+      "\u001b[?2004l\r\r\n"
+    ],
+    [
+      0.000565,
+      "\u001b]2;ls -G\u0007\u001b]1;ls\u0007"
+    ],
+    [
+      0.006183,
+      "secret\r\n"
+    ],
+    [
+      0.000816,
+      "\u001b[1m\u001b[7m%\u001b[27m\u001b[1m\u001b[0m                                                                                           \r \r"
+    ],
+    [
+      0.000158,
+      "\u001b]2;chris@pauling: ~/diff\u0007\u001b]1;~/diff\u0007"
+    ],
+    [
+      0.033904,
+      "\r\u001b[0m\u001b[27m\u001b[24m\u001b[J\u001b[38;5;237m------------------------------------------------------------\u001b[00m\r\n\u001b[38;5;032m~/diff \u001b[38;5;105m»\u001b[00m \u001b[K\u001b[69C\u001b[38;5;237mchris@pauling\u001b[00m\u001b[82D"
+    ],
+    [
+      0.000181,
+      "\u001b[?1h\u001b="
+    ],
+    [
+      0.000572,
+      "\u001b[?2004h"
+    ],
+    [
+      0.299973,
+      "\u001b[1m\u001b[31mc\u001b[0m\u001b[39m"
+    ],
+    [
+      0.119899,
+      "\b\u001b[1m\u001b[31mc\u001b[1m\u001b[31ma\u001b[0m\u001b[39m"
+    ],
+    [
+      0.124118,
+      "\b\b\u001b[0m\u001b[32mc\u001b[0m\u001b[32ma\u001b[32mt\u001b[39m"
+    ],
+    [
+      0.108163,
+      " "
+    ],
+    [
+      0.094634,
+      "\u001b[4ms\u001b[24m"
+    ],
+    [
+      0.170686,
+      "\b\u001b[4ms\u001b[4me\u001b[24m"
+    ],
+    [
+      0.131543,
+      "\b\u001b[4me\u001b[4mc\u001b[24m"
+    ],
+    [
+      0.190153,
+      "\u001b[?7l\u001b[31m......\u001b[39m\u001b[?7h"
+    ],
+    [
+      0.019323,
+      "\r\r\u001b[A\u001b[0m\u001b[27m\u001b[24m\u001b[J\u001b[38;5;237m------------------------------------------------------------\u001b[00m\r\n\u001b[38;5;032m~/diff \u001b[38;5;105m»\u001b[00m \u001b[32mcat\u001b[39m \u001b[4msecret\u001b[24m\u001b[1m \u001b[0m\u001b[K\u001b[58C\u001b[38;5;237mchris@pauling\u001b[00m\u001b[71D"
+    ],
+    [
+      0.542795,
+      "\b\u001b[0m \b"
+    ],
+    [
+      2.4e-05,
+      "\u001b[?1l\u001b>"
+    ],
+    [
+      0.001393,
+      "\u001b[?2004l\r\r\n"
+    ],
+    [
+      0.000435,
+      "\u001b]2;cat secret\u0007\u001b]1;cat\u0007"
+    ],
+    [
+      0.004064,
+      "- - - Encrypted by jak - - -\r\n\r\n\r\n<<<<<<< HEAD\r\nNGJkMjc2YWRmMTYyN2RmZjZjZTNjNTAzNDQ3NTcyZmYxYjMyOWY5N2NiOThk\r\nM2RhOTRkMDkwMjJhZTA1NTgxOTY1MGYxNWFkYzk1OWQ1N2Q3OWE4OTczZDk1\r\nZGM0ZTM2NGQ5MDkxZmQyMzQxYmEzNzA2ZDM5OWU2MDVlNTdjZjeRpmoyhjV4\r\nN9NzWMfhSEzSqEBCxzcD1c6PsExEnGrKYpSMUGof_7qo8DgdoXx9C3c=\r\n=======\r\nMmE4NDI5Yzg3MWJkOWExYzhhNWU4Zjc2ZTY5NzM5YTkwMDgwZmM4ZTllZTli\r\nYjRjZGU5MTY4MmJhMTk1MmRjZjk3ZGE1Njg2OTMyZGE3NDM3NDk5NDRhY2Mw\r\nM2U0ZjEyM2YxNmM4YjMyNWZiOTE0ZTFmNjZkMmEwYzEyNjQ5YmUO9cNGc7zr\r\nyMCxQUX6tDlF26_gaiv3cnlFIvQftPXbRzxhRQ71CVSY7iXlN0AH9gE=\r\n>>>>>>> f8eb651525b7403aa5ed93c251374ddef8796dee\r\n"
+    ],
+    [
+      0.000545,
+      "\u001b[1m\u001b[7m%\u001b[27m\u001b[1m\u001b[0m                                                                                           \r \r"
+    ],
+    [
+      9.1e-05,
+      "\u001b]2;chris@pauling: ~/diff\u0007\u001b]1;~/diff\u0007"
+    ],
+    [
+      0.026468,
+      "\r\u001b[0m\u001b[27m\u001b[24m\u001b[J\u001b[38;5;237m------------------------------------------------------------\u001b[00m\r\n\u001b[38;5;032m~/diff \u001b[38;5;105m»\u001b[00m \u001b[K\u001b[69C\u001b[38;5;237mchris@pauling\u001b[00m\u001b[82D"
+    ],
+    [
+      0.000129,
+      "\u001b[?1h\u001b="
+    ],
+    [
+      0.000389,
+      "\u001b[?2004h"
+    ],
+    [
+      0.999604,
+      "\u001b[1m\u001b[31mj\u001b[0m\u001b[39m"
+    ],
+    [
+      0.088845,
+      "\b\u001b[1m\u001b[31mj\u001b[1m\u001b[31ma\u001b[0m\u001b[39m"
+    ],
+    [
+      0.087527,
+      "\b\b\u001b[0m\u001b[32mj\u001b[0m\u001b[32ma\u001b[32mk\u001b[39m"
+    ],
+    [
+      0.180214,
+      " "
+    ],
+    [
+      0.134305,
+      "d"
+    ],
+    [
+      0.100083,
+      "i"
+    ],
+    [
+      0.134226,
+      "f"
+    ],
+    [
+      0.123529,
+      "f"
+    ],
+    [
+      0.140908,
+      " "
+    ],
+    [
+      0.068507,
+      "\u001b[4ms\u001b[24m"
+    ],
+    [
+      0.164118,
+      "\b\u001b[4ms\u001b[4me\u001b[24m"
+    ],
+    [
+      0.142869,
+      "\b\u001b[4me\u001b[4mc\u001b[24m"
+    ],
+    [
+      0.211252,
+      "\u001b[?7l"
+    ],
+    [
+      3.3e-05,
+      "\u001b[31m......\u001b[39m\u001b[?7h"
+    ],
+    [
+      0.006159,
+      "\r\r\u001b[A\u001b[0m\u001b[27m\u001b[24m\u001b[J\u001b[38;5;237m------------------------------------------------------------\u001b[00m\r\n\u001b[38;5;032m~/diff \u001b[38;5;105m»\u001b[00m \u001b[32mjak\u001b[39m diff \u001b[4msecret\u001b[24m\u001b[1m \u001b[0m\u001b[K\u001b[53C\u001b[38;5;237mchris@pauling\u001b[00m\u001b[66D"
+    ],
+    [
+      1.01908,
+      "\b\u001b[0m -"
+    ],
+    [
+      0.126764,
+      "-"
+    ],
+    [
+      0.172991,
+      "k"
+    ],
+    [
+      0.104786,
+      "e"
+    ],
+    [
+      0.114304,
+      "y"
+    ],
+    [
+      0.175861,
+      " "
+    ],
+    [
+      0.385308,
+      "\u001b[22D\u001b[39mj\u001b[39ma\u001b[39mk\u001b[6C\u001b[24ms\u001b[24me\u001b[24mc\u001b[24mr\u001b[24me\u001b[24mt\u001b[7C\u001b[7m7bf880ac682f9d8326b7a2f328821e93f6b29c4c3ae9bf2fee689e8c6115c\u001b[7m5\u001b[7m60\u001b[27m\u001b[K"
+    ],
+    [
+      1.000635,
+      "\u001b[A\u001b[6C\u001b[32mj\u001b[32ma\u001b[32mk\u001b[39m\u001b[6C\u001b[4ms\u001b[4me\u001b[4mc\u001b[4mr\u001b[4me\u001b[4mt\u001b[24m\u001b[7C\u001b[27m7\u001b[27mb\u001b[27mf\u001b[27m8\u001b[27m8\u001b[27m0\u001b[27ma\u001b[27mc\u001b[27m6\u001b[27m8\u001b[27m2\u001b[27mf\u001b[27m9\u001b[27md\u001b[27m8\u001b[27m3\u001b[27m2\u001b[27m6\u001b[27mb\u001b[27m7\u001b[27ma\u001b[27m2\u001b[27mf\u001b[27m3\u001b[27m2\u001b[27m8\u001b[27m8\u001b[27m2\u001b[27m1\u001b[27me\u001b[27m9\u001b[27m3\u001b[27mf\u001b[27m6\u001b[27mb\u001b[27m2\u001b[27m9\u001b[27mc\u001b[27m4\u001b[27mc\u001b[27m3\u001b[27ma\u001b[27me\u001b[27m9\u001b[27mb\u001b[27mf\u001b[27m2\u001b[27mf\u001b[27me\u001b[27me\u001b[27m6\u001b[27m8\u001b[27m9\u001b[27me\u001b[27m8\u001b[27mc\u001b[27m6\u001b[27m1\u001b[27m1\u001b[27m5\u001b[27mc5\u001b[27m6\u001b[27m0"
+    ],
+    [
+      3.7e-05,
+      "\u001b[?1l\u001b>"
+    ],
+    [
+      0.00273,
+      "\u001b[?2004l\r\r\n"
+    ],
+    [
+      0.000572,
+      "\u001b]2;jak diff secret --key \u0007\u001b]1;jak\u0007"
+    ],
+    [
+      0.249594,
+      "Which editor do you want to use?\r\nplain (default): will simply decrypt the contents of the original file.\r\nopendiff: The macOS default merge tool.\r\nvimdiff: Hacker 4 life yo!\r\n\r\n[plain, opendiff, vimdiff] [plain]: "
+    ],
+    [
+      1.213871,
+      "p"
+    ],
+    [
+      0.063682,
+      "l"
+    ],
+    [
+      0.092254,
+      "a"
+    ],
+    [
+      0.083951,
+      "i"
+    ],
+    [
+      0.056244,
+      "n"
+    ],
+    [
+      0.295038,
+      "\r\n"
+    ],
+    [
+      0.000368,
+      "Ok, file decrypted, go ahead an edit it manually. Godspeed you master of the universe.\r\n"
+    ],
+    [
+      0.019957,
+      "\u001b[1m\u001b[7m%\u001b[27m\u001b[1m\u001b[0m                                                                                           \r \r"
+    ],
+    [
+      0.000126,
+      "\u001b]2;chris@pauling: ~/diff\u0007"
+    ],
+    [
+      2.3e-05,
+      "\u001b]1;~/diff\u0007"
+    ],
+    [
+      0.022491,
+      "\r\u001b[0m\u001b[27m\u001b[24m\u001b[J\u001b[38;5;237m------------------------------------------------------------\u001b[00m\r\n\u001b[38;5;032m~/diff \u001b[38;5;105m»\u001b[00m \u001b[K\u001b[69C\u001b[38;5;237mchris@pauling\u001b[00m\u001b[82D"
+    ],
+    [
+      8e-05,
+      "\u001b[?1h\u001b="
+    ],
+    [
+      0.000466,
+      "\u001b[?2004h"
+    ],
+    [
+      0.426073,
+      "\u001b[1m\u001b[31mn\u001b[0m\u001b[39m"
+    ],
+    [
+      0.09961,
+      "\b\u001b[1m\u001b[31mn\u001b[1m\u001b[31ma\u001b[0m\u001b[39m"
+    ],
+    [
+      0.060034,
+      "\b\b\u001b[1m\u001b[31mn\u001b[1m\u001b[31ma\u001b[1m\u001b[31mn\u001b[0m\u001b[39m"
+    ],
+    [
+      0.144372,
+      "\b\b\b\u001b[0m\u001b[32mn\u001b[0m\u001b[32ma\u001b[0m\u001b[32mn\u001b[32mo\u001b[39m"
+    ],
+    [
+      0.164373,
+      " "
+    ],
+    [
+      0.056996,
+      "\u001b[4ms\u001b[24m"
+    ],
+    [
+      0.150787,
+      "\b\u001b[4ms\u001b[4me\u001b[24m"
+    ],
+    [
+      0.149089,
+      "\b\u001b[4me\u001b[4mc\u001b[24m"
+    ],
+    [
+      0.19311,
+      "\u001b[?7l\u001b[31m......\u001b[39m\u001b[?7h"
+    ],
+    [
+      0.005719,
+      "\r\r\u001b[A\u001b[0m\u001b[27m\u001b[24m\u001b[J\u001b[38;5;237m------------------------------------------------------------\u001b[00m\r\n\u001b[38;5;032m~/diff \u001b[38;5;105m»\u001b[00m \u001b[32mnano\u001b[39m \u001b[4msecret\u001b[24m\u001b[1m \u001b[0m\u001b[K\u001b[57C\u001b[38;5;237mchris@pauling\u001b[00m\u001b[70D"
+    ],
+    [
+      0.489953,
+      "\b\u001b[0m \b"
+    ],
+    [
+      2.5e-05,
+      "\u001b[?1l\u001b>"
+    ],
+    [
+      0.001427,
+      "\u001b[?2004l\r\r\n"
+    ],
+    [
+      0.000513,
+      "\u001b]2;nano secret\u0007\u001b]1;nano\u0007"
+    ],
+    [
+      0.004608,
+      "\u001b[?1049h\u001b[1;23r\u001b(B\u001b[m\u001b[4l\u001b[?7h\u001b[?12l\u001b[?25h"
+    ],
+    [
+      3.9e-05,
+      "\u001b[?1h\u001b=\u001b[?1h\u001b=\u001b[?1h\u001b="
+    ],
+    [
+      0.000673,
+      "\u001b[39;49m\u001b[39;49m\u001b(B\u001b[m\u001b[H\u001b[2J\u001b(B\u001b[0;7m  GNU nano 2.0.6                   File: secret                                             \u001b[3;1H\u001b(B\u001b[m<<<<<<< HEAD\r\u001b[4dAUDIENCE=PRETTY_HOT\r\u001b[5d=======\r\u001b[6dAUDIENCE=REALLY_HOT\r\u001b[7d>>>>>>> f8eb651525b7403aa5ed93c251374ddef8796dee\u001b[21;39H\u001b(B\u001b[0;7m[ Read 5 lines ]\r\u001b[22d^G\u001b(B\u001b[m Get Help    \u001b(B\u001b[0;7m^O\u001b(B\u001b[m WriteOut    \u001b(B\u001b[0;7m^R\u001b(B\u001b[m Read File   \u001b(B\u001b[0;7m^Y\u001b(B\u001b[m Prev Page   \u001b(B\u001b[0;7m^K\u001b(B\u001b[m Cut Text    \u001b(B\u001b[0;7m^C\u001b(B\u001b[m Cur Pos\r\u001b[23d\u001b(B\u001b[0;7m^X\u001b(B\u001b[m Exit\u001b[23;16H\u001b(B\u001b[0;7m^J\u001b(B\u001b[m Justify     \u001b(B\u001b[0;7m^W\u001b(B\u001b[m Where Is    \u001b(B\u001b[0;7m^V\u001b(B\u001b[m Next Page   \u001b(B\u001b[0;7m^U\u001b(B\u001b[m UnCut Text  \u001b(B\u001b[0;7m^T\u001b(B\u001b[m To Spell\r\u001b[3d"
+    ],
+    [
+      1.759468,
+      "\u001b[3;20r\u001b[20;1H\n\u001b[1;23r\u001b[1;83H\u001b(B\u001b[0;7mModified\r\u001b[3d\u001b(B\u001b[m"
+    ],
+    [
+      0.159499,
+      "\u001b[3;20r\u001b[20;1H\n\u001b[1;23r\u001b[3;1H"
+    ],
+    [
+      0.299699,
+      "\u001b[3;20r\u001b[20;1H\n\u001b[1;23r\u001b[3;1H"
+    ],
+    [
+      0.705947,
+      "\u001b[4d"
+    ],
+    [
+      0.595072,
+      "\u001b[K"
+    ],
+    [
+      0.671052,
+      "\u001b[21d\u001b(B\u001b[0;7mSave modified buffer (ANSWERING \"No\" WILL DESTROY CHANGES) ?                                \u001b[22;1H Y\u001b(B\u001b[m Yes\u001b[K\r\u001b[23d\u001b(B\u001b[0;7m N\u001b(B\u001b[m No  \u001b[23;16H \u001b(B\u001b[0;7m^C\u001b(B\u001b[m Cancel\u001b[K\u001b[21;62H"
+    ],
+    [
+      0.220605,
+      "\r\u001b(B\u001b[0;7mFile Name to Write: secret                                  \r\u001b[22d^G\u001b(B\u001b[m Get Help\u001b[22;24H\u001b(B\u001b[0;7m^T\u001b(B\u001b[m To Files\u001b[22;47H\u001b(B\u001b[0;7mM-M\u001b(B\u001b[m Mac Format\u001b[22;70H\u001b(B\u001b[0;7mM-P\u001b(B\u001b[m Prepend\r\u001b[23d\u001b(B\u001b[0;7m^C\u001b(B\u001b[m Cancel\u001b[17G       \u001b(B\u001b[0;7mM-D\u001b(B\u001b[m DOS Format\u001b[23;47H\u001b(B\u001b[0;7mM-A\u001b(B\u001b[m Append\u001b[23;70H\u001b(B\u001b[0;7mM-B\u001b(B\u001b[m Backup File\u001b[21;27H"
+    ],
+    [
+      0.460922,
+      "\r\u001b[22d\u001b[39;49m\u001b(B\u001b[m\u001b[J\u001b[1;83H\u001b(B\u001b[0;7m        \u001b[21;38H\u001b(B\u001b[m\u001b[1K \u001b(B\u001b[0;7m[ Wrote 1 line ]\u001b(B\u001b[m\u001b[K\u001b[23;92H\u001b[23;1H\u001b[?1049l\r\u001b[?1l\u001b>"
+    ],
+    [
+      0.000738,
+      "\u001b[1m\u001b[7m%\u001b[27m\u001b[1m\u001b[0m                                                                                           \r \r"
+    ],
+    [
+      0.000119,
+      "\u001b]2;chris@pauling: ~/diff\u0007"
+    ],
+    [
+      2.4e-05,
+      "\u001b]1;~/diff\u0007"
+    ],
+    [
+      0.022623,
+      "\r\u001b[0m\u001b[27m\u001b[24m\u001b[J\u001b[38;5;237m------------------------------------------------------------\u001b[00m\r\n\u001b[38;5;032m~/diff \u001b[38;5;105m»\u001b[00m "
+    ],
+    [
+      3.3e-05,
+      "\u001b[K\u001b[69C\u001b[38;5;237mchris@pauling\u001b[00m\u001b[82D"
+    ],
+    [
+      0.000181,
+      "\u001b[?1h\u001b="
+    ],
+    [
+      0.0004,
+      "\u001b[?2004h"
+    ],
+    [
+      0.352034,
+      "\u001b[1m\u001b[31me\u001b[0m\u001b[39m"
+    ],
+    [
+      0.160721,
+      "\b\u001b[1m\u001b[31me\u001b[1m\u001b[31mc\u001b[0m\u001b[39m"
+    ],
+    [
+      0.08815,
+      "\b\b\u001b[1m\u001b[31me\u001b[1m\u001b[31mc\u001b[1m\u001b[31mh\u001b[0m\u001b[39m"
+    ],
+    [
+      0.202649,
+      "\b\b\b\u001b[0m\u001b[32me\u001b[0m\u001b[32mc\u001b[0m\u001b[32mh\u001b[32mo\u001b[39m"
+    ],
+    [
+      0.455266,
+      " "
+    ],
+    [
+      0.531232,
+      "\u001b[33m\"\u001b[39m"
+    ],
+    [
+      0.116437,
+      "\b\u001b[33m\"\u001b[33m\"\u001b[39m"
+    ],
+    [
+      0.211167,
+      "\b"
+    ],
+    [
+      0.391657,
+      "\u001b[33mB\u001b[33m\"\u001b[39m\b"
+    ],
+    [
+      0.123403,
+      "\u001b[33mo\u001b[33m\"\u001b[39m\b"
+    ],
+    [
+      0.142431,
+      "\u001b[33mo\u001b[33m\"\u001b[39m\b"
+    ],
+    [
+      0.203648,
+      "\u001b[33mm\u001b[33m\"\u001b[39m\b"
+    ],
+    [
+      0.591432,
+      "\u001b[33m.\u001b[33m\"\u001b[39m\b"
+    ],
+    [
+      0.177073,
+      "\u001b[33m \u001b[33m\"\u001b[39m\b"
+    ],
+    [
+      0.139904,
+      "\u001b[33mP\u001b[33m\"\u001b[39m\b"
+    ],
+    [
+      0.095809,
+      "\u001b[33mr\u001b[33m\"\u001b[39m\b"
+    ],
+    [
+      0.079683,
+      "\u001b[33mo\u001b[33m\"\u001b[39m\b"
+    ],
+    [
+      0.111774,
+      "\u001b[33mf\u001b[33m\"\u001b[39m\b"
+    ],
+    [
+      0.072666,
+      "\u001b[33mi\u001b[33m\"\u001b[39m\b"
+    ],
+    [
+      0.112798,
+      "\u001b[33mt\u001b[33m\"\u001b[39m\b"
+    ],
+    [
+      0.14194,
+      "\u001b[33m.\u001b[33m\"\u001b[39m\b"
+    ],
+    [
+      0.497845,
+      "\u001b[?1l\u001b>"
+    ],
+    [
+      0.001496,
+      "\u001b[?2004l\r\r\n"
+    ],
+    [
+      0.000466,
+      "\u001b]2;echo \"Boom. Profit.\"\u0007\u001b]1;echo\u0007"
+    ],
+    [
+      0.000126,
+      "Boom. Profit.\r\n"
+    ],
+    [
+      2.5e-05,
+      "\u001b[1m\u001b[7m%\u001b[27m\u001b[1m\u001b[0m                                                                                           \r \r"
+    ],
+    [
+      0.000124,
+      "\u001b]2;chris@pauling: ~/diff\u0007\u001b]1;~/diff\u0007"
+    ],
+    [
+      0.025579,
+      "\r\u001b[0m\u001b[27m\u001b[24m\u001b[J\u001b[38;5;237m------------------------------------------------------------\u001b[00m\r\n\u001b[38;5;032m~/diff \u001b[38;5;105m»\u001b[00m \u001b[K\u001b[69C\u001b[38;5;237mchris@pauling\u001b[00m\u001b[82D"
+    ],
+    [
+      0.000219,
+      "\u001b[?1h\u001b="
+    ],
+    [
+      0.000448,
+      "\u001b[?2004h"
+    ],
+    [
+      1.013109,
+      "\u001b[?2004l\r\r\n"
+    ]
+  ]
+}
