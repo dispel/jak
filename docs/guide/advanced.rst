@@ -9,8 +9,7 @@ Here we answer questions not many people will have.
 Encryption & Security
 ---------------------
 
-If provided a jak generated key (complexity of the key is what determines the "number" for AES), jak will encrypt the files using AES256 which is secure. Seriously, I cannot stress this enough, using a poor password will result in poor encryption, don't do it! :ref:`Jak will generate the password for you if you ask nicely. <keygen
-_cmd>`
+If provided a jak generated key (complexity of the key is what determines the "number" for AES), jak will encrypt the files using AES256 which is secure. Seriously, I cannot stress this enough, using a poor password will result in poor encryption, don't do it! :ref:`Jak will generate the password for you if you ask nicely. <keygen_cmd>`
 
 
 
@@ -23,7 +22,7 @@ Basically, it holds the things jak doesn't feel like you should need to be looki
 
 One of the more important things jak recommends it holds is the :ref:`keyfile <keyfile>` which holds the auto generated key that jak uses.
 
-It also holds the backups used to :ref:`maintain state <maintain_sate>` of the encrypted files.
+It also holds the backups used to :ref:`maintain state <maintain_state>` of the encrypted files.
 
 
 
@@ -47,7 +46,7 @@ Basically jak extracts the LOCAL and REMOTE parts of the merge conflict and decr
 
 Example conflict can looks something like this: Where the LOCAL is the top and the REMOTE is the bottom.
 
-.. sourcecode:: plain
+.. sourcecode:: text
 
    <<<<<<< SOMETHING (usually HEAD)
    <some local like: asfs6e024f69113940ead0

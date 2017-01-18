@@ -41,8 +41,11 @@ Quickstart
 
    # All files listen in the jakfile should now be encrypted.
 
+We also made this video that might be helpful for running through a basic setup in a git repository.
 
-TODO: (have a video here of jak usage?)
+.. raw:: html
+
+   <asciinema-player src="_static/videos/quickstart.json"></asciinema-player>
 
 
 Stewardship
