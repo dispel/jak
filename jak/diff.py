@@ -15,7 +15,7 @@ from io import open
 from . import helpers
 from .compat import b
 from .aes_cipher import AES256Cipher
-from .exceptions import JakException
+from .exceptions import JakException, WrongKeyException
 from . import decorators
 
 
@@ -91,12 +91,23 @@ cyz>
         raise JakException(msg)
 
     aes256_cipher = AES256Cipher()
-    decrypted_local = aes256_cipher.decrypt(key=key, encrypted_secret=ugly_local)
-    decrypted_remote = aes256_cipher.decrypt(key=key, encrypted_secret=ugly_remote)
 
-    decrypted_local = decrypted_local.decode('utf-8').rstrip('\n')
-    decrypted_remote = decrypted_remote.decode('utf-8').rstrip('\n')
-    return decrypted_local, decrypted_remote
+    secrets = []
+    try:
+        decrypted = aes256_cipher.decrypt(key=key, encrypted_secret=ugly_local)
+    except WrongKeyException as wke:
+        raise JakException('LOCAL - {}'.format(wke.__str__()))
+    else:
+        secrets.append(decrypted.decode('utf-8').rstrip('\n'))
+
+    try:
+        decrypted = aes256_cipher.decrypt(key=key, encrypted_secret=ugly_remote)
+    except WrongKeyException as wke:
+        raise JakException('REMOTE - {}'.format(wke.__str__()))
+    else:
+        secrets.append(decrypted.decode('utf-8').rstrip('\n'))
+
+    return secrets
 
 
 def _extract_merge_conflict_parts(content):

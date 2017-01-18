@@ -11,7 +11,7 @@ from io import open
 from . import helpers
 from .compat import b
 from .aes_cipher import AES256Cipher
-from .exceptions import JakException
+from .exceptions import JakException, WrongKeyException
 
 ENCRYPTED_BY_HEADER = u'- - - Encrypted by jak - - -\n\n'
 
@@ -102,7 +102,10 @@ def decrypt_file(filepath, key, jwd, **kwargs):
 
     # Perform decryption
     aes256_cipher = AES256Cipher()
-    decrypted_secret = aes256_cipher.decrypt(key=key, encrypted_secret=ugly_encrypted_secret)
+    try:
+        decrypted_secret = aes256_cipher.decrypt(key=key, encrypted_secret=ugly_encrypted_secret)
+    except WrongKeyException as wke:
+        raise JakException('{} - {}'.format(filepath, wke.__str__()))
 
     # Write back unencrypted content to the file
     try:

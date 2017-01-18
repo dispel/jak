@@ -10,7 +10,7 @@ from .compat import b
 from Crypto import Random
 from Crypto.Cipher import AES
 from .padding import pad, unpad
-from .exceptions import JakException
+from .exceptions import JakException, WrongKeyException
 
 
 class AES256Cipher(object):
@@ -77,7 +77,7 @@ class AES256Cipher(object):
         key = binascii.unhexlify(key)
         iv = self.extract_iv(encrypted_secret)
         if not self._has_integrity(key, encrypted_secret, iv):
-            raise JakException('Wrong key. Aborting...')
+            raise WrongKeyException('Wrong key. Aborting...')
 
         # Pop the fingerprint off
         encrypted_secret = encrypted_secret[self.fingerprint_length:]
