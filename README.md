@@ -1,6 +1,6 @@
 # jak
 
-jak is a Troubled Toddler who helps developers encrypt their files.
+jak is a Troubled Toddler who helps developers encrypt their files. [Read the documentation.](https://jak.readthedocs.io)
 
 **OBS!! JAK IS NOT READY FOR PRODUCTION USE YET!!**
 
@@ -71,7 +71,7 @@ jak keygen --help
 
 # Authors
 
-jak is stewarded and sponsored by [Dispel](https://dispel.io) but all of the contributors are the authors.
+jak is stewarded by [Dispel](https://dispel.io) but all of the [contributors](https://github.com/dispel/jak/graphs/contributors) are the authors.
 
 # License (Apache-2.0)
 
