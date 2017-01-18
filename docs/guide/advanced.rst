@@ -62,7 +62,7 @@ Example conflict can looks something like this: Where the LOCAL is the top and t
 
 If you are a developer the `code for diffing is right here <https://github.com/dispel/jak/blob/master/jak/diff.py>`_.
 
-[Video of doing diff here?]
+:ref:`Here is information on how to perform a diff <diffing>`.
 
 
 

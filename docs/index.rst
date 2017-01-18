@@ -65,6 +65,7 @@ Table of contents
    guide/commands
    guide/contributor
    support
+   changelog
 
 
 .. _support_short:
