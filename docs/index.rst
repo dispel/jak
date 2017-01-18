@@ -45,7 +45,7 @@ We also made this video that might be helpful for running through a basic setup 
 
 .. raw:: html
 
-   <asciinema-player src="_static/videos/quickstart.json"></asciinema-player>
+   <asciinema-player src="/_static/videos/quickstart.json"></asciinema-player>
 
 
 Stewardship

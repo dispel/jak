@@ -138,6 +138,16 @@ It will then prompt you for if you want to open the conflict in a merge tool
 such as vimdiff or opendiff (default on macOS) or if you simply want the decrypted content written back into the file
 so you can solve it yourself using your favorite text editor.
 
+**optional arguments:**
+
+.. sourcecode:: text
+
+   -k, --key
+      jak encrypt <FILE> -k <KEY>
+
+   -kf, --keyfile
+      jak encrypt <FILE> -kf <PATH TO KEYFILE THAT MUST HAVE A 32 BYTE KEY IN IT>
+
 :ref:`Read more here. <diffing>`
 
 

@@ -40,6 +40,23 @@ Easy peasy lemon squeeze! :ref:`Read more about initializing jak here. <start_cm
 
 
 
+Using jak without a jakfile
+---------------------------
+
+Heres a video that explains:
+
+* Using jak without setup (which is fine, but not recommended for teams).
+* Generating a secure key.
+* Using the key to encrypt/decrypt a file via the CLI.
+* Creating your own keyfile.
+* One thing I do want to highlight is that the key will be stored in your CLI history, so this is not inherently more secure than keeping the key in a keyfile.
+
+
+.. raw:: html
+
+   <asciinema-player src="/_static/videos/nosetup.json"></asciinema-player>
+
+
 Which jak files should be committed?
 ------------------------------------
 
@@ -102,6 +119,8 @@ The ``files_to_encrypt`` value is a list specifying the files you wish to encryp
 1. If you are in a git repository and have added the :ref:`pre-commit hook <start_cmd>` the hook will check against this list to identify whether you are adding a secret file in its decrypted state, and if so encrypt it for you.
 2. It allows you to use the ``jak stomp/shave`` commands for encrypting and decrypting all of the files in the list really easily.
 
+
+
 .. _diffing:
 
 Diffing
@@ -124,3 +143,9 @@ The file being diffed should have a conflict looking something like this:
   NGMxNDZjYzJiZDczNGE1ZDEzYmRkZDMyY2IwMDI5Mjc3MWJmOWNXRvFeiNn8
   b6JFJwpATrZOE2srs1sc3p2TM529sw-11Q==
   >>>>>>> f8eb651525b7403aa5ed93c251374ddef8796dee
+
+Here is a video for your viewing pleasure.
+
+.. raw:: html
+
+   <asciinema-player src="/_static/videos/diffmerge_short.json"></asciinema-player>
