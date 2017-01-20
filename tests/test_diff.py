@@ -8,26 +8,24 @@ example_diff = '''
 - - - Encrypted by jak - - -
 
 <<<<<<< HEAD
-ZDRiM2Q0Yjg0ZTFkNDg3NzRhOTljOWVmYjAxOTE4NmI4Y2UzMTkwNTM5N2Nj
-YjdiYmQyZDU3MjI1MDkwY2ExYmU0NTMzOGYxYTViY2I0YWNlYzdmOWM2OTgz
-NmI5ODkxOWNhNjc5YjdiNGQ5ZDJiMTYyNDFhMzcwMWYxNDVmMWO8ttnsUSsa
-iDNgzDF18NB5RMHOOxjt13wRdV_RHxtZgw==
+Lh_8n6fURQtcJuJ7BYBURAmSbv6eUntMLLeTayRWKGYcxPRqH5GnTDa2JOG3
+L4n1p01vSl4MZQcuTrVCDvTTDYQzTMSEl8NDDjHDFggItCunDkrpCNCxNmw4
+qOd5ONit
 =======
-MGUwMWJhYjgxNDcyMjY2MjhmMzMzNWFlYTMwZDYzYzc5ZDc0NzVhMDc0M2Ji
-ZWUyMDc2NTAyZWM5MTRkMzQ5MmU4NTBlYzY1YjlmYTUwYTdlN2M2MDg3ZTI4
-NGMxNDZjYzJiZDczNGE1ZDEzYmRkZDMyY2IwMDI5Mjc3MWJmOWNXRvFeiNn8
-b6JFJwpATrZOE2srs1sc3p2TM529sw-11Q==
+Xus4rdNzWu-B4MYmo9JNI6zUM7e9XTjqF02OEA7jSG6sHBMjiPEZjp1E6O_t
+wKMDVvGx0xwbtxX9UKnhToR8dYLYXztnW5Q1vNZ4PsjF3SSVR6QUUbGuVjvD
+izhcZbmf
 >>>>>>> f8eb651525b7403aa5ed93c251374ddef8796dee
 '''
 
 
 def test_diff_decrypt():
-    local = 'ZDRiM2Q0Yjg0ZTFkNDg3NzRhOTljOWVmYjAxOTE4NmI4Y2UzMTkwNTM5N2NjYjdiYmQyZDU3MjI1MDkwY2ExYmU0NTMzOGYxYTViY2I0YWNlYzdmOWM2OTgzNmI5ODkxOWNhNjc5YjdiNGQ5ZDJiMTYyNDFhMzcwMWYxNDVmMWO8ttnsUSsaiDNgzDF18NB5RMHOOxjt13wRdV_RHxtZgw=='  # noqa
-    remote = 'MGUwMWJhYjgxNDcyMjY2MjhmMzMzNWFlYTMwZDYzYzc5ZDc0NzVhMDc0M2JiZWUyMDc2NTAyZWM5MTRkMzQ5MmU4NTBlYzY1YjlmYTUwYTdlN2M2MDg3ZTI4NGMxNDZjYzJiZDczNGE1ZDEzYmRkZDMyY2IwMDI5Mjc3MWJmOWNXRvFeiNn8b6JFJwpATrZOE2srs1sc3p2TM529sw-11Q=='  # noqa
-    expected_local = 'API=TRUE'
-    expected_remote = 'BOOM=SHAKA'
+    local = 'Lh_8n6fURQtcJuJ7BYBURAmSbv6eUntMLLeTayRWKGYcxPRqH5GnTDa2JOG3L4n1p01vSl4MZQcuTrVCDvTTDYQzTMSEl8NDDjHDFggItCunDkrpCNCxNmw4qOd5ONit'  # noqa
+    remote = 'Xus4rdNzWu-B4MYmo9JNI6zUM7e9XTjqF02OEA7jSG6sHBMjiPEZjp1E6O_twKMDVvGx0xwbtxX9UKnhToR8dYLYXztnW5Q1vNZ4PsjF3SSVR6QUUbGuVjvDizhcZbmf'  # noqa
+    expected_local = 'SECRET'
+    expected_remote = 'REMOTE_SECRET'
     (dlocal, dremote) = difflib._decrypt(
-        key='1e1862c99f9211a01eebedb00ae1475a1e1862c99f9211a01eebedb00ae1475a',
+        key='2c596b43b406c47d67a620b890da19351c811b643698f9395ab6674cf9f6b7ca',
         local=local,
         remote=remote)
     assert dlocal == expected_local
@@ -39,17 +37,15 @@ def test_extract_merge_conflict_parts():
     result = difflib._extract_merge_conflict_parts(content=example_diff)
     assert len(result) == 5
     assert result[0] == '<<<<<<< HEAD\n'
-    expected = '''ZDRiM2Q0Yjg0ZTFkNDg3NzRhOTljOWVmYjAxOTE4NmI4Y2UzMTkwNTM5N2Nj
-YjdiYmQyZDU3MjI1MDkwY2ExYmU0NTMzOGYxYTViY2I0YWNlYzdmOWM2OTgz
-NmI5ODkxOWNhNjc5YjdiNGQ5ZDJiMTYyNDFhMzcwMWYxNDVmMWO8ttnsUSsa
-iDNgzDF18NB5RMHOOxjt13wRdV_RHxtZgw==
+    expected = '''Lh_8n6fURQtcJuJ7BYBURAmSbv6eUntMLLeTayRWKGYcxPRqH5GnTDa2JOG3
+L4n1p01vSl4MZQcuTrVCDvTTDYQzTMSEl8NDDjHDFggItCunDkrpCNCxNmw4
+qOd5ONit
 '''
     assert result[1] == expected
     assert result[2] == '=======\n'
-    expected = '''MGUwMWJhYjgxNDcyMjY2MjhmMzMzNWFlYTMwZDYzYzc5ZDc0NzVhMDc0M2Ji
-ZWUyMDc2NTAyZWM5MTRkMzQ5MmU4NTBlYzY1YjlmYTUwYTdlN2M2MDg3ZTI4
-NGMxNDZjYzJiZDczNGE1ZDEzYmRkZDMyY2IwMDI5Mjc3MWJmOWNXRvFeiNn8
-b6JFJwpATrZOE2srs1sc3p2TM529sw-11Q==
+    expected = '''Xus4rdNzWu-B4MYmo9JNI6zUM7e9XTjqF02OEA7jSG6sHBMjiPEZjp1E6O_t
+wKMDVvGx0xwbtxX9UKnhToR8dYLYXztnW5Q1vNZ4PsjF3SSVR6QUUbGuVjvD
+izhcZbmf
 '''
     assert result[3] == expected
     assert result[4] == '>>>>>>> f8eb651525b7403aa5ed93c251374ddef8796dee\n'
@@ -71,7 +67,7 @@ def test_smoke_vimdiff(f, lf, rf):
     ('a/real/path', 'env.ext', u'localcontent', u'remotecontent')
 ])
 def test_create_local_remote_diff_files(tmpdir, filepath, name, local, remote):
-    # create a folder for htem to put the files so we dont pollute.
+    # create a folder for them to put the files so we dont pollute.
     test_dir = tmpdir.mkdir('difftests')
     (local_result, remote_result) = difflib._create_local_remote_diff_files(
         test_dir.strpath + '/' + filepath + name,
