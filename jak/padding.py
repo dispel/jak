@@ -5,7 +5,6 @@ Apache 2.0 License, see https://github.com/dispel/jak/blob/master/LICENSE for de
 """
 
 import six
-from .compat import b as bulle
 
 
 def pad(data, bs=16):
