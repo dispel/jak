@@ -66,9 +66,8 @@ class AES256Cipher(object):
     def decrypt(self, ciphertext):
         """Decrypts an encrypted secret."""
         signature = ciphertext[-self.SIG_SIZE:]
-        iv_and_data = ciphertext[:-self.SIG_SIZE]
         iv = self.extract_iv(ciphertext=ciphertext)
-        data = iv_and_data[self.BLOCK_SIZE:]
+        data = ciphertext[self.BLOCK_SIZE:-self.SIG_SIZE]
 
         if not self._authenticate(data=data, signature=signature):
             raise WrongKeyException('Wrong key OR the encrypted data has been tampered with. Either way I am aborting...')  # noqa
