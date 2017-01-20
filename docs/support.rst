@@ -7,17 +7,17 @@ Support
 Python Support
 --------------
 
-jak is tested on Pythons:
+jak is explicitly tested on Pythons:
 
-- 2.7.10+
+- 2.7.7 (It is probably safe to assume jak works for 2.7.7 - 2.7.13)
 - 3.3
 - 3.4
 - 3.5
+- 3.6
 - `PyPy <http://pypy.org/>`_
 
 Planned but not tested yet, but hopefully work:
 
-- 3.6
 - PyPy3
 
 jak follows the `Python end of support dates <https://docs.python.org/devguide/index.html#branchstatus>`_, which in practice means that support ends on the following dates:
