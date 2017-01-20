@@ -52,10 +52,9 @@ def test_encrypt_smoke(runner):
 def test_decrypt_smoke(runner):
     contents = '''- - - Encrypted by jak - - -
 
-ZDVkZTE2ZGMyN2M5MTMzNGNkZWVjMjY0ZWNjNzMyZjAyMzkxOWM0NzMzN2Jm
-MThiMTU2ODg1MzVlY2Y5MjNiNjQ1YmE1Yzc4NTEwMjU1YWRlMWI4YjFlNzU2
-Y2I3MGNlNWZlM2UyZmUzZTI4ZmE5YTA5Zjk2NDBhZmRiOWViZjkemFsYx8cn
-oU05MMawaL5g7zkI_XFFml8NSrXoIgTJ4g=='''
+Ax0zzsNIzeAvO-xtGQ9iLvLY5hTZEvv2drUREskNl650rseMpjnEVhoB4a8H
+PFwYEfNqQhtRC-JOa5uZf4iMzjeTbd4w3ZyX2fDwXr6hV_jCARRTlr38VZNk
+XlpXFy_i'''
     with runner.isolated_filesystem():
 
         with open('secret.txt', 'w') as f:
