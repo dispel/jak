@@ -37,7 +37,7 @@ class AES256Cipher(object):
 
         try:
             self.key = binascii.unhexlify(key)
-        except TypeError:
+        except (TypeError, binascii.Error):
 
             # Not all of them are hexadecimals in all likelihood
             raise key_issue_exception
@@ -45,7 +45,7 @@ class AES256Cipher(object):
         # Generate a separate HMAC key. This is (to my understanding) not
         # strictly necessary.
         # But was recommended by Thomas Pornin (http://crypto.stackexchange.com/a/8086)
-        self.hmac_key = SHA512.new(data=key).digest()
+        self.hmac_key = SHA512.new(data=key.encode()).digest()
 
     def _generate_iv(self):
         """Generates an Initialization Vector (IV).
@@ -63,19 +63,29 @@ class AES256Cipher(object):
         """Extract the IV"""
         return ciphertext[:self.BLOCK_SIZE]
 
+    def _extract_signature(self, ciphertext):
+        """extract the HMAC signature"""
+        return ciphertext[-self.SIG_SIZE:]
+
+    def _extract_payload(self, ciphertext):
+        """Returns the meat and potatoes, the encrypted data payload.
+        said another way it doesn't return the IV nor the MAC signature.
+        """
+        return ciphertext[self.BLOCK_SIZE:-self.SIG_SIZE]
+
     def decrypt(self, ciphertext):
         """Decrypts an encrypted secret."""
-        signature = ciphertext[-self.SIG_SIZE:]
+        signature = self._extract_signature(ciphertext=ciphertext)
         iv = self.extract_iv(ciphertext=ciphertext)
-        data = ciphertext[self.BLOCK_SIZE:-self.SIG_SIZE]
+        payload = self._extract_payload(ciphertext=ciphertext)
 
-        if not self._authenticate(data=data, signature=signature):
-            raise WrongKeyException('Wrong key OR the encrypted data has been tampered with. Either way I am aborting...')  # noqa
+        if not self._authenticate(data=payload, signature=signature):
+            raise WrongKeyException('Wrong key OR the encrypted payload has been tampered with. Either way I am aborting...')  # noqa
 
         # Setup cipher and perform actual decryption
         cipher_instance = self.cipher.new(key=self.key, mode=self.mode, IV=iv)
-        data_padded = cipher_instance.decrypt(ciphertext=data)
-        return unpad(data=data_padded)
+        payload_padded = cipher_instance.decrypt(ciphertext=payload)
+        return unpad(data=payload_padded)
 
     def encrypt(self, plaintext, iv=False):
         """Encrypts a secret"""

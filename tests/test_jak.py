@@ -35,6 +35,8 @@ def test_file_not_found(runner, cmd, filepath):
 
 
 def test_encrypt_smoke(runner):
+    """This one has proven to be an absolute godsend for finding
+    weirdness, especially between python versions."""
     with runner.isolated_filesystem():
         with open('secret.txt', 'w') as f:
             f.write('secret')

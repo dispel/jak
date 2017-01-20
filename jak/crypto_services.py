@@ -51,7 +51,7 @@ def _restore_from_backup(jwd, filepath, plaintext, aes256_cipher):
 
 
 def write_ciphertext_to_file(filepath, ciphertext):
-    ciphertext = ciphertext.replace('\n', '')
+    ciphertext = ciphertext.replace(b'\n', b'')
     encrypted_chunks = helpers.grouper(ciphertext.decode('utf-8'), 60)
     with open(filepath, 'w', encoding='utf-8') as f:
         f.write(ENCRYPTED_BY_HEADER)
