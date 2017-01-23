@@ -90,18 +90,18 @@ cyz>
 >>>>>>> SOMETHING'''
         raise JakException(msg)
 
-    aes256_cipher = AES256Cipher()
+    aes256_cipher = AES256Cipher(key=key)
 
     secrets = []
     try:
-        decrypted = aes256_cipher.decrypt(key=key, encrypted_secret=ugly_local)
+        decrypted = aes256_cipher.decrypt(ciphertext=ugly_local)
     except WrongKeyException as wke:
         raise JakException('LOCAL - {}'.format(wke.__str__()))
     else:
         secrets.append(decrypted.decode('utf-8').rstrip('\n'))
 
     try:
-        decrypted = aes256_cipher.decrypt(key=key, encrypted_secret=ugly_remote)
+        decrypted = aes256_cipher.decrypt(ciphertext=ugly_remote)
     except WrongKeyException as wke:
         raise JakException('REMOTE - {}'.format(wke.__str__()))
     else:

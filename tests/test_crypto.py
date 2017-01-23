@@ -4,6 +4,7 @@ import six
 import pytest
 import binascii
 from jak import helpers
+from jak.compat import b
 from Crypto.Cipher import AES
 from click.testing import CliRunner
 import jak.crypto_services as crypto
@@ -22,13 +23,20 @@ def runner():
 
 @pytest.fixture
 def cipher():
-    return crypto.AES256Cipher()
+    key = '4e9e5f6688e2a011856f7d58a27f7d9695013a893d89ad7652f2976a5c61f97f'
+    return crypto.AES256Cipher(key=key)
 
 
 def test_cipher(cipher):
     assert cipher.cipher == AES
-    assert cipher.block_size == AES.block_size
+    assert cipher.BLOCK_SIZE == AES.block_size
     assert cipher.mode == AES.MODE_CBC
+
+
+def test_bad_create_cipher():
+    # Needs to have a key arg to work.
+    with pytest.raises(TypeError):
+        crypto.AES256Cipher()
 
 
 def test_generate_iv(cipher):
@@ -45,74 +53,75 @@ def test_generate_iv(cipher):
     '11111111111111111111111111111111',  # 32
     '111111111111111111111111111111111111111111111111111111111111111',  # 63
     '11111111111111111111111111111111111111111111111111111111111111111',  # 65
+    'notmadeupofonlyhexadecimalcharacters1111111111111111111111111111'  # 64
 ])
-def test_encrypt_exceptions(cipher, key):
+def test_bad_keys_for_cipher_exceptions(key):
     with pytest.raises(JakException) as excinfo:
-        cipher.encrypt(key=key, secret='my secret')
-    assert 'Key must be exactly 64 characters' in str(excinfo.value)
+        cipher = crypto.AES256Cipher(key=key)
+    assert 'Key must be 64' in str(excinfo.value)
 
 
 def test_encrypt_decrypt(cipher):
     key = 'f2f3222f8b1c799b6abc78e26e5a9378814bc23f04a10576610827569e956b42'
     secret = 'secret'
 
-    encrypted = cipher.encrypt(key=key, secret=secret)
-    decrypted = cipher.decrypt(key=key, encrypted_secret=encrypted)
-    assert isinstance(encrypted, six.binary_type)
-    assert isinstance(decrypted, six.binary_type)
-    assert decrypted.decode('utf-8') == secret
-    assert encrypted != secret
-    assert encrypted != decrypted
+    ciphertext = cipher.encrypt(plaintext=secret)
+    plaintext = cipher.decrypt(ciphertext=ciphertext)
+    assert isinstance(ciphertext, six.binary_type)
+    assert isinstance(plaintext, six.binary_type)
+    assert plaintext.decode('utf-8') == secret
+    assert ciphertext != secret
+    assert ciphertext != plaintext
 
 
-def test_extract_iv(cipher):
-    cipher.fingerprint_length = 1
-    cipher.block_size = 3
-    assert cipher.extract_iv("abcdefg") == "bcd"
-
-    # Not an iterable.
-    with pytest.raises(TypeError):
-        cipher.extract_iv(5)
-
-
-def test_create_integrity_fingerprint(cipher):
-    iv = cipher._generate_iv()
-    key = helpers.generate_256bit_key().decode('utf-8')
-
-    from datetime import datetime
-    start = datetime.now()
-    for x in range(15):
-        fingerprint = cipher._create_integrity_fingerprint(key, iv)
-    end = datetime.now()
-    elapsed = end - start
-    assert elapsed.total_seconds() > 0.1
-    assert len(fingerprint) == cipher.fingerprint_length
-    assert isinstance(fingerprint, six.binary_type)
+def test_extractors(cipher):
+    cipher.BLOCK_SIZE = len('IV')
+    cipher.SIG_SIZE = len('signature')
+    ciphertext = 'IVpayloadsignature'
+    assert cipher.extract_iv(ciphertext) == 'IV'
+    assert cipher._extract_payload(ciphertext) == 'payload'
+    assert cipher._extract_signature(ciphertext) == 'signature'
 
 
-def test_create_integrity_fingerprint_old_python(cipher):
-    """Technically I dont need to check for python 3 here but otherwise I am
-    just comparing the exact same thing against itself."""
-    if six.PY3:
-        iv = cipher._generate_iv()
-        key = helpers.generate_256bit_key().decode('utf-8')
-        new_way = cipher._create_integrity_fingerprint(key, iv)
-        old_way = cipher._old_python_create_integrity_fingerprint(key, iv)
-        assert new_way == binascii.hexlify(old_way)
-    else:
-        pass
-
-
-def test_has_integrity(cipher):
-    key = 'd2944c68b750474b85609147ce6d3aae875e6ae8ac63618086a58b1c1716402d'
+def test_authenticate(cipher):
     secret = 'integrity'
-    encrypted = cipher.encrypt(key, secret)
-    iv = encrypted[cipher.fingerprint_length:cipher.fingerprint_length + cipher.block_size]
-    assert cipher._has_integrity(binascii.unhexlify(key), encrypted, iv) is True
+    ciphertext = cipher.encrypt(plaintext=secret)
+    iv = cipher.extract_iv(ciphertext=ciphertext)
+    payload = cipher._extract_payload(ciphertext=ciphertext)
+    signature = cipher._extract_signature(ciphertext=ciphertext)
+    assert cipher._authenticate(data=payload, signature=signature) is True
 
     bad_key = '02944c68b750474b85609147ce6d3aae875e6ae8ac63618086a58b1c1716402d'
-    assert bad_key != key
-    assert cipher._has_integrity(binascii.unhexlify(bad_key), encrypted, iv) is False
+    assert bad_key != cipher.key
+
+    # Maybe we should allow setting of key/hmac_key in a method?
+    new_cipher = crypto.AES256Cipher(key=bad_key)
+    assert new_cipher._authenticate(data=payload, signature=signature) is False
+
+
+def test_authenticate_tampered(cipher):
+    secret = 'integrity'
+    ciphertext = cipher.encrypt(plaintext=secret)
+    iv = cipher.extract_iv(ciphertext=ciphertext)
+    signature = cipher._extract_signature(ciphertext=ciphertext)
+    payload = cipher._extract_payload(ciphertext=ciphertext)
+
+    # Let's tamper with the payload
+    dump = [x for x in payload]
+
+    try:
+        dump[5] = dump[5] + 1 if dump[5] != 255 else dump[5] - 1
+    except TypeError:
+
+        # Python 2 or PyPy
+        x = ord(dump[5])
+        dump[5] = chr(x + 1) if x != 255 else chr(x - 1)
+        tampered_payload = "".join(dump)
+    else:
+        tampered_payload = b("".join(map(chr, dump)))
+
+    assert payload != tampered_payload
+    assert cipher._authenticate(data=tampered_payload, signature=signature) is False
 
 
 def test_encrypt_file(tmpdir):
@@ -137,13 +146,12 @@ def test_decrypt_file(runner, tmpdir):
         secretfile = tmpdir.mkdir("sub").join("hello")
         secretfile.write("""- - - Encrypted by jak - - -
 
-NjExY2Y3ZTM3YTczMTFjYjlmNDZlNWIxNDU4YWM4YWJhMWVkMjkwODUyYzZm
-YmJmZWVlMzJiODZhNjRjMGM0YzMxNGYxYjQzMzdjOTQzN2Q3OTFhNTFjYmM0
-ODhlMzJjY2NkZmI0NDE0ZTFjNGRiNDc1OGUxZDczNzdkMjk5NTaqHe8gr7gg
-upwlXs23zQA7Rsr-hOV7ENKehgvS67wyuA==""")
+bq1hcTOEPNqgsbJ1gi36R4pghPmIxfkqfnVF8BAZpnqVWO4IM7Pwsi52C_ws
+LFtx5-ppzMn7O78_JQTraXZRknJFCEIPrWuRKIVdQsunAWh-AwMZ3ON2icl8
+07o8FjcjqTk_tZLnLb5_aExIWUYYkA==""")
         key = '2a57929b3610ba53b96f472b0dca27402a57929b3610ba53b96f472b0dca2740'
         crypto.decrypt_file(jwd=secretfile.dirpath().strpath, filepath=secretfile.strpath, key=key)
-        assert secretfile.read() == "attack at dawn\n"
+        assert secretfile.read() == "we attack at dawn\n"
 
 
 def test_encrypt_and_decrypt_a_file(runner, tmpdir):
