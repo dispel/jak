@@ -17,7 +17,7 @@ sudo apt-get install python3.3-dev python3.3 -y
 sudo apt-get install python3.4-dev python3.4 -y
 sudo apt-get install python3.5-dev -y
 sudo apt-get install python3.6-dev python3.6 -y
-sudo apt-get install pypy python-pip git -y
+sudo apt-get install pypy pypy-dev python-pip git -y
 
 # Update pip
 sudo pip install --upgrade pip
