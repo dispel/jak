@@ -11,7 +11,14 @@ Changelog
 we believe the risk of us accidentally deleting peoples secrets is < 0.0001%. In practice this means better unit testing and talking to 2-3 more cryptography experts (especially outside of Dispel). Are you such an expert? Get in touch! cdilorenzo@dispel.io.
 
 
-0.10.X [Current]
+0.11.0 [2017-01-23 - Current]
+-----------------------------
+
+* **[0.11.0]** `FEATURE: Properly use HMAC to make sure the ciphertext has not been tampered with. <https://github.com/dispel/jak/pull/28>`_
+* Other:
+   * `Upgraded the dev environment <https://github.com/dispel/jak/pull/29>`_
+
+0.10.X [2017-01]
 ----------------
 
 * **[0.10.0]** `FEATURE: Switched to CBC mode for AES from CFB <https://github.com/dispel/jak/pull/14>`_
