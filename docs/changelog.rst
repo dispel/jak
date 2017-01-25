@@ -11,10 +11,17 @@ Changelog
 we believe the risk of us accidentally deleting peoples secrets is < 0.0001%. In practice this means better unit testing and talking to 2-3 more cryptography experts (especially outside of Dispel). Are you such an expert? Get in touch! cdilorenzo@dispel.io.
 
 
+0.14 [soon]
+-----------
+
+* **[0.14.0]** `FEATURE: jak encrypt/decrypt commands can now accept a list of files (jak encrypt file1 ... fileN -k <key>). <https://github.com/dispel/jak/pull/34>`_.
+
+
+
 0.13 [soon]
 -----------
 
-* **[0.13.0]** `FEATURE: Jak works for all type of files, not just text files. <https://github.com/dispel/jak/pull/33>`_.
+* **[0.13.0]** `FEATURE: jak works for all type of files, not just text files. <https://github.com/dispel/jak/pull/33>`_.
 
 
 0.12 [soon]
