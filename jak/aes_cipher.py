@@ -7,7 +7,6 @@ Apache 2.0 License, see https://github.com/dispel/jak/blob/master/LICENSE for de
 
 import hmac
 import binascii
-from .compat import b
 from Crypto import Random
 from Crypto.Cipher import AES
 from Crypto.Hash import SHA512
