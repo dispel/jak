@@ -2,18 +2,12 @@
 
 import six
 import pytest
-import binascii
 from jak import helpers
 from jak.compat import b
 from Crypto.Cipher import AES
 from click.testing import CliRunner
 import jak.crypto_services as crypto
 from jak.exceptions import JakException
-
-try:
-    from unittest import mock
-except ImportError:
-    import mock
 
 
 @pytest.fixture
@@ -34,7 +28,7 @@ def test_cipher(cipher):
 
 
 def test_bad_create_cipher():
-    # Needs to have a key arg to work.
+    # Fails due to no key argument.
     with pytest.raises(TypeError):
         crypto.AES256Cipher()
 
@@ -57,12 +51,11 @@ def test_generate_iv(cipher):
 ])
 def test_bad_keys_for_cipher_exceptions(key):
     with pytest.raises(JakException) as excinfo:
-        cipher = crypto.AES256Cipher(key=key)
+        crypto.AES256Cipher(key=key)
     assert 'Key must be 64' in str(excinfo.value)
 
 
 def test_encrypt_decrypt(cipher):
-    key = 'f2f3222f8b1c799b6abc78e26e5a9378814bc23f04a10576610827569e956b42'
     secret = 'secret'
 
     ciphertext = cipher.encrypt(plaintext=secret)
@@ -77,16 +70,18 @@ def test_encrypt_decrypt(cipher):
 def test_extractors(cipher):
     cipher.BLOCK_SIZE = len('IV')
     cipher.SIG_SIZE = len('signature')
-    ciphertext = 'IVpayloadsignature'
+    assert len(cipher.VERSION) == len('JAK-XXX')
+
+    ciphertext = 'JAK-XXXIVpayloadsignature'
     assert cipher.extract_iv(ciphertext) == 'IV'
     assert cipher._extract_payload(ciphertext) == 'payload'
     assert cipher._extract_signature(ciphertext) == 'signature'
+    assert cipher._extract_version(ciphertext) == 'JAK-XXX'
 
 
 def test_authenticate(cipher):
-    secret = 'integrity'
-    ciphertext = cipher.encrypt(plaintext=secret)
-    iv = cipher.extract_iv(ciphertext=ciphertext)
+    plaintext = 'integrity'
+    ciphertext = cipher.encrypt(plaintext=plaintext)
     payload = cipher._extract_payload(ciphertext=ciphertext)
     signature = cipher._extract_signature(ciphertext=ciphertext)
     assert cipher._authenticate(data=payload, signature=signature) is True
@@ -102,7 +97,6 @@ def test_authenticate(cipher):
 def test_authenticate_tampered(cipher):
     secret = 'integrity'
     ciphertext = cipher.encrypt(plaintext=secret)
-    iv = cipher.extract_iv(ciphertext=ciphertext)
     signature = cipher._extract_signature(ciphertext=ciphertext)
     payload = cipher._extract_payload(ciphertext=ciphertext)
 
@@ -146,9 +140,9 @@ def test_decrypt_file(runner, tmpdir):
         secretfile = tmpdir.mkdir("sub").join("hello")
         secretfile.write("""- - - Encrypted by jak - - -
 
-bq1hcTOEPNqgsbJ1gi36R4pghPmIxfkqfnVF8BAZpnqVWO4IM7Pwsi52C_ws
-LFtx5-ppzMn7O78_JQTraXZRknJFCEIPrWuRKIVdQsunAWh-AwMZ3ON2icl8
-07o8FjcjqTk_tZLnLb5_aExIWUYYkA==""")
+SkFLLTAwMI_ZCxve00vRIZq7if3C2cgVQ3Dlpjg2KPttRWtfq-bXOMsA1RUD
+5h4PW-mnkFVkPJXWS0IHK95gfJNG9U13pcUoEj4bOGqtu62PCavRXZFcSwZ6
+-rNE_PQvkoIFq7KlBFrdu8pWPCyFVvZjpGEFgw4=""")
         key = '2a57929b3610ba53b96f472b0dca27402a57929b3610ba53b96f472b0dca2740'
         crypto.decrypt_file(jwd=secretfile.dirpath().strpath, filepath=secretfile.strpath, key=key)
         assert secretfile.read() == "we attack at dawn\n"
@@ -174,3 +168,19 @@ def test_encrypt_and_decrypt_a_file(runner, tmpdir):
 
         # Back to original
         assert secretfile.read() == secret_content
+
+
+def test_need_old_decrypt_version(cipher):
+    same_version = b(cipher.VERSION)
+    assert cipher._need_old_decrypt_function(version=same_version) is False
+
+    different_version = b('JAK-XXX')
+    assert cipher._need_old_decrypt_function(version=different_version) is True
+
+
+def test_use_old_decrypt_version(cipher):
+
+    # Build out this test once we add old decrypt function calls in here.
+    # basically making sure it picks the right one.
+    with pytest.raises(Exception):
+        cipher._use_old_decrypt_function('version', 'ciphertext')

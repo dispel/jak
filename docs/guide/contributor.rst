@@ -75,6 +75,14 @@ Pull requests
 Once your branch or fork looks good make a PR and one of the stewards will take a look at it and give you a review (and hopefully merge it!).
 
 
+Alerts
+------
+
+It currently (2017-01-25) appears that tox will NOT run from Python 3.6 due to urrlib3 not existing. So run your tox from a different base Python environment for now.
+
+Also PyPy tests don't seem to run in tox either, I recommend checking out the virtualenv (``workon pypy``) and running them straight with ``pytest``. If someone could fix this, it would be much appreciated.
+
+
 Future versions
 ---------------
 

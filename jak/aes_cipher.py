@@ -94,7 +94,7 @@ class AES256Cipher(object):
     def _need_old_decrypt_function(self, version):
         return version != b(self.VERSION)
 
-    def _old_decrypt_function(self, version, ciphertext):
+    def _use_old_decrypt_function(self, version, ciphertext):
         """jak version is not the current one, so we need to use an old
         decryption function to go back to the plaintext.
         This makes it so we can upgrade the our ciphers and not doom users to
@@ -113,7 +113,7 @@ class AES256Cipher(object):
         version = self._extract_version(ciphertext=ciphertext)
 
         if self._need_old_decrypt_function(version):
-            return self._old_decrypt_function(version=version, ciphertext=ciphertext)
+            return self._use_old_decrypt_function(version=version, ciphertext=ciphertext)
 
         signature = self._extract_signature(ciphertext=ciphertext)
         iv = self.extract_iv(ciphertext=ciphertext)
