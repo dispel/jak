@@ -14,7 +14,7 @@ we believe the risk of us accidentally deleting peoples secrets is < 0.0001%. In
 0.13 [soon]
 -----------
 
-* **[0.13.0]** `FEATURE: Jak works for all type of files, not just text files. <https://github.com/dispel/jak/pull/32>`_.
+* **[0.13.0]** `FEATURE: Jak works for all type of files, not just text files. <https://github.com/dispel/jak/pull/33>`_.
 
 
 0.12 [soon]
