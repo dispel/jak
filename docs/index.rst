@@ -64,6 +64,7 @@ Table of contents
    guide/advanced
    guide/commands
    guide/contributor
+   security
    support
    changelog
 
