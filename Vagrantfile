@@ -36,8 +36,8 @@ cd /vagrant
 # Create our two virtualenvironments
 # switch between them with "workon py27" for example.
 mkvirtualenv py27
-mkvirtualenv -p /usr/bin/python3.6 py36
 mkvirtualenv -p /usr/bin/pypy pypy
+mkvirtualenv -p /usr/bin/python3.6 py36
 
 # We should now be in py36 so let's install our dependencies.
 pip install --editable .
