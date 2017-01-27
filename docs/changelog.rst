@@ -24,6 +24,7 @@ we believe the risk of us accidentally deleting peoples secrets is < 0.0001%. In
 
 * Other:
    * `Upgraded the dev environment <https://github.com/dispel/jak/pull/29>`_
+   * :ref:`Added security section to the documentation <security>`
 
 0.10 [~2017-01]
 ---------------
