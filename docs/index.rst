@@ -78,13 +78,14 @@ jak works if you have a modern Python (2.7-3.5) installed on a `*nix <https://en
 
 :ref:`You can read about it in excrutiating detail here. <support_detailed>`
 
+
 Proposed future features and enhancements
 -----------------------------------------
 
-- Support for binary files (non text files)
+- Make maintaining encrypted state of files optional
+- Avoid polluting filesystems with .jak folders?
 - Windows support
-- Upgradeable encryption. Basically all encryption eventually gets old, so if we can make a smooth way for people to migrate between the encryption jak implements that seems like a pretty good idea.
-- Easier key rotation.
+- Easier key rotation
 
 
 License
