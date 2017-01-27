@@ -17,6 +17,7 @@ we believe the risk of us accidentally deleting peoples secrets is < 0.0001%. In
 * **[0.11.0]** `FEATURE: Properly use HMAC to make sure the ciphertext has not been tampered with. <https://github.com/dispel/jak/pull/28>`_
 * Other:
    * `Upgraded the dev environment <https://github.com/dispel/jak/pull/29>`_
+   * :ref:`Added security section to the documentation <security>`
 
 0.10.X [2017-01]
 ----------------
