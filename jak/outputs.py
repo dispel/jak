@@ -131,7 +131,7 @@ TL;DR;
 1. If this is your first rodeo please look at your ./keyfile and your ./jakfile.
 2. Keep your keyfile secret at all costs. Don't commit it to any VCS, don't email it, don't put it in dropbox, definitely don't put it in google drive, etc...!
 
-{version}'''
+{version}'''  # noqa
 
 QUESTION_WANT_TO_ADD_PRE_COMMIT = '''
 Do you want to add a git pre-commit hook?

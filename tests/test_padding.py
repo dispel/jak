@@ -1,4 +1,3 @@
-import pytest
 from jak.padding import pad, unpad
 
 

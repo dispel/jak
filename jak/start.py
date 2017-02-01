@@ -6,7 +6,6 @@ Apache 2.0 License, see https://github.com/dispel/jak/blob/master/LICENSE for de
 
 import os
 import click
-import subprocess
 from io import open
 from . import outputs
 from . import helpers
@@ -38,7 +37,11 @@ they are not in the repo root"""
 
     with open(filepath, 'r+') as f:
         gitignore = f.read()
-        appended_text = '# Jak KeyFile\n .jak \n'
+
+        if '.jak' in gitignore:
+            return
+
+        appended_text = '\n# jaks secret stash\n.jak\n'
         try:
             appended_text = appended_text.decode('utf-8')
         except AttributeError:
