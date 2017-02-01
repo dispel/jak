@@ -139,15 +139,16 @@ def encrypt_inner(files, key, **kwargs):
 
 
 @main.command(help='jak encrypt <file>')
-@click.argument('filepath')
+@click.argument('filepaths', nargs=-1)
 @click.option('-k', '--key', default=None, metavar='<string>')
 @click.option('-kf', '--keyfile', default=None, metavar='<file_path>')
-def encrypt(filepath, key, keyfile):
+def encrypt(filepaths, key, keyfile):
     """Encrypt file(s)"""
-    try:
-        encrypt_inner(all_or_filepath=filepath, key=key, keyfile=keyfile)
-    except JakException as je:
-        click.echo(je)
+    for filepath in filepaths:
+        try:
+            encrypt_inner(all_or_filepath=filepath, key=key, keyfile=keyfile)
+        except JakException as je:
+            click.echo(je)
 
 
 @decorators.attach_jwd
@@ -166,15 +167,16 @@ def decrypt_inner(files, key, **kwargs):
 
 
 @main.command(help='jak decrypt <file>')
-@click.argument('filepath')
+@click.argument('filepaths', nargs=-1)
 @click.option('-k', '--key', default=None, metavar='<string>')
 @click.option('-kf', '--keyfile', default=None, metavar='<file_path>')
-def decrypt(filepath, key, keyfile):
+def decrypt(filepaths, key, keyfile):
     """Decrypt file(s)"""
-    try:
-        decrypt_inner(all_or_filepath=filepath, key=key, keyfile=keyfile)
-    except JakException as je:
-        click.echo(je)
+    for filepath in filepaths:
+        try:
+            decrypt_inner(all_or_filepath=filepath, key=key, keyfile=keyfile)
+        except JakException as je:
+            click.echo(je)
 
 
 @main.command()
