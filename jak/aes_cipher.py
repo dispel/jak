@@ -106,7 +106,7 @@ class AES256Cipher(object):
         raise Exception('FATAL: No one should end up here.... VERSION: {}, C: {}'.format(version, ciphertext))
 
     def decrypt(self, ciphertext):
-        """Decrypts an ciphertext secret."""
+        """Decrypts a ciphertext secret"""
 
         # This allows us to upgrade the encryption and MAC
         version = self._extract_version(ciphertext=ciphertext)
@@ -128,10 +128,6 @@ class AES256Cipher(object):
 
     def encrypt(self, plaintext, iv=False):
         """Encrypts a plaintext secret"""
-
-        # Convert secret to bytes (FIXME: why not just read it as bytes?)
-        plaintext = plaintext.encode()
-
         if not iv:
             iv = self._generate_iv()
 

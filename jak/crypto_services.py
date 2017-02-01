@@ -19,7 +19,7 @@ ENCRYPTED_BY_HEADER = u'- - - Encrypted by jak - - -\n\n'
 def _read_file(filepath):
     """Helper for reading a file and making sure it has content."""
     try:
-        with open(filepath, 'rt', encoding='utf-8') as f:
+        with open(filepath, 'rb') as f:
             contents = f.read()
     except IOError:
         raise JakException("Sorry I can't find the file: {}".format(filepath))
@@ -51,6 +51,7 @@ def _restore_from_backup(jwd, filepath, plaintext, aes256_cipher):
 
 
 def write_ciphertext_to_file(filepath, ciphertext):
+    ciphertext = b(ciphertext)
     ciphertext = ciphertext.replace(b'\n', b'')
     encrypted_chunks = helpers.grouper(ciphertext.decode('utf-8'), 60)
     with open(filepath, 'w', encoding='utf-8') as f:
@@ -63,12 +64,11 @@ def encrypt_file(jwd, filepath, key, **kwargs):
     """Encrypts a file"""
     plaintext = _read_file(filepath=filepath)
 
-    if ENCRYPTED_BY_HEADER in plaintext:
+    if b(ENCRYPTED_BY_HEADER) in plaintext:
         raise JakException('I already encrypted the file: "{}".'.format(filepath))
 
     aes256_cipher = AES256Cipher(key=key)
 
-    # Try to restore from backup.
     ciphertext = _restore_from_backup(jwd=jwd,
                                       filepath=filepath,
                                       plaintext=plaintext,
@@ -88,11 +88,11 @@ def decrypt_file(filepath, key, jwd, **kwargs):
     """Decrypts a file"""
     original_ciphertext = _read_file(filepath=filepath)
 
-    ciphertext_no_header = original_ciphertext.replace(ENCRYPTED_BY_HEADER, '')
+    ciphertext_no_header = original_ciphertext.replace(b(ENCRYPTED_BY_HEADER), b'')
 
     # Remove the base64 encoding which is applied to make output prettier after encryption.
     try:
-        ciphertext = base64.urlsafe_b64decode(b(ciphertext_no_header))
+        ciphertext = base64.urlsafe_b64decode(ciphertext_no_header)
     except (TypeError, binascii.Error):
         return 'The file "{}" is already decrypted, or is not in a format I recognize.'.format(
             filepath)
@@ -110,17 +110,7 @@ def decrypt_file(filepath, key, jwd, **kwargs):
     except WrongKeyException as wke:
         raise JakException('{} - {}'.format(filepath, wke.__str__()))
 
-    # Write back unencrypted content to the file
-    try:
-        decrypted_secret_as_string = decrypted_secret.decode('utf-8')
-    except UnicodeDecodeError:
-
-        # This happens when the encrypted secret (not the fingerprint part)
-        # is edited, basically we decrypt into garbledygook and so the string
-        # reader freaks out.
-        return 'The encrypted content is malformatted and I cannot decrypt it.'
-
-    with open(filepath, 'w', encoding='utf-8') as f:
-        f.write(decrypted_secret_as_string)
+    with open(filepath, 'wb') as f:
+        f.write(decrypted_secret)
 
     return '{} - is now decrypted.'.format(filepath)

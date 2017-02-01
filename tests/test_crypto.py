@@ -56,13 +56,13 @@ def test_bad_keys_for_cipher_exceptions(key):
 
 
 def test_encrypt_decrypt(cipher):
-    secret = 'secret'
+    secret = b'secret'
 
     ciphertext = cipher.encrypt(plaintext=secret)
     plaintext = cipher.decrypt(ciphertext=ciphertext)
     assert isinstance(ciphertext, six.binary_type)
     assert isinstance(plaintext, six.binary_type)
-    assert plaintext.decode('utf-8') == secret
+    assert plaintext == secret
     assert ciphertext != secret
     assert ciphertext != plaintext
 
@@ -80,7 +80,7 @@ def test_extractors(cipher):
 
 
 def test_authenticate(cipher):
-    plaintext = 'integrity'
+    plaintext = b'integrity'
     ciphertext = cipher.encrypt(plaintext=plaintext)
     payload = cipher._extract_payload(ciphertext=ciphertext)
     signature = cipher._extract_signature(ciphertext=ciphertext)
@@ -95,7 +95,7 @@ def test_authenticate(cipher):
 
 
 def test_authenticate_tampered(cipher):
-    secret = 'integrity'
+    secret = b'integrity'
     ciphertext = cipher.encrypt(plaintext=secret)
     signature = cipher._extract_signature(ciphertext=ciphertext)
     payload = cipher._extract_payload(ciphertext=ciphertext)

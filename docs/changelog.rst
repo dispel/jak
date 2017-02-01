@@ -11,8 +11,14 @@ Changelog
 we believe the risk of us accidentally deleting peoples secrets is < 0.0001%. In practice this means better unit testing and talking to 2-3 more cryptography experts (especially outside of Dispel). Are you such an expert? Get in touch! cdilorenzo@dispel.io.
 
 
+0.13 [soon]
+-----------
+
+* **[0.13.0]** `FEATURE: Jak works for all type of files, not just text files. <https://github.com/dispel/jak/pull/33>`_.
+
+
 0.12 [soon]
--------------
+-----------
 
 * **[0.12.0]** `FEATURE: Add encryption versioning. This allows us to upgrade/edit the cipher and still decrypt previous ciphertexts (so they don't become undecryptable) <https://github.com/dispel/jak/pull/31>`_.
 
@@ -25,6 +31,7 @@ we believe the risk of us accidentally deleting peoples secrets is < 0.0001%. In
 * Other:
    * `Upgraded the dev environment <https://github.com/dispel/jak/pull/29>`_
    * :ref:`Added security section to the documentation <security>`
+
 
 0.10 [~2017-01]
 ---------------
