@@ -24,7 +24,7 @@ One off
 ```shell
 
 # Create a 64 character (32 byte) hex digit (0-f) key.
-jak keygen (Optional --minimal)
+jak keygen
 
 # Encrypt/Decrypt a specific file
 jak encrypt <file> --key <key from keygen command>
@@ -50,12 +50,14 @@ nano jakfile
 jak encrypt all
 jak decrypt all
 
+# Don't need to pass key (--key) because it defaults to keyfile designated
+# in the jakfile
 jak encrypt <specific file>
 jak decrypt <specific file>
 
 # Generate a strong password. An encryption is only as strong as the password.
 # ALWAYS use a strong 32 character password.
-jak genpass
+jak keygen
 
 # Where action is one of encrypt/decrypt
 # Overrides the password in the jakfile

@@ -12,15 +12,13 @@ sudo apt-get update
 sudo add-apt-repository ppa:fkrull/deadsnakes -y
 sudo apt-get update
 sudo apt-get install build-essential libssl-dev libffi-dev -y
-sudo apt-get install python3-dev python-dev -y
-sudo apt-get install python3.3-dev python3.3 -y
-sudo apt-get install python3.4-dev python3.4 -y
-sudo apt-get install python3.5-dev -y
-sudo apt-get install python3.6-dev python3.6 -y
-sudo apt-get install pypy pypy-dev python-pip git -y
+sudo apt-get install python-pip git -y
 
 # Update pip
 sudo pip install --upgrade pip
+
+# Install all the snakes.
+sudo apt-get install python3-dev python-dev python3.3 python3.3-dev python3.4 python3.4-dev python3.5-dev python3.6 python3.6-dev pypy pypy-dev -y
 
 # Virtualenvs for quickly switching between python 2 and 3
 sudo pip install virtualenvwrapper
@@ -38,8 +36,8 @@ cd /vagrant
 # Create our two virtualenvironments
 # switch between them with "workon py27" for example.
 mkvirtualenv py27
-mkvirtualenv -p /usr/bin/python3.6 py36
 mkvirtualenv -p /usr/bin/pypy pypy
+mkvirtualenv -p /usr/bin/python3.6 py36
 
 # We should now be in py36 so let's install our dependencies.
 pip install --editable .
