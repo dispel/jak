@@ -43,7 +43,7 @@ Acknowledgements:
 0.10
 ----
 
-Lifecycle: ~2017-01. First release to be on pypi.
+Lifecycle: ~2017-01.
 
 * **[0.10.0]** FEATURE: Switched to CBC mode for AES from CFB. `(PR#14) <https://github.com/dispel/jak/pull/14>`_
 * **[0.10.1]** CLEANUP: Encrypt/Decrypt file services were a mess.. `(PR#15) <https://github.com/dispel/jak/pull/15>`_
