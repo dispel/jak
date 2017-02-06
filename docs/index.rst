@@ -14,7 +14,9 @@ jak
 
 Jak is a tool for encrypting text files. It works extra well if used in a git repository.
 
-****JAK IS NOT READY YET, YOU ARE WELCOME TO CHECK IT OUT BUT WE HIGHLY RECOMMEND AGAINST USING IT ON ANY ACTUAL SECRETS YET!****
+.. warning::
+
+   jak is not ready yet. You are welcome to try jak, but we highly recommend against using it on any actual secrets yet!
 
 
 

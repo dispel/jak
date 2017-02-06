@@ -10,14 +10,21 @@ Changelog
 
 Lifecycle: Not released yet.
 
-1.0.0 Will be assigned when we have verified that the encryption is absolutely stable AND
-we believe the risk of us accidentally deleting peoples secrets is < 0.0001%. In practice this means better unit testing and talking to 2-3 more cryptography experts (especially outside of Dispel). Are you such an expert? Get in touch! cdilorenzo@dispel.io.
+1.0.0 Will be assigned when we have verified that the encryption is absolutely stable AND we believe the risk of us accidentally deleting peoples secrets is < 0.0001%. In practice this means better unit testing and talking to 2-3 more cryptography experts (especially outside of Dispel). Are you such an expert? Get in touch! cdilorenzo@dispel.io.
+
+
+0.14.1
+------
+
+Lifecycle: 2016-02-01 - current
+
+* **[0.14.1]** HOTFIX: Import of bytestring compatibility function was removed during a merge, and it happened unnoticed. `(commit) <https://github.com/dispel/jak/commit/582dc724fd24d17dbc16b28debf267640116bd0e>`_
 
 
 0.14
 ----
 
-Lifecycle: 2016-02-01 - current
+Lifecycle: 2016-02-01 - 2016-02-06
 
 * **[0.14.0]** FEATURE: jak encrypt/decrypt commands can now accept a list of files (jak encrypt file1 ... fileN -k <key>). `(PR#34) <https://github.com/dispel/jak/pull/34>`_
 * **[0.13.0]** FEATURE: jak works for all type of files, not just text files. `(PR#33) <https://github.com/dispel/jak/pull/33>`_
