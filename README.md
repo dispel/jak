@@ -4,7 +4,7 @@
 
 jak is a Troubled Toddler who helps developers encrypt their files. [Read the documentation.](https://jak.readthedocs.io)
 
-**OBS!! JAK IS NOT READY FOR PRODUCTION USE YET!!**
+**IMPORTANT!! JAK IS NOT READY FOR PRODUCTION USE YET!!**
 
 # Installation
 
