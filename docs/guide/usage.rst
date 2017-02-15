@@ -54,7 +54,16 @@ Heres a video that explains:
 
 .. raw:: html
 
-   <asciinema-player src="/_static/videos/nosetup.json"></asciinema-player>
+  <!-- If someone has a better way of doing this for readthedocs i'm all ears. -->
+  <div class="asciinema-container--nosetup"></div>
+  <script>
+    var container = document.getElementsByClassName("asciinema-container--nosetup")[0];
+    var href = window.location.href;
+    var basePath = href.substring(href.lastIndexOf('/guide/'), 0);
+    var child = document.createElement('asciinema-player');
+    child.setAttribute('src', basePath + '/_static/videos/nosetup.json');
+    container.appendChild(child);
+  </script>
 
 
 Which jak files should be committed?
@@ -148,4 +157,13 @@ Here is a video for your viewing pleasure.
 
 .. raw:: html
 
-   <asciinema-player src="/_static/videos/diffmerge_short.json"></asciinema-player>
+  <!-- If someone has a better way of doing this for readthedocs i'm all ears. -->
+  <div class="asciinema-container--diffmerge_short"></div>
+  <script>
+    var container = document.getElementsByClassName("asciinema-container--diffmerge_short")[0];
+    var href = window.location.href;
+    var basePath = href.substring(href.lastIndexOf('/guide/'), 0);
+    var child = document.createElement('asciinema-player');
+    child.setAttribute('src', basePath + '/_static/videos/diffmerge_short.json');
+    container.appendChild(child);
+  </script>

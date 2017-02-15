@@ -20,6 +20,9 @@ Lifecycle: 2016-02-01 - current
 
 * **[0.14.1]** HOTFIX: Import of bytestring compatibility function was removed during a merge, and it happened unnoticed. `(commit) <https://github.com/dispel/jak/commit/582dc724fd24d17dbc16b28debf267640116bd0e>`_
 
+* Other:
+   * DOCS: fixed static links for the terminal examples (I guess readthedocs changed something?).
+
 
 0.14
 ----
