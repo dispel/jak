@@ -47,7 +47,16 @@ We also made this video that might be helpful for running through a basic setup 
 
 .. raw:: html
 
-   <asciinema-player src="/_static/videos/quickstart.json"></asciinema-player>
+  <!-- If someone has a better way of doing this for readthedocs i'm all ears. -->
+  <div class="asciinema-container--quickstart"></div>
+  <script>
+    var container = document.getElementsByClassName("asciinema-container--quickstart")[0];
+    var href = window.location.href;
+    var basePath = href.substring(href.lastIndexOf('/'), 0);
+    var child = document.createElement('asciinema-player');
+    child.setAttribute('src', basePath + '/_static/videos/quickstart.json');
+    container.appendChild(child);
+  </script>
 
 
 Stewardship
