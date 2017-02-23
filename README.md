@@ -55,16 +55,16 @@ jak decrypt all
 jak encrypt <specific file>
 jak decrypt <specific file>
 
-# Generate a strong password. An encryption is only as strong as the password.
-# ALWAYS use a strong 32 character password.
+# Generate a strong key. An encryption is only as strong as the key.
+# ALWAYS use a strong 32 character key.
 jak keygen
 
 # Where action is one of encrypt/decrypt
-# Overrides the password in the jakfile
-jak <action> -p faca44c66af094f18e3e69eaf2328e557a618ca0e3d560a5f83c6f43a172b542
+# Overrides the key the jakfile may be pointing to.
+jak <action> -k faca44c66af094f18e3e69eaf2328e557a618ca0e3d560a5f83c6f43a172b542
 
-# Overrides the password in the jakfile with a password from a file
-jak <action> -pf <password file>
+# Overrides the key in the jakfile with a key from a file
+jak <action> -kf <keyfile>
 
 # We highly recommend you read the jak --help man texts.
 jak --help
