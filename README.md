@@ -1,6 +1,8 @@
 # jak
 
 [![jak package on pypi](https://img.shields.io/pypi/v/jak.svg)](https://pypi.python.org/pypi/jak)
+[![travis-ci](https://travis-ci.org/dispel/jak.svg?branch=master)](https://travis-ci.org/dispel/jak)
+[![supported python versions](https://img.shields.io/pypi/pyversions/jak.svg)](https://pypi.python.org/pypi/jak)
 
 jak is a Troubled Toddler who helps developers encrypt their files. [Read the documentation.](https://jak.readthedocs.io)
 
