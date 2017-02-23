@@ -38,11 +38,10 @@ etc.
 # Usage
 
 ```shell
-# Initialize jak (if for git repo, stand in it)
+# Initialize jak (If using in git repository, make sure your cwd is the repos root)
 jak start
 
-# You will want to edit the file in a texteditor, it has a
-# lot of information in it.
+# List the files you want to encrypt on a regular basis.
 nano jakfile
 
 # Encrypt/Decrypt all of the files that are specified as
