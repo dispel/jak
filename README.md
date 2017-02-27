@@ -1,6 +1,8 @@
 # jak
 
 [![jak package on pypi](https://img.shields.io/pypi/v/jak.svg)](https://pypi.python.org/pypi/jak)
+[![travis-ci](https://travis-ci.org/dispel/jak.svg?branch=master)](https://travis-ci.org/dispel/jak)
+[![supported python versions](https://img.shields.io/pypi/pyversions/jak.svg)](https://pypi.python.org/pypi/jak)
 
 jak can encrypt and decrypt files. The standard example is of a ``.env`` file with secrets in it inside of a git repository.
 By sharing a key through some other means all developers can encrypt and decrypt the file, so that it is encrypted whenever it enters git history.
