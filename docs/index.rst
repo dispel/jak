@@ -12,7 +12,7 @@ jak
    :maxdepth: 2
    :caption: Contents:
 
-Jak is a tool for encrypting text files. It works extra well if used in a git repository.
+jak is a tool for encrypting files. jak works extra well if used in a git repository.
 
 .. warning::
 

@@ -2,7 +2,12 @@
 
 [![jak package on pypi](https://img.shields.io/pypi/v/jak.svg)](https://pypi.python.org/pypi/jak)
 
-jak is a Troubled Toddler who helps developers encrypt their files. [Read the documentation.](https://jak.readthedocs.io)
+jak can encrypt and decrypt files. The standard example is of a ``.env`` file with secrets in it inside of a git repository.
+By sharing a key through some other means all developers can encrypt and decrypt the file, so that it is encrypted whenever it enters git history.
+
+For a more thorough introduction you should [read the documentation.](https://jak.readthedocs.io).
+
+jak currently works for *nix type systems such as macOS or ubuntu. We are working on windows compatibility.
 
 **IMPORTANT!! JAK IS NOT READY FOR PRODUCTION USE YET!!**
 
