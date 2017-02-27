@@ -86,7 +86,19 @@ def two_column(left, right, col1_length=65, col2_length=1):
 
 
 def generate_256bit_key():
-    """Generate a secure cryptographically random key."""
+    """Generate a pseudo-random secure ready-for-crypto-use key.
+
+    Generate it straight using urandom. Proving randomness is impossible, and a good source
+    is a hotly debated subject. As always, opinions are welcome but please inform
+    yourself first and be prepared to cite a source.
+
+    Further Reading:
+    https://docs.python.org/3.5/library/os.html#os.urandom
+    https://docs.python.org/2.7/library/os.html#os.urandom
+    https://sockpuppet.org/blog/2014/02/25/safely-generate-random-numbers/
+    http://www.2uo.de/myths-about-urandom/
+    https://github.com/dlitz/pycrypto/blob/master/lib/Crypto/Random/__init__.py
+    """
     return binascii.hexlify(os.urandom(32))
 
 
