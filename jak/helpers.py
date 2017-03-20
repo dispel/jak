@@ -41,7 +41,31 @@ def create_or_overwrite_file(filepath, content):
 
 
 def create_backup_filepath(jwd, filepath):
-    return '{}/.jak/{}_backup'.format(jwd, filepath[filepath.rfind('/') + 1:])
+    """Example:
+    Input: jwd='/a/b/c', filepath: '/a/b/c/d/e.txt'
+    Output: /a/b/c/.jak/d_e.txt_backup
+
+    Input: jwd='/', filepath: '/a'
+    Output: /.jak/a_backup
+
+    Input: jwd='/a/b', filepath: '/a/b/c'
+    Output: /a/b/.jak/c_backup
+
+    FIXME: There is probably a way cleaner way to write this function.
+    """
+
+    # To make this easier to understand:
+    # filepath === /a/b/c/d
+    # jwd = /a
+    filename = filepath.replace(jwd, '')  # /b/c/d
+
+    # Special case: root.
+    if ('/' not in filename):
+        return '/.jak/{}_backup'.format(filename)
+
+    filename = filename[1:]  # b/c/d
+    filename = filename.replace('/', '_')  # b_c_d
+    return '{}/.jak/{}_backup'.format(jwd, filename)  # /a/.jak/b_c_d_backup
 
 
 def backup_file_content(jwd, filepath, content):

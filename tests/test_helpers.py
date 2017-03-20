@@ -92,3 +92,14 @@ def test_does_jwd_have_gitignore(tmpdir):
     repo.mkdir('.git')
     # This will be true because the parent now has .git and .gitignore
     assert helpers.does_jwd_have_gitignore(cwd=subdir.strpath)
+
+
+def test_create_backup_filepath():
+    output = helpers.create_backup_filepath(jwd='/a/b/c', filepath='/a/b/c/d/e.txt')
+    assert output == '/a/b/c/.jak/d_e.txt_backup'
+
+    output = helpers.create_backup_filepath(jwd='/', filepath='/a')
+    assert output == '/.jak/a_backup'
+
+    output = helpers.create_backup_filepath(jwd='/a/b', filepath='/a/b/c')
+    assert output == '/a/b/.jak/c_backup'
