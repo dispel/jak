@@ -98,8 +98,12 @@ def test_create_backup_filepath():
     output = helpers.create_backup_filepath(jwd='/a/b/c', filepath='/a/b/c/d/e.txt')
     assert output == '/a/b/c/.jak/d_e.txt_backup'
 
+    # Special case, root.
     output = helpers.create_backup_filepath(jwd='/', filepath='/a')
     assert output == '/.jak/a_backup'
 
     output = helpers.create_backup_filepath(jwd='/a/b', filepath='/a/b/c')
     assert output == '/a/b/.jak/c_backup'
+
+    output = helpers.create_backup_filepath(jwd='/a/b', filepath='/a/b/c/d/e')
+    assert output == '/a/b/.jak/c_d_e_backup'
