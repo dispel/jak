@@ -19,6 +19,11 @@ Lifecycle: Not released yet.
 Lifecycle: UNRELEASED
 
 * **[0.14.2]** BUG: Files with the same name now support the backup feature (maintain their encrypted state if their unencrypted state is not edited on re-encryption) if they are in different folders. `(PR#40) <https://github.com/dispel/jak/pull/40>`_
+* **[0.14.3]** DEV: Improved one of our tests that was placing backup files where they did not belong. `(PR#42) <https://github.com/dispel/jak/pull/42>`_
+
+* Other:
+  * Update the tox.ini file to run tests on Python 3.6 (which we totally support btw.) `(PR#44) <https://github.com/dispel/jak/pull/44>`_
+  * Updated copyrights to the year 2017 `(PR#43) <https://github.com/dispel/jak/pull/43>`_
 
 
 0.14.1
