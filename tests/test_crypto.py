@@ -119,7 +119,7 @@ def test_authenticate_tampered(cipher):
 
 
 def test_encrypt_file(tmpdir):
-    secretfile = tmpdir.mkdir("sub").join("hello")
+    secretfile = tmpdir.join("encrypt_file")
     secretfile.write("secret")
     assert secretfile.read() == "secret"
     key = helpers.generate_256bit_key().decode('utf-8')
@@ -137,7 +137,7 @@ def test_bad_encrypt_file_filepath(tmpdir):
 
 def test_decrypt_file(runner, tmpdir):
     with runner.isolated_filesystem():
-        secretfile = tmpdir.mkdir("sub").join("hello")
+        secretfile = tmpdir.join("hello")
         secretfile.write("""- - - Encrypted by jak - - -
 
 SkFLLTAwMI_ZCxve00vRIZq7if3C2cgVQ3Dlpjg2KPttRWtfq-bXOMsA1RUD
@@ -145,7 +145,7 @@ SkFLLTAwMI_ZCxve00vRIZq7if3C2cgVQ3Dlpjg2KPttRWtfq-bXOMsA1RUD
 -rNE_PQvkoIFq7KlBFrdu8pWPCyFVvZjpGEFgw4=""")
         key = '2a57929b3610ba53b96f472b0dca27402a57929b3610ba53b96f472b0dca2740'
         crypto.decrypt_file(jwd=secretfile.dirpath().strpath, filepath=secretfile.strpath, key=key)
-        assert secretfile.read() == "we attack at dawn\n"
+        assert secretfile.read().strip('\n') == "we attack at dawn"
 
 
 def test_encrypt_and_decrypt_a_file(runner, tmpdir):
