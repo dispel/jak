@@ -13,13 +13,15 @@ Lifecycle: Not released yet.
 1.0.0 Will be assigned when we have verified that the encryption is absolutely stable AND we believe the risk of us accidentally deleting peoples secrets is < 0.0001%. In practice this means better unit testing and talking to 2-3 more cryptography experts (especially outside of Dispel). Are you such an expert? Get in touch! cdilorenzo@dispel.io.
 
 
-0.14.X
+0.14.4
 ------
 
-Lifecycle: UNRELEASED
+Lifecycle: 2017-09-02 - current
 
 * **[0.14.2]** BUG: Files with the same name now support the backup feature (maintain their encrypted state if their unencrypted state is not edited on re-encryption) if they are in different folders. `(PR#40) <https://github.com/dispel/jak/pull/40>`_
 * **[0.14.3]** DEV: Improved one of our tests that was placing backup files where they did not belong. `(PR#42) <https://github.com/dispel/jak/pull/42>`_
+* **[0.14.4]** BUG: SourceTree (and other linuxy apps hopefully) should now work with the pre-commit hook. `(PR#45) <https://github.com/dispel/jak/pull/45>`_
+
 
 * Other:
   * Update the tox.ini file to run tests on Python 3.6 (which we totally support btw.) `(PR#44) <https://github.com/dispel/jak/pull/44>`_
@@ -29,7 +31,7 @@ Lifecycle: UNRELEASED
 0.14.1
 ------
 
-Lifecycle: 2016-02-01 - current
+Lifecycle: 2016-02-01 - 2017-09-02
 
 * **[0.14.1]** HOTFIX: Import of bytestring compatibility function was removed during a merge, and it happened unnoticed. `(commit) <https://github.com/dispel/jak/commit/582dc724fd24d17dbc16b28debf267640116bd0e>`_
 
