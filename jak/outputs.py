@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Copyright 2016 Dispel, LLC
+Copyright 2017 Dispel, LLC
 Apache 2.0 License, see https://github.com/dispel/jak/blob/master/LICENSE for details.
 """
 
@@ -32,6 +32,10 @@ printf "🌰  ${PURPLE}jak: pre-commit > Encrypting files listed in jakfile.${NC
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 
+# Not thrilled about this since it is OS specific but certain git apps
+# (in this instance SourceTree) couldn't find jak in the pre-commit hook.
+export PATH=/usr/local/bin:$PATH
+
 
 # Encrypt any staged files that are protected by jak
 python .git/hooks/jak.pre-commit.py
@@ -50,7 +54,7 @@ PRE_COMMIT_ENCRYPT = '''#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 """
-Copyright 2016 Dispel, LLC
+Copyright 2017 Dispel, LLC
 Apache 2.0 License, see https://github.com/dispel/jak/blob/master/LICENSE for details.
 
 INSTALLATION

@@ -31,9 +31,9 @@ MAJOR version when you make incompatible API changes,
 MINOR version when you add functionality in a backwards-compatible manner, and
 PATCH version when you make backwards-compatible bug fixes.
 
-Copyright 2016 Dispel, LLC
+Copyright 2017 Dispel, LLC
 Apache 2.0 License, see https://github.com/dispel/jak/blob/master/LICENSE for details.
 """
 
-__version__ = '0.14.2'
+__version__ = '0.14.3'
 __version_full__ = "Jak v{0} ({1})".format(__version__, 'Troubled Toddler')

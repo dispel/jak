@@ -2,7 +2,7 @@
 
 Documentation: https://jak.readthedocs.io
 
-Copyright 2016 Dispel, LLC
+Copyright 2017 Dispel, LLC
 
 Apache 2.0 License, see https://github.com/dispel/jak/blob/master/LICENSE for details.
 """
@@ -44,9 +44,9 @@ setup(
     },
     classifiers=[
         # As from http://pypi.python.org/pypi?%3Aaction=list_classifiers
-        'Development Status :: 2 - Pre-Alpha',
+        # 'Development Status :: 2 - Pre-Alpha',
         # 'Development Status :: 3 - Alpha',
-        # 'Development Status :: 4 - Beta',
+        'Development Status :: 4 - Beta',
         # 'Development Status :: 5 - Production/Stable',
         # 'Development Status :: 6 - Mature',
         # 'Development Status :: 7 - Inactive',
