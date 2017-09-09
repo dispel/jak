@@ -16,7 +16,7 @@ jak is a tool for encrypting files. jak works extra well if used in a git reposi
 
 .. warning::
 
-   jak is not ready yet. You are welcome to try jak, but we highly recommend against using it on any actual secrets yet!
+  jaks encryption works. But use is under your own responsibility. I would highly recommend you take the auto-commit hook on a dry run before actually relying on it.
 
 
 
@@ -76,16 +76,16 @@ Table of contents
    guide/commands
    guide/contributor
    security
-   support
+   supported-platforms
    changelog
 
 
 .. _support_short:
 
-Support
--------
+Supported platforms
+-------------------
 
-jak works if you have a modern Python (2.7-3.5) installed on a `*nix <https://en.wikipedia.org/wiki/Unix-like>`_ system.
+jak works if you have a modern Python (2.7-3.6) installed on a `*nix <https://en.wikipedia.org/wiki/Unix-like>`_ system.
 
 :ref:`You can read about it in excrutiating detail here. <support_detailed>`
 

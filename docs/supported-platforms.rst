@@ -1,20 +1,23 @@
 .. _support_detailed:
 
 
-Support
-=======
+Supported platforms
+===================
 
-Python Support
---------------
+Python
+------
 
 jak is explicitly tested on Pythons:
 
-- 2.7.7 (It is probably safe to assume jak works for 2.7.7 - 2.7.13)
+- 2.7 (It is probably safe to assume jak works for 2.7.7 - 2.7.13)
 - 3.3
 - 3.4
 - 3.5
 - 3.6
-- `PyPy <http://pypy.org/>`_
+
+Works but CI fails:
+
+- `PyPy <http://pypy.org/>`_. (It works just fine locally but travis seems to have trouble with it, so we removed it from CI for now. The issue is that pycrypto fails to install under it, and pycrypto seems to explicitly state that they dont work with pypy. Nonetheless, we've gotten this working on our machines just fine...)
 
 Planned but not tested yet, but hopefully work:
 
@@ -33,7 +36,7 @@ For all you Python 2.7 lunatics out there that means when `this clock reaches ze
 It is however likely that even without explicitly testing for it the 3.X versions will continue to work just fine even after we officially stop supporting them.
 
 
-OS Support
-----------
+OS
+--
 
 We believe jak should work well on most `*nix <https://en.wikipedia.org/wiki/Unix-like>`_ systems. But is mainly developed on Ubuntu and tested on Ubuntu and macOS.
