@@ -12,4 +12,4 @@ install:
   - pip install .
   - pip install -r requirements_dev.txt
 
-script: py.test
+script: pytest
