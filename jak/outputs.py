@@ -32,6 +32,10 @@ printf "🌰  ${PURPLE}jak: pre-commit > Encrypting files listed in jakfile.${NC
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 
+# Not thrilled about this since it is OS specific but certain git apps
+# (in this instance SourceTree) couldn't find jak in the pre-commit hook.
+export PATH=/usr/local/bin:$PATH
+
 
 # Encrypt any staged files that are protected by jak
 python .git/hooks/jak.pre-commit.py
