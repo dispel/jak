@@ -1,11 +1,11 @@
 .. _support_detailed:
 
 
-Support
-=======
+Supported platforms
+===================
 
-Python Support
---------------
+Python
+------
 
 jak is explicitly tested on Pythons:
 
@@ -36,7 +36,7 @@ For all you Python 2.7 lunatics out there that means when `this clock reaches ze
 It is however likely that even without explicitly testing for it the 3.X versions will continue to work just fine even after we officially stop supporting them.
 
 
-OS Support
-----------
+OS
+--
 
 We believe jak should work well on most `*nix <https://en.wikipedia.org/wiki/Unix-like>`_ systems. But is mainly developed on Ubuntu and tested on Ubuntu and macOS.
