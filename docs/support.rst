@@ -9,12 +9,15 @@ Python Support
 
 jak is explicitly tested on Pythons:
 
-- 2.7.7 (It is probably safe to assume jak works for 2.7.7 - 2.7.13)
+- 2.7 (It is probably safe to assume jak works for 2.7.7 - 2.7.13)
 - 3.3
 - 3.4
 - 3.5
 - 3.6
-- `PyPy <http://pypy.org/>`_
+
+Works but CI fails:
+
+- `PyPy <http://pypy.org/>`_. (It works just fine locally but travis seems to have trouble with it, so we removed it from CI for now. The issue is that pycrypto fails to install under it, and pycrypto seems to explicitly state that they dont work with pypy. Nonetheless, we've gotten this working on our machines just fine...)
 
 Planned but not tested yet, but hopefully work:
 
