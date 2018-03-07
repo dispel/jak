@@ -14,7 +14,10 @@ from .exceptions import JakException
 
 def _select_files_logic(**kwargs):
     if kwargs['all_or_filepath'] == 'all':
-        filepaths = kwargs['jakfile_dict']['files_to_encrypt']
+        try:
+            filepaths = kwargs['jakfile_dict']['files_to_encrypt']
+        except KeyError:
+            raise JakException("Expected key missing: 'files_to_encrypt' in jakfile.")
     else:
         filepaths = [kwargs['all_or_filepath']]
 
@@ -53,6 +56,8 @@ def read_jakfile(f):
             kwargs['jakfile_dict'] = helpers.read_jakfile_to_dict()
         except IOError:
             kwargs['jakfile_dict'] = {}
+        except ValueError as ve:
+            raise JakException("Your jakfile has malformed syntax (probably).")
         return f(*args, **kwargs)
     return wrapper
 
