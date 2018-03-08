@@ -18,7 +18,7 @@ sudo apt-get install python-pip git -y
 sudo pip install --upgrade pip
 
 # Install all the snakes.
-sudo apt-get install python3-dev python-dev python3.3 python3.3-dev python3.4 python3.4-dev python3.5-dev python3.6 python3.6-dev pypy pypy-dev -y
+sudo apt-get install python3-dev python-dev python3.4 python3.4-dev python3.5-dev python3.6 python3.6-dev pypy pypy-dev -y --allow-unauthenticated
 
 # Virtualenvs for quickly switching between python 2 and 3
 sudo pip install virtualenvwrapper
@@ -67,13 +67,3 @@ Vagrant.configure(2) do |config|
 
   config.vm.provision "shell", inline: $provisionScript, privileged: false
 end
-
-# How the actual box is setup.
-# sudo su
-# apt-get update
-# add-apt-repository ppa:fkrull/deadsnakes
-# apt-get update
-# apt-get install python2.7 python3.5 pypy
-# apt-get install python-pip
-# apt-get install build-essential libssl-dev libffi-dev python-dev python3-dev git # for building cryptography among other things.
-# Wasn't so hard was it?

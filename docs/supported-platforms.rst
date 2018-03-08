@@ -9,8 +9,7 @@ Python
 
 jak is explicitly tested on Pythons:
 
-- 2.7 (It is probably safe to assume jak works for 2.7.7 - 2.7.13)
-- 3.3
+- 2.7 (It is probably safe to assume jak works for 2.7.7 - 2.7.14)
 - 3.4
 - 3.5
 - 3.6
@@ -25,7 +24,6 @@ Planned but not tested yet, but hopefully work:
 
 jak follows the `Python end of support dates <https://docs.python.org/devguide/index.html#branchstatus>`_, which in practice means that support ends on the following dates:
 
-- 3.3 (PEP 398) support ends 2017-09-29
 - 3.4 (PEP 429) support ends 2019-03-16
 - 2.7 (PEP 373) support ends 2020-01-01
 - 3.5 (PEP 478) support ends 2020-09-13
