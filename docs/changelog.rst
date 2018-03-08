@@ -17,10 +17,14 @@ Lifecycle: Not released yet.
 0.14.5
 ------
 
-Lifecycle: 2018-03-?? - current
+Lifecycle: 2018-03-08 - current
 
 * **[0.14.4]** BUG: SourceTree (and other linuxy apps hopefully) should now work with the pre-commit hook. `(PR#45) <https://github.com/dispel/jak/pull/45>`_
 * **[0.14.5]** ENHANCEMENT: Better message when malformed jakfile. `(PR#48) <https://github.com/dispel/jak/pull/48>`_
+
+* Other:
+  * Updated 2017 to 2018 (Happy new year!?)
+  * Removed formal support for python 3.3 (since it is at its end of life).
 
 
 0.14.3
