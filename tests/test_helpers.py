@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-
 import pytest
 import six
 from jak import helpers
+import jak.crypto_services as crypto
 
 jakfile_content_1 = """
 // Comment 1
@@ -17,6 +17,21 @@ jakfile_content_1 = """
 // Comment 7
 """
 
+def test_create_or_overwrite_file_decoding(tmpdir):
+#   with pytest.raises(AttributeError):
+    no_decode = tmpdir.join("this file")
+    bad_content = "Strîng can't decode"
+    assert type(bad_content) == str
+#    with pytest.raises(AttributeError):
+#        shouldnt_work = bad_content.decode('UTF-8')
+    helpers.create_or_overwrite_file(filepath=no_decode.strpath, content=bad_content)
+    assert no_decode.read() == bad_content
+    decode = tmpdir.join("other file")
+    other_content = b"A\xc3\xa0d some w\xc3\xabird \xc3\xa7haracters y\xc3\xb6"
+    assert type(other_content) == bytes
+    helpers.create_or_overwrite_file(filepath=decode.strpath, content=other_content)
+    assert decode.read() == other_content
+    
 
 def test_remove_comments_from_JSON():
     result = helpers._remove_comments_from_JSON(jakfile_content_1)
@@ -67,6 +82,8 @@ def test_get_jak_working_directory(tmpdir):
     gitfile.write('this is a git repo')
     result = helpers.get_jak_working_directory(cwd=repo.strpath)
     assert result == repo.strpath
+
+#why does this one not seem as strict as the others?
 
     # Parent has a .git
     nested = repo.mkdir('sub1').mkdir('sub2')
