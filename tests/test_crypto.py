@@ -11,6 +11,27 @@ from jak.exceptions import JakException
 
 
 @pytest.fixture
+def test__restore_from_backup_plaintext_altered(tmpdir):
+#   we change the plaintext after we've decrypted so it will be different from the stored backup
+#   This tests if _restore_from_backup gives nothing in this situation
+    make_backup = tmpdir.join("ourfile")
+    make_backup.write("even write in it for the test")
+    plaintext = "even write in it for the test"
+    assert make_backup.read() == plaintext
+    key = "9412735d31033ed596de83344939677e24bad58e9576392252d16d2243d1d9c5"
+    crypto.encrypt_file(make_backup.dirpath().strpath, make_backup.strpath, key=key)
+    encrypted_junk = make_backup.read()
+    encrypted_junk = encrypted_junk.replace("""- - - Encrypted by jak - - -
+
+""","")
+    assert crypto.ENCRYPTED_BY_HEADER in make_backup.read()
+    out = crypto.decrypt_file(jwd=make_backup.dirpath().strpath, filepath=make_backup.strpath, key=key)
+    assert '- is now decrypted.' in out
+    aes256_cipher = AES256Cipher(key=key)
+    altered_plaintext = "even write in it for the test, wuba wuba dub"
+    restoration = crypto._restore_from_backup(make_backup.dirpath().strpath, make_backup.strpath, altered_plaintext, aes256_cipher)
+    assert restoration == None
+
 def test_empty__read_file(tmpdir):
 #   Fails due to nothing in file
     emptyfile = tmpdir.join("emptyfile")
