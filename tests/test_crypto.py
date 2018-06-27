@@ -11,6 +11,15 @@ from jak.exceptions import JakException
 
 
 @pytest.fixture
+def test_empty__read_file(tmpdir):
+#   Fails due to nothing in file
+    emptyfile = tmpdir.join("emptyfile")
+    emptyfile.write("")
+    assert len(emptyfile.read()) == 0
+    with pytest.raises(JakException) as excempty:
+        crypto._read_file(emptyfile.strpath)
+    assert "is empty" in str(excempty.value)
+
 def test_nonempty__read_file(tmpdir):
     file = tmpdir.join("emptyfile")
     file.write("something")
