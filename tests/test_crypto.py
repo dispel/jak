@@ -11,6 +11,15 @@ from jak.exceptions import JakException
 
 
 @pytest.fixture
+def test_already_decrypted(tmpdir):
+    decryptfile = tmpdir.join("decryptfile")
+    decryptfile.write("are we there yet?")
+    key = helpers.generate_256bit_key().decode('utf-8')
+    assert decryptfile.read() == "are we there yet?"
+    out = crypto.decrypt_file(jwd=decryptfile.dirpath().strpath, filepath=decryptfile.strpath, key=key)
+    assert out == 'The file "{}" is already decrypted, or is not in a format I recognize.'.format(
+            decryptfile.strpath)
+
 def test_wrong_key(tmpdir):
     wrongkey = tmpdir.join("wrongkey")
     wrongkey.write("I have to write this.")
