@@ -11,6 +11,18 @@ from jak.exceptions import JakException
 
 
 @pytest.fixture
+def test_already_encrypted(tmpdir):
+    encryptfile = tmpdir.join("already_encrypt")
+    encryptfile.write("be encrypt")
+    assert encryptfile.read() == "be encrypt"
+    key = helpers.generate_256bit_key().decode('utf-8')
+    crypto.encrypt_file(jwd=encryptfile.dirpath().strpath, filepath=encryptfile.strpath, key=key)
+    assert encryptfile.read() != "be encrypt"
+    assert crypto.ENCRYPTED_BY_HEADER in encryptfile.read()
+    with pytest.raises(JakException) as excencrypted:
+        crypto.encrypt_file(jwd=encryptfile.dirpath().strpath, filepath=encryptfile.strpath, key=key)
+    assert "already encrypted the file" in str(excencrypted.value)
+
 def test_already_decrypted(tmpdir):
     decryptfile = tmpdir.join("decryptfile")
     decryptfile.write("are we there yet?")
