@@ -11,6 +11,17 @@ from jak.exceptions import JakException
 
 
 @pytest.fixture
+def test_wrong_key(tmpdir):
+    wrongkey = tmpdir.join("wrongkey")
+    wrongkey.write("I have to write this.")
+    key = "519c4865ba5aaa0505f95ad4975a7ea3ac07b9ad1842c1c064662a893ae64966"
+    crypto.encrypt_file(jwd=wrongkey.dirpath().strpath, filepath=wrongkey.strpath, key=key)
+    assert wrongkey.read() != "I have to write this."
+    badkey = "519c4865ba5aaa0505f95ad4975a7ea355555555555555555555555555555555"
+    with pytest.raises(JakException) as excwrong:
+        crypto.decrypt_file(jwd=wrongkey.dirpath().strpath, filepath=wrongkey.strpath, key=badkey)
+    assert "Wrong key" in str(excwrong.value)
+
 def runner():
     return CliRunner()
 
