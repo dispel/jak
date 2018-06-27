@@ -11,6 +11,12 @@ from jak.exceptions import JakException
 
 
 @pytest.fixture
+def test_nonempty__read_file(tmpdir):
+    file = tmpdir.join("emptyfile")
+    file.write("something")
+    assert len(file.read()) != 0
+    assert crypto._read_file(file.strpath) == "something"
+
 def test_already_encrypted(tmpdir):
     encryptfile = tmpdir.join("already_encrypt")
     encryptfile.write("be encrypt")
