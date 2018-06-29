@@ -24,10 +24,10 @@ sudo apt-get install python3-dev python-dev python3.4 python3.4-dev python3.5-de
 sudo pip install virtualenvwrapper
 
 # Add ye olden virtualenvwrapper settings to the .profile and load them in.
-sed -i "$ a # Virtualenvwrapper settings" /home/ubuntu/.profile
-sed -i "$ a export WORKON_HOME=/home/ubuntu/.virtualenvs" /home/ubuntu/.profile
-sed -i "$ a export PROJECT_HOME=/home/ubuntu/Devel" /home/ubuntu/.profile
-sed -i "$ a source /usr/local/bin/virtualenvwrapper.sh" /home/ubuntu/.profile
+sudo sed -i "$ a # Virtualenvwrapper settings" /home/ubuntu/.profile
+sudo sed -i "$ a export WORKON_HOME=/home/ubuntu/.virtualenvs" /home/ubuntu/.profile
+sudo sed -i "$ a export PROJECT_HOME=/home/ubuntu/Devel" /home/ubuntu/.profile
+sudo sed -i "$ a source /usr/local/bin/virtualenvwrapper.sh" /home/ubuntu/.profile
 source /home/ubuntu/.profile
 
 # Pop into the folder where jak lives
