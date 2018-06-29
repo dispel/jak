@@ -10,6 +10,9 @@ from click.testing import CliRunner
 import jak.crypto_services as crypto
 from jak.exceptions import JakException
 
+@pytest.fixture
+def runner():
+    return CliRunner()
 
 @pytest.fixture
 def test__restore_from_backup_ciphertext_altered(tmpdir):
