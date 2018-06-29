@@ -28,10 +28,11 @@ def test_create_or_overwrite_file_decoding(tmpdir):
     assert no_decode.read() == bad_content
     decode = tmpdir.join("other file")
     other_content = b"A\xc3\xa0d some w\xc3\xabird \xc3\xa7haracters y\xc3\xb6"
+    checkcontent = 'Aàd some wëird çharacters yö'
     assert type(other_content) == bytes
     helpers.create_or_overwrite_file(filepath=decode.strpath, content=other_content)
-    assert decode.read() == other_content
-    
+    assert decode.read() == checkcontent
+    #asset decode.read() == b(other_content)
 
 def test_remove_comments_from_JSON():
     result = helpers._remove_comments_from_JSON(jakfile_content_1)
