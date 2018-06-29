@@ -35,8 +35,9 @@ def test__restore_from_backup_ciphertext_altered(tmpdir):
 
 def test__restore_from_backup_no_alteration(tmpdir):
     make_backup = tmpdir.join("ourfile")
-    make_backup.write("even write in it for the test")
-    assert make_backup.read() == "even write in it for the test"
+    plaintext = "even write in it for the test"
+    make_backup.write(plaintext)
+    assert make_backup.read() == plaintext
     key = "9412735d31033ed596de83344939677e24bad58e9576392252d16d2243d1d9c5"
     crypto.encrypt_file(make_backup.dirpath().strpath, make_backup.strpath, key=key)
     encrypted_junk = make_backup.read()
@@ -47,14 +48,14 @@ def test__restore_from_backup_no_alteration(tmpdir):
     is_decrypted = crypto.decrypt_file(jwd=make_backup.dirpath().strpath, filepath=make_backup.strpath, key=key)
     assert '- is now decrypted.' in is_decrypted
     aes256_cipher = AES256Cipher(key=key)
-    restoration = crypto._restore_from_backup(make_backup.dirpath().strpath, make_backup.strpath, "even write in it for the test", aes256_cipher)
+    restoration = crypto._restore_from_backup(make_backup.dirpath().strpath, make_backup.strpath, b(plaintext), aes256_cipher)
     assert restoration == encrypted_junk
 
 def test__restore_from_backup_plaintext_altered(tmpdir):
 #   we change the plaintext after we've decrypted so it will be different from the stored backup
 #   This tests if _restore_from_backup gives nothing in this situation
-    make_backup = tmpdir.join("ourfile")
     plaintext = "even write in it for the test"
+    make_backup = tmpdir.join("ourfile")
     make_backup.write(plaintext)
     assert make_backup.read() == plaintext
     key = "9412735d31033ed596de83344939677e24bad58e9576392252d16d2243d1d9c5"
@@ -67,8 +68,8 @@ def test__restore_from_backup_plaintext_altered(tmpdir):
     is_decrypted = crypto.decrypt_file(jwd=make_backup.dirpath().strpath, filepath=make_backup.strpath, key=key)
     assert '- is now decrypted.' in is_decrypted
     aes256_cipher = AES256Cipher(key=key)
-    altered_plaintext = "even write in it for the test, wuba wuba dub"
-    restoration = crypto._restore_from_backup(make_backup.dirpath().strpath, make_backup.strpath, altered_plaintext, aes256_cipher)
+    altered_plaintext = plaintext + "wuba wuba dub"
+    restoration = crypto._restore_from_backup(make_backup.dirpath().strpath, make_backup.strpath, b(altered_plaintext), aes256_cipher)
     assert restoration == None
 
 def test_empty__read_file(tmpdir):
@@ -118,9 +119,9 @@ def test_wrong_key(tmpdir):
         crypto.decrypt_file(jwd=wrongkey.dirpath().strpath, filepath=wrongkey.strpath, key=badkey)
     assert "Wrong key" in str(excwrong.value)
 
+@pytest.fixture
 def runner():
     return CliRunner()
-
 
 @pytest.fixture
 def cipher():
