@@ -22,6 +22,7 @@ def test_read_jakfile_standard_format():
 
 def test_read_jakfile_malformed(tmpdir):
     try:
+        start.create_jakfile(tmpdir)
         jakfile = open("jakfile", "r")
         prior_content = jakfile.read()
         jakfile.close()
