@@ -3,10 +3,50 @@
 import os
 import pytest
 from jak import decorators
+from jak import start
 from jak.exceptions import JakException
 
 CWD = os.getcwd()
 
+def test_read_jakfile_malformed(tmpdir):
+    try:
+        start.create_jakfile(jwd=tmpdir)
+        jakfile = open("jakfile", "r")
+        prior_content = jakfile.read()
+        jakfile.close()
+        my_jakfile = {
+      "there is nothing": ["to see here"],
+      "my dear": "comrade"
+    }
+        jakfile = open("jakfile", "a")
+        jakfile.write("we are messing with stuff a bit")
+        jakfile.close()
+        @decorators.read_jakfile
+        def this_is_wrapped(**kwargs):
+            return kwargs['jakfile_dict']
+        with pytest.raises(JakException) as myerror:
+            wrapped = this_is_wrapped()
+        assert "Your jakfile has malformed syntax (probably)." in str(myerror.value)
+    finally:
+        jakfile = open("jakfile", "w")
+        if prior_content != "":
+            jakfile.write(prior_content)
+        else:
+            jakfile.write("""
+{
+  // This list is for the encrypt/decrypt all commands and for the
+  // pre-commit hook (optional) protection.
+  "files_to_encrypt": ["path/to/file"],
+  "keyfile": ".jak/keyfile"
+}""")
+        jakfile.close()
+
+def test_read_jakfile_standard_format(tmpdir):
+    start.create_jakfile(jwd=tmpdir)
+    @decorators.read_jakfile
+    def this_is_wrapped(**kwargs):
+        return kwargs['jakfile_dict']
+    wrapped = this_is_wrapped()
 
 def test_select_key():
     pass
