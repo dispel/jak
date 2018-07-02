@@ -7,18 +7,6 @@ from jak.exceptions import JakException
 
 CWD = os.getcwd()
 
-def test__select_files_logic():
-    myinput = {'all_or_filepath': 'all', 'jakfile_dict': {"there is nothing in here": "yes nothing"} }
-    with pytest.raises(JakException) as exception:
-        decorators._select_files_logic(**myinput)
-    assert "Expected key missing:" in str(exception.value)
-
-def test_read_jakfile_standard_format():
-    @decorators.read_jakfile
-    def this_is_wrapped(**kwargs):
-        return kwargs['jakfile_dict']
-    wrapped = this_is_wrapped()
-
 
 @pytest.mark.parametrize('input, output', [
     ({
@@ -44,6 +32,17 @@ def test_read_jakfile_standard_format():
 ])
 def test_select_files(input, output):
     assert decorators._select_files_logic(**input) == output
+
+
+def test_select_files_logic_exception():
+    input = {
+        'all_or_filepath': 'all',
+        'jakfile_dict': { 'there is nothing in here': 'yes nothing' }
+    }
+    with pytest.raises(JakException) as exception:
+        decorators._select_files_logic(**input)
+    assert "Expected key missing:" in str(exception.value)
+
 
 def test_select_key_logic(tmpdir):
     """
