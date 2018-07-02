@@ -3,7 +3,6 @@
 import six
 import pytest
 from jak import helpers
-from jak.aes_cipher import AES256Cipher
 from jak.compat import b
 from Crypto.Cipher import AES
 from click.testing import CliRunner
@@ -29,7 +28,7 @@ def test__restore_from_backup_ciphertext_altered(tmpdir):
 ""","")
     is_decrypted = crypto.decrypt_file(jwd=make_backup.dirpath().strpath, filepath=make_backup.strpath, key=key)
     assert '- is now decrypted.' in is_decrypted
-    aes256_cipher = AES256Cipher(key=key)
+    aes256_cipher = crypto.AES256Cipher(key=key)
     restoration = crypto._restore_from_backup(make_backup.dirpath().strpath, make_backup.strpath, b(plaintext), aes256_cipher)
     assert restoration == encrypted_junk
 
@@ -47,7 +46,7 @@ def test__restore_from_backup_no_alteration(tmpdir):
     assert crypto.ENCRYPTED_BY_HEADER in make_backup.read()
     is_decrypted = crypto.decrypt_file(jwd=make_backup.dirpath().strpath, filepath=make_backup.strpath, key=key)
     assert '- is now decrypted.' in is_decrypted
-    aes256_cipher = AES256Cipher(key=key)
+    aes256_cipher = crypto.AES256Cipher(key=key)
     restoration = crypto._restore_from_backup(make_backup.dirpath().strpath, make_backup.strpath, b(plaintext), aes256_cipher)
     assert restoration == encrypted_junk
 
@@ -67,7 +66,7 @@ def test__restore_from_backup_plaintext_altered(tmpdir):
 ""","")
     is_decrypted = crypto.decrypt_file(jwd=make_backup.dirpath().strpath, filepath=make_backup.strpath, key=key)
     assert '- is now decrypted.' in is_decrypted
-    aes256_cipher = AES256Cipher(key=key)
+    aes256_cipher = crypto.AES256Cipher(key=key)
     altered_plaintext = plaintext + "wuba wuba dub"
     restoration = crypto._restore_from_backup(make_backup.dirpath().strpath, make_backup.strpath, b(altered_plaintext), aes256_cipher)
     assert restoration == None
