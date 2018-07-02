@@ -3,7 +3,6 @@
 import os
 import pytest
 from jak import decorators
-from jak import start
 from jak.exceptions import JakException
 
 CWD = os.getcwd()
@@ -19,42 +18,6 @@ def test_read_jakfile_standard_format():
     def this_is_wrapped(**kwargs):
         return kwargs['jakfile_dict']
     wrapped = this_is_wrapped()
-
-def test_read_jakfile_malformed(tmpdir):
-    try:
-        start.create_jakfile(tmpdir)
-        jakfile = open("jakfile", "r")
-        prior_content = jakfile.read()
-        jakfile.close()
-        my_jakfile = {
-      "there is nothing": ["to see here"],
-      "my dear": "comrade"
-    }
-        jakfile = open("jakfile", "a")
-        jakfile.write("we are messing with stuff a bit")
-        jakfile.close()
-        @decorators.read_jakfile
-        def this_is_wrapped(**kwargs):
-            return kwargs['jakfile_dict']
-        with pytest.raises(JakException) as myerror:
-            wrapped = this_is_wrapped()
-        assert "Your jakfile has malformed syntax (probably)." in str(myerror.value)
-    finally:
-        jakfile = open("jakfile", "w")
-        if prior_content != "":
-            jakfile.write(prior_content)
-        else:
-            jakfile.write("""
-{
-  // This list is for the encrypt/decrypt all commands and for the
-  // pre-commit hook (optional) protection.
-  "files_to_encrypt": ["path/to/file"],
-  "keyfile": ".jak/keyfile"
-}""")
-        jakfile.close()
-
-def test_select_key():
-    pass
 
 
 @pytest.mark.parametrize('input, output', [
@@ -83,7 +46,12 @@ def test_select_files(input, output):
     assert decorators._select_files_logic(**input) == output
 
 def test_select_key_logic(tmpdir):
-
+    """
+    CLI = Command line interface.
+    P = Password
+    PF = Password file
+    JAKPF = Password file that is referenced in the jakfile
+    """
     # !CLIP & !CLIPF
     with pytest.raises(JakException) as exception:
         decorators.select_key_logic()
@@ -97,6 +65,7 @@ def test_select_key_logic(tmpdir):
     # CLIP
     assert "key" == decorators.select_key_logic("key")
 
+    # Bad CLIPF
     with pytest.raises(JakException) as exception:
         print(decorators.select_key_logic(keyfile ="not_a_keyfile"))
     assert "I can't find the key file" in exception.__str__()
@@ -124,6 +93,5 @@ def test_select_key_logic(tmpdir):
     assert decorators.select_key_logic(jakfile_dict={'keyfile': keyfile.strpath}) == key
 
     # JAKPF but doesn't exist
-    # with pytest.raises(IOError) as exception:
     with pytest.raises(JakException) as exception:
         decorators.select_key_logic(jakfile_dict={'keyfile': 'badpath'})

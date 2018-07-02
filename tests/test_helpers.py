@@ -44,6 +44,14 @@ def test_read_jakfile_to_dict(tmpdir):
     assert 'files_to_encrypt' in result
     assert 'password_file' in result
 
+def test_read_jakfile_to_dict_malformed(tmpdir):
+    jakfile = tmpdir.join("jakfile")
+    jakfile.write("There is nothing to see here")
+    assert jakfile.read() == "There is nothing to see here"
+
+    with pytest.raises(ValueError):
+        helpers.read_jakfile_to_dict(jwd=jakfile.dirpath().strpath)
+
 
 def test_grouper():
     assert helpers.grouper('aaa', 1) == ('a', 'a', 'a')
