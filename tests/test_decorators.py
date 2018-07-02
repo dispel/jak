@@ -8,9 +8,20 @@ from jak.exceptions import JakException
 
 CWD = os.getcwd()
 
+def test__select_files_logic():
+    myinput = {'all_or_filepath': 'all', 'jakfile_dict': {"there is nothing in here": "yes nothing"} }
+    with pytest.raises(JakException) as exception:
+        decorators._select_files_logic(**myinput)
+    assert "Expected key missing:" in str(exception.value)
+
+def test_read_jakfile_standard_format():
+    @decorators.read_jakfile
+    def this_is_wrapped(**kwargs):
+        return kwargs['jakfile_dict']
+    wrapped = this_is_wrapped()
+
 def test_read_jakfile_malformed(tmpdir):
     try:
-        start.create_jakfile(jwd=tmpdir)
         jakfile = open("jakfile", "r")
         prior_content = jakfile.read()
         jakfile.close()
@@ -41,13 +52,6 @@ def test_read_jakfile_malformed(tmpdir):
 }""")
         jakfile.close()
 
-def test_read_jakfile_standard_format(tmpdir):
-    start.create_jakfile(jwd=tmpdir)
-    @decorators.read_jakfile
-    def this_is_wrapped(**kwargs):
-        return kwargs['jakfile_dict']
-    wrapped = this_is_wrapped()
-
 def test_select_key():
     pass
 
@@ -76,12 +80,6 @@ def test_select_key():
 ])
 def test_select_files(input, output):
     assert decorators._select_files_logic(**input) == output
-
-
-def test_read_jakfile():
-    # TODO
-    pass
-
 
 def test_select_key_logic(tmpdir):
 
