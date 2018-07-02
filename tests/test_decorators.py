@@ -96,6 +96,10 @@ def test_select_key_logic(tmpdir):
     # CLIP
     assert "key" == decorators.select_key_logic("key")
 
+    with pytest.raises(JakException) as exception:
+        print(decorators.select_key_logic(keyfile ="not_a_keyfile"))
+    assert "I can't find the key file" in exception.__str__()
+
     # CLIPF
     keyfile = tmpdir.mkdir("a").join("keyfile")
     keyfile.write('abc')
