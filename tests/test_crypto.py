@@ -18,21 +18,9 @@ def runner():
 
 
 @pytest.mark.parametrize('original_plaintext, append_to_ciphertext, append_to_plaintext', [
-    (
-        'even write in it for the test',
-        '',
-        ''
-    ),
-    (
-        'even write in it for the test',
-        'This has to go at the very end doesnt it?',
-        ''
-    ),
-    (
-        'even write in it for the test',
-        '',
-        'wuba wuba dub'
-        )
+    ( 'even write in it for the test', '', '' ),
+    ('even write in it for the test', 'This has to go at the very end doesnt it?', '' ),
+    ( 'even write in it for the test', '', 'wuba wuba dub' )
 ])
 def test__restore_from_backup(original_plaintext, append_to_ciphertext, append_to_plaintext, tmpdir):
     testfile = tmpdir.join('testfile')
@@ -66,14 +54,7 @@ def test__restore_from_backup(original_plaintext, append_to_ciphertext, append_t
 
 
 
-@pytest.mark.parametrize('content_to_file', [
-    (
-        ""
-    ),
-    (
-        "something"
-    )
-])
+@pytest.mark.parametrize('content_to_file', [ "", "something" ])
 def test__read_file(tmpdir, content_to_file):
     testfile = tmpdir.join("testfile")
     testfile.write(content_to_file)

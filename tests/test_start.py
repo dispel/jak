@@ -1,9 +1,8 @@
 from jak import start
+import pytest
+from click.testing import CliRunner
 import os
 
-def test_want_to_add_pre_commit_encrypt_hook():
-    #To Do?
-    pass
 
 def test_add_pre_commit_encrypt_hook(tmpdir):
     repo_hooks = tmpdir.mkdir('.git').mkdir('hooks')
@@ -68,12 +67,13 @@ def test_create_jakfile(tmpdir):
     mock_jakfile = open(testfile_path+'/jakfile', 'w')
     mock_jakfile.write(altered_text)
     mock_jakfile.close()
-    
+
     #it seems that we have to open and reopen again since using "w+" will clear the file even when we are just reading
     mock_jakfile = open(testfile_path+'/jakfile', 'r')
     assert mock_jakfile.read() == altered_text
     mock_jakfile.close()
 
-    actual_jakfile = open(os.getcwd()+'/jakfile', 'r')
-    assert actual_jakfile.read() != altered_text
-    actual_jakfile.close()
+    if os.path.exists(os.getcwd()+'/jakfile', 'r'):
+        actual_jakfile = open(os.getcwd()+'/jakfile', 'r')
+        assert actual_jakfile.read() != altered_text
+        actual_jakfile.close()
