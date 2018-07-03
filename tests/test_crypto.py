@@ -61,20 +61,42 @@ def test__restore_from_backup(original_plaintext, append_to_ciphertext, append_t
     else:
         assert restored_ciphertext == None
 
-def test_empty__read_file(tmpdir):
-#   Fails due to nothing in file
-    emptyfile = tmpdir.join("emptyfile")
-    emptyfile.write("")
-    assert len(emptyfile.read()) == 0
-    with pytest.raises(JakException) as excempty:
-        crypto._read_file(emptyfile.strpath)
-    assert "is empty" in str(excempty.value)
 
-def test_nonempty__read_file(tmpdir):
-    file = tmpdir.join("emptyfile")
-    file.write("something")
-    assert len(file.read()) != 0
-    assert crypto._read_file(file.strpath) == b("something")
+
+
+@pytest.mark.parametrize('content_to_file', [
+    (
+        ""
+    ),
+    (
+        "something"
+    )
+])
+def test__read_file(tmpdir, content_to_file):
+    testfile = tmpdir.join("testfile")
+    testfile.write(content_to_file)
+    assert testfile.read() == content_to_file
+    if content_to_file == "":
+        with pytest.raises(JakException) as excempty:
+            crypto._read_file(testfile.strpath)
+        assert "is empty" in str(excempty.value)
+    else:
+        assert crypto._read_file(testfile.strpath) == b("something")
+
+# def test_empty__read_file(tmpdir):
+# #   Fails due to nothing in file
+#     emptyfile = tmpdir.join("emptyfile")
+#     emptyfile.write("")
+#     assert len(emptyfile.read()) == 0
+#     with pytest.raises(JakException) as excempty:
+#         crypto._read_file(emptyfile.strpath)
+#     assert "is empty" in str(excempty.value)
+
+# def test_nonempty__read_file(tmpdir):
+#     file = tmpdir.join("emptyfile")
+#     file.write("something")
+#     assert len(file.read()) != 0
+#     assert crypto._read_file(file.strpath) == b("something")
 
 def test_already_encrypted(tmpdir):
     encryptfile = tmpdir.join("already_encrypt")
