@@ -52,9 +52,9 @@ def test_create_jakfile(tmpdir):
     assert os.path.exists(testfile_path+'/jakfile')
     assert os.path.exists(testfile_path+'/.jak/keyfile')
 
-    f = open(testfile_path+'/jakfile', 'r')
-    original_file = f.read()
-    f.close()
+    mock_jakfile = open(testfile_path+'/jakfile', 'r')
+    original_file = mock_jakfile.read()
+    mock_jakfile.close()
     assert original_file == """
 {
 
@@ -63,3 +63,17 @@ def test_create_jakfile(tmpdir):
   "files_to_encrypt": ["path/to/file"],
   "keyfile": ".jak/keyfile"
 }"""
+    altered_text = original_file.replace('// This list is for the encrypt/decrypt all commands and for the\n  // pre-commit hook (optional) protection.',
+        '  // adding some comment to show that we have the right file')
+    mock_jakfile = open(testfile_path+'/jakfile', 'w')
+    mock_jakfile.write(altered_text)
+    mock_jakfile.close()
+    
+    #it seems that we have to open and reopen again since using "w+" will clear the file even when we are just reading
+    mock_jakfile = open(testfile_path+'/jakfile', 'r')
+    assert mock_jakfile.read() == altered_text
+    mock_jakfile.close()
+
+    actual_jakfile = open(os.getcwd()+'/jakfile', 'r')
+    assert actual_jakfile.read() != altered_text
+    actual_jakfile.close()
