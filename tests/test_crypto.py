@@ -13,63 +13,53 @@ from jak.exceptions import JakException
 def runner():
     return CliRunner()
 
-def test__restore_from_backup_ciphertext_altered(tmpdir):
-    make_backup = tmpdir.join("ourfile")
-    plaintext = "even write in it for the test"
-    make_backup.write(plaintext)
-    assert make_backup.read() == plaintext
+
+
+@pytest.mark.parametrize('original_plaintext, append_to_ciphertext, append_to_plaintext', [
+    (
+        'even write in it for the test',
+        '',
+        ''
+    ),
+    (
+        'even write in it for the test',
+        'This has to go at the very end doesnt it?',
+        ''
+    ),
+    (
+        'even write in it for the test',
+        '',
+        'wuba wuba dub'
+        )
+])
+def test__restore_from_backup(original_plaintext, append_to_ciphertext, append_to_plaintext, tmpdir):
+    testfile = tmpdir.join('testfile')
+    plaintext = original_plaintext
+    testfile.write(plaintext)
+    assert testfile.read() == plaintext
+
     key = "9412735d31033ed596de83344939677e24bad58e9576392252d16d2243d1d9c5"
-    crypto.encrypt_file(make_backup.dirpath().strpath, make_backup.strpath, key=key)
-    make_backup.write("This has to go at the very end doesn't it?", "a")
-    assert crypto.ENCRYPTED_BY_HEADER in make_backup.read()
-    encrypted_junk = make_backup.read()
-    encrypted_junk = encrypted_junk.replace("""- - - Encrypted by jak - - -
+    crypto.encrypt_file(testfile.dirpath().strpath, testfile.strpath, key=key)
+    assert crypto.ENCRYPTED_BY_HEADER in testfile.read()
+    testfile.write(append_to_ciphertext, "a")
+    encrypted_text = testfile.read()
+    #we don't want the encrypted by jak to show up since it doesn't when we use restore_from_backup
+    encrypted_text = encrypted_text.replace("""- - - Encrypted by jak - - -
 
 ""","")
-    is_decrypted = crypto.decrypt_file(jwd=make_backup.dirpath().strpath, filepath=make_backup.strpath, key=key)
+
+    is_decrypted = crypto.decrypt_file(jwd=testfile.dirpath().strpath, filepath=testfile.strpath, key=key)
     assert '- is now decrypted.' in is_decrypted
+
+    testfile.write(append_to_plaintext, "a")
+    altered_plaintext = plaintext+append_to_plaintext
     aes256_cipher = crypto.AES256Cipher(key=key)
-    restoration = crypto._restore_from_backup(make_backup.dirpath().strpath, make_backup.strpath, b(plaintext), aes256_cipher)
-    assert restoration == encrypted_junk
 
-def test__restore_from_backup_no_alteration(tmpdir):
-    make_backup = tmpdir.join("ourfile")
-    plaintext = "even write in it for the test"
-    make_backup.write(plaintext)
-    assert make_backup.read() == plaintext
-    key = "9412735d31033ed596de83344939677e24bad58e9576392252d16d2243d1d9c5"
-    crypto.encrypt_file(make_backup.dirpath().strpath, make_backup.strpath, key=key)
-    encrypted_junk = make_backup.read()
-    encrypted_junk = encrypted_junk.replace("""- - - Encrypted by jak - - -
-
-""","")
-    assert crypto.ENCRYPTED_BY_HEADER in make_backup.read()
-    is_decrypted = crypto.decrypt_file(jwd=make_backup.dirpath().strpath, filepath=make_backup.strpath, key=key)
-    assert '- is now decrypted.' in is_decrypted
-    aes256_cipher = crypto.AES256Cipher(key=key)
-    restoration = crypto._restore_from_backup(make_backup.dirpath().strpath, make_backup.strpath, b(plaintext), aes256_cipher)
-    assert restoration == encrypted_junk
-
-def test__restore_from_backup_plaintext_altered(tmpdir):
-#   we change the plaintext after we've decrypted so it will be different from the stored backup
-#   This tests if _restore_from_backup gives nothing in this situation
-    plaintext = "even write in it for the test"
-    make_backup = tmpdir.join("ourfile")
-    make_backup.write(plaintext)
-    assert make_backup.read() == plaintext
-    key = "9412735d31033ed596de83344939677e24bad58e9576392252d16d2243d1d9c5"
-    crypto.encrypt_file(make_backup.dirpath().strpath, make_backup.strpath, key=key)
-    assert crypto.ENCRYPTED_BY_HEADER in make_backup.read()
-    encrypted_junk = make_backup.read()
-    encrypted_junk = encrypted_junk.replace("""- - - Encrypted by jak - - -
-
-""","")
-    is_decrypted = crypto.decrypt_file(jwd=make_backup.dirpath().strpath, filepath=make_backup.strpath, key=key)
-    assert '- is now decrypted.' in is_decrypted
-    aes256_cipher = crypto.AES256Cipher(key=key)
-    altered_plaintext = plaintext + "wuba wuba dub"
-    restoration = crypto._restore_from_backup(make_backup.dirpath().strpath, make_backup.strpath, b(altered_plaintext), aes256_cipher)
-    assert restoration == None
+    restored_ciphertext = crypto._restore_from_backup(testfile.dirpath().strpath, testfile.strpath, b(altered_plaintext), aes256_cipher)
+    if append_to_plaintext == '':
+        assert restored_ciphertext == encrypted_text
+    else:
+        assert restored_ciphertext == None
 
 def test_empty__read_file(tmpdir):
 #   Fails due to nothing in file
