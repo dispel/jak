@@ -42,16 +42,15 @@ def test_create_jakfile(tmpdir):
     testfile = tmpdir.join("testfile")
     # I still want it to go in the tmpdir and not affect the actual location
     # without the jakfile.write it should not exist there.
-    testfile_path = os.path.abspath(testfile)
     result = start.create_jakfile(testfile.strpath)
     assert "Creating" in result
     assert '/jakfile' in result
     assert 'Done' in result
 
-    assert os.path.exists(testfile_path+'/jakfile')
-    assert os.path.exists(testfile_path+'/.jak/keyfile')
+    assert os.path.exists(testfile.strpath+'/jakfile')
+    assert os.path.exists(testfile.strpath+'/.jak/keyfile')
 
-    mock_jakfile = open(testfile_path+'/jakfile', 'r')
+    mock_jakfile = open(testfile.strpath+'/jakfile', 'r')
     original_file = mock_jakfile.read()
     mock_jakfile.close()
     assert original_file == """
@@ -64,16 +63,16 @@ def test_create_jakfile(tmpdir):
 }"""
     altered_text = original_file.replace('// This list is for the encrypt/decrypt all commands and for the\n  // pre-commit hook (optional) protection.',
         '  // adding some comment to show that we have the right file')
-    mock_jakfile = open(testfile_path+'/jakfile', 'w')
+    mock_jakfile = open(testfile.strpath+'/jakfile', 'w')
     mock_jakfile.write(altered_text)
     mock_jakfile.close()
 
     #it seems that we have to open and reopen again since using "w+" will clear the file even when we are just reading
-    mock_jakfile = open(testfile_path+'/jakfile', 'r')
+    mock_jakfile = open(testfile.strpath+'/jakfile', 'r')
     assert mock_jakfile.read() == altered_text
     mock_jakfile.close()
 
-    if os.path.exists(os.getcwd()+'/jakfile', 'r'):
+    if os.path.exists(os.getcwd()+'/jakfile'):
         actual_jakfile = open(os.getcwd()+'/jakfile', 'r')
         assert actual_jakfile.read() != altered_text
         actual_jakfile.close()
