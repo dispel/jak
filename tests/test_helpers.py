@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import pytest
 import six
+import os
 from jak import helpers
 
 jakfile_content_1 = """
@@ -15,6 +16,20 @@ jakfile_content_1 = """
 // Comment 6
 // Comment 7
 """
+
+@pytest.mark.parametrize('filename', [ 'original_file', 'this_file_ends/original_file','this_file/is_in/nested/original_file'])
+def test_backup_file_content(tmpdir, filename):
+    directory_path = tmpdir.dirpath()
+    testfile = tmpdir.join(filename)
+    content = 'added content to the original file'
+    helpers.backup_file_content(jwd="tmp", filepath=testfile.strpath, content=content)
+    backup_filepath = helpers.create_backup_filepath(jwd="tmp", filepath=testfile.strpath)
+    assert os.path.exists(backup_filepath)
+    backup = open(backup_filepath, 'r')
+    backup_content = backup.read()
+    backup.close()
+    assert backup_content == content
+
 
 @pytest.mark.parametrize('filename, file_content, expected_output', [
     ("testfile", "Strîng can't decode", "Strîng can't decode"),

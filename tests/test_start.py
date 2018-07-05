@@ -1,8 +1,5 @@
 from jak import start
-import pytest
-from click.testing import CliRunner
 import os
-
 
 def test_add_pre_commit_encrypt_hook(tmpdir):
     repo_hooks = tmpdir.mkdir('.git').mkdir('hooks')

@@ -69,10 +69,7 @@ def create_backup_filepath(jwd, filepath):
 
 
 def backup_file_content(jwd, filepath, content):
-    """backs up a string in the .jak folder.
-
-    TODO Needs test
-    """
+    """backs up a string in the .jak folder."""
     backup_filepath = create_backup_filepath(jwd=jwd, filepath=filepath)
     return create_or_overwrite_file(filepath=backup_filepath, content=content)
 
