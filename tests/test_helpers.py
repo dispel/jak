@@ -19,16 +19,27 @@ jakfile_content_1 = """
 
 @pytest.mark.parametrize('filename', [ 'original_file', 'this_file_ends/original_file','this_file/is_in/nested/original_file'])
 def test_backup_file_content(tmpdir, filename):
-    directory_path = tmpdir.dirpath()
     testfile = tmpdir.join(filename)
     content = 'added content to the original file'
+
     helpers.backup_file_content(jwd="tmp", filepath=testfile.strpath, content=content)
     backup_filepath = helpers.create_backup_filepath(jwd="tmp", filepath=testfile.strpath)
     assert os.path.exists(backup_filepath)
+
     backup = open(backup_filepath, 'r')
     backup_content = backup.read()
     backup.close()
     assert backup_content == content
+
+#'this_file_ends/original_file_get','this_file/is_in/nested/original_file_get'
+@pytest.mark.parametrize('filename', [ 'original_file_get'])
+def test_get_backup_content_for_file(tmpdir, filename):
+    testfile = tmpdir.join(filename)
+    content = 'added content to original but its a secret now'
+    helpers.backup_file_content(jwd="tmp", filepath=testfile.strpath, content=content)
+
+    mysecret = helpers.get_backup_content_for_file(jwd="tmp", filepath=testfile.strpath)
+    assert mysecret == content
 
 
 @pytest.mark.parametrize('filename, file_content, expected_output', [
