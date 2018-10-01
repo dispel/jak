@@ -40,6 +40,7 @@ def _restore_from_backup(jwd, filepath, plaintext, aes256_cipher):
         return None
 
     backup_ciphertext_original = helpers.get_backup_content_for_file(jwd=jwd, filepath=filepath)
+
     previous_enc = base64.urlsafe_b64decode(b(backup_ciphertext_original))
     iv = aes256_cipher.extract_iv(ciphertext=previous_enc)
     new_secret_w_same_iv = aes256_cipher.encrypt(plaintext=plaintext, iv=iv)
@@ -86,9 +87,17 @@ def encrypt_file(jwd, filepath, key, **kwargs):
 
 def decrypt_file(filepath, key, jwd, **kwargs):
     """Decrypts a file"""
-    original_ciphertext = _read_file(filepath=filepath)
+    contents = _read_file(filepath=filepath)
 
-    ciphertext_no_header = original_ciphertext.replace(b(ENCRYPTED_BY_HEADER), b'')
+    if b(ENCRYPTED_BY_HEADER) not in contents:
+        return 'The file "{}" is already decrypted, or it is missing it\'s jak header.'.format(
+            filepath)
+
+    ciphertext_no_header = contents.replace(b(ENCRYPTED_BY_HEADER), b'')
+
+    # We could actually check that the first few letters are SkFL (JAK in base64)
+    # it seems unreasonably unlikely that a plaintext would start with those 4 characters.
+    # But the header check above should be enough.
 
     # Remove the base64 encoding which is applied to make output prettier after encryption.
     try:
