@@ -95,6 +95,10 @@ def decrypt_file(filepath, key, jwd, **kwargs):
 
     ciphertext_no_header = contents.replace(b(ENCRYPTED_BY_HEADER), b'')
 
+    # We could actually check that the first few letters are SkFL (JAK in base64)
+    # it seems unreasonably unlikely that a plaintext would start with those 4 characters.
+    # But the header check above should be enough.
+
     # Remove the base64 encoding which is applied to make output prettier after encryption.
     try:
         ciphertext = base64.urlsafe_b64decode(ciphertext_no_header)
