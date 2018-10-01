@@ -13,6 +13,13 @@ Lifecycle: Not released yet.
 1.0.0 Will be assigned when we have verified that the encryption is absolutely stable AND we believe the risk of us accidentally deleting peoples secrets is < 0.0001%. In practice this means better unit testing and talking to 2-3 more cryptography experts (especially outside of Dispel). Are you such an expert? Get in touch! cdilorenzo@dispel.io.
 
 
+0.14.6
+------
+
+Lifecycle: unreleased
+
+* **[0.14.6]** BUG: Had issue when double decrypting certain files (which should be safe operation, and now it is again). `(PR#56) <https://github.com/dispel/jak/pull/56>`_
+
 
 0.14.5
 ------
@@ -20,7 +27,7 @@ Lifecycle: Not released yet.
 Lifecycle: 2018-03-08 - current
 
 * **[0.14.4]** BUG: SourceTree (and other linuxy apps hopefully) should now work with the pre-commit hook. `(PR#45) <https://github.com/dispel/jak/pull/45>`_
-* **[0.14.5]** ENHANCEMENT: Better message when malformed jakfile. `(PR#48) <https://github.com/dispel/jak/pull/48>`_
+* **[0.14.5]** ENHANCEMENT: Better message when malformed jakfile. `(PR#51) <https://github.com/dispel/jak/pull/51>`_
 
 * Other:
   * Updated 2017 to 2018 (Happy new year!?)
