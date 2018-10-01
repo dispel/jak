@@ -9,7 +9,7 @@ Python
 
 jak is explicitly tested on Pythons:
 
-- 2.7 (It is probably safe to assume jak works for 2.7.7 - 2.7.14)
+- 2.7 (It is probably safe to assume jak works for 2.7.7 - 2.7.X, where X > 7)
 - 3.4
 - 3.5
 - 3.6
