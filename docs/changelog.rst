@@ -16,7 +16,7 @@ Lifecycle: Not released yet.
 0.14.6
 ------
 
-Lifecycle: unreleased
+Lifecycle: 2018-10-22 - current
 
 * **[0.14.6]** BUG: Had issue when double decrypting certain files (which should be safe operation, and now it is again). `(PR#56) <https://github.com/dispel/jak/pull/56>`_
 
@@ -24,7 +24,7 @@ Lifecycle: unreleased
 0.14.5
 ------
 
-Lifecycle: 2018-03-08 - current
+Lifecycle: 2018-03-08 - 2018-10-22
 
 * **[0.14.4]** BUG: SourceTree (and other linuxy apps hopefully) should now work with the pre-commit hook. `(PR#45) <https://github.com/dispel/jak/pull/45>`_
 * **[0.14.5]** ENHANCEMENT: Better message when malformed jakfile. `(PR#51) <https://github.com/dispel/jak/pull/51>`_

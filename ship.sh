@@ -1,3 +1,5 @@
+# tags: deploy, ship, pypi
+
 # If this is your first time or it's just been a while:
 # https://packaging.python.org/guides/using-testpypi/
 # https://packaging.python.org/tutorials/distributing-packages/#uploading-your-project-to-pypi
