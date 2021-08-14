@@ -30,10 +30,8 @@ Developer machine setup
   # This is where the project files are mirrorer on the virtual machine
   cd /vagrant
 
-  # Choose a virtualenv to work on (see virtualenvwrapper docs)
-  # It is recommended you use the py27 environment for development and
-  # then switching to py35 when you have an issue in Python 3.
-  workon py27
+  # Activate virtualenv
+  source ~/venvs/py39/bin/activate
 
   # Run tests for multiple Python versions (see tox.ini)
   tox
@@ -90,11 +88,11 @@ Future versions
 
 .. sourcecode:: text
 
-  0.X Troubled Toddler        <-- CURRENT
-  1.X Young Whippersnapper
+  0.X Troubled Toddler
+  1.X Young Whippersnapper  <-- CURRENT
   2.X Teenage Wasteland
-  3.X Highschool Sweetheart
-  4.X Wannabee Scientist
+  3.X High school Sweetheart
+  4.X Wannabe Scientist
   5.X Jaded Hipster
   6.X Midlife Maniac
   7.X Dorky Parent
