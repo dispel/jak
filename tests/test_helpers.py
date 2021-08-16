@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import pytest
-import six
 from jak import helpers
 
 jakfile_content_1 = """
@@ -48,7 +47,7 @@ def test_grouper():
 def test_generate_256bit_key():
     key = helpers.generate_256bit_key()
     assert len(key) == 64
-    assert isinstance(key, six.binary_type)
+    assert isinstance(key, bytes)
 
 
 def test_get_jak_working_directory(tmpdir):

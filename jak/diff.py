@@ -13,7 +13,6 @@ import binascii
 import subprocess
 from io import open
 from . import helpers
-from .compat import b
 from .aes_cipher import AES256Cipher
 from .exceptions import JakException, WrongKeyException
 from . import decorators
@@ -71,8 +70,8 @@ def _decrypt(key, local, remote):
     why not just use crypto libraries decrypt here instead?
     """
     try:
-        ugly_local = base64.urlsafe_b64decode(b(local))
-        ugly_remote = base64.urlsafe_b64decode(b(remote))
+        ugly_local = base64.urlsafe_b64decode(bytes(local, 'utf-8'))
+        ugly_remote = base64.urlsafe_b64decode(bytes(remote, 'utf-8'))
     except binascii.Error:
         msg = '''Failed during decryption. Are you sure the file you are pointing to is jak encrypted?
 

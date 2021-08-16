@@ -16,7 +16,7 @@ Lifecycle: 2021-08-X (UNRELEASED)
   * Drop support for 2.7, 3.4, 3.5 and pypy. Add support for 3.6, 3.7, 3.8, 3.9.
   * Update documentation to reflect version update and change of supported versions.
   * Switch from PyCrypto to PyCryptodome. May well switch to `(cryptography) <https://cryptography.io/en/latest/>` in a
-  * TODO DEPRECATION: Remove the compat layer used to support Python 2.
+  * DEPRECATION: Remove the compat layer used to support Python 2.
 
 
 0.14.6

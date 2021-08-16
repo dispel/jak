@@ -9,7 +9,6 @@ import base64
 import binascii
 from io import open
 from . import helpers
-from .compat import b
 from .aes_cipher import AES256Cipher
 from .exceptions import JakException, WrongKeyException
 
@@ -41,7 +40,7 @@ def _restore_from_backup(jwd, filepath, plaintext, aes256_cipher):
 
     backup_ciphertext_original = helpers.get_backup_content_for_file(jwd=jwd, filepath=filepath)
 
-    previous_enc = base64.urlsafe_b64decode(b(backup_ciphertext_original))
+    previous_enc = base64.urlsafe_b64decode(bytes(backup_ciphertext_original, 'utf-8'))
     iv = aes256_cipher.extract_iv(ciphertext=previous_enc)
     new_secret_w_same_iv = aes256_cipher.encrypt(plaintext=plaintext, iv=iv)
 
@@ -52,7 +51,6 @@ def _restore_from_backup(jwd, filepath, plaintext, aes256_cipher):
 
 
 def write_ciphertext_to_file(filepath, ciphertext):
-    ciphertext = b(ciphertext)
     ciphertext = ciphertext.replace(b'\n', b'')
     encrypted_chunks = helpers.grouper(ciphertext.decode('utf-8'), 60)
     with open(filepath, 'w', encoding='utf-8') as f:
@@ -65,7 +63,7 @@ def encrypt_file(jwd, filepath, key, **kwargs):
     """Encrypts a file"""
     plaintext = _read_file(filepath=filepath)
 
-    if b(ENCRYPTED_BY_HEADER) in plaintext:
+    if bytes(ENCRYPTED_BY_HEADER, 'utf-8') in plaintext:
         raise JakException('I already encrypted the file: "{}".'.format(filepath))
 
     aes256_cipher = AES256Cipher(key=key)
@@ -89,11 +87,11 @@ def decrypt_file(filepath, key, jwd, **kwargs):
     """Decrypts a file"""
     contents = _read_file(filepath=filepath)
 
-    if b(ENCRYPTED_BY_HEADER) not in contents:
+    if bytes(ENCRYPTED_BY_HEADER, 'utf-8') not in contents:
         return 'The file "{}" is already decrypted, or it is missing it\'s jak header.'.format(
             filepath)
 
-    ciphertext_no_header = contents.replace(b(ENCRYPTED_BY_HEADER), b'')
+    ciphertext_no_header = contents.replace(bytes(ENCRYPTED_BY_HEADER, 'utf-8'), b'')
 
     # We could actually check that the first few letters are SkFL (JAK in base64)
     # it seems unreasonably unlikely that a plaintext would start with those 4 characters.

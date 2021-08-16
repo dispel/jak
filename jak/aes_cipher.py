@@ -7,7 +7,6 @@ Apache 2.0 License, see https://github.com/dispel/jak/blob/master/LICENSE for de
 
 import hmac
 import binascii
-from .compat import b
 from Crypto import Random
 from Crypto.Cipher import AES
 from Crypto.Hash import SHA512
@@ -91,7 +90,7 @@ class AES256Cipher(object):
         return ciphertext[:len('JAK-000')]
 
     def _need_old_decrypt_function(self, version):
-        return version != b(self.VERSION)
+        return version != bytes(self.VERSION, 'utf-8')
 
     def _use_old_decrypt_function(self, version, ciphertext):
         """jak version is not the current one, so we need to use an old
@@ -138,4 +137,4 @@ class AES256Cipher(object):
         plaintext_padded = pad(data=plaintext)
         encrypted_data = cipher_instance.encrypt(plaintext=plaintext_padded)
         signature = hmac.new(key=self.hmac_key, msg=encrypted_data, digestmod=SHA512).digest()
-        return b(self.VERSION) + iv + encrypted_data + signature
+        return bytes(self.VERSION, 'utf-8') + iv + encrypted_data + signature
