@@ -8,15 +8,15 @@ Changelog
 1.0 (Young Whippersnapper)
 --------------------------
 
-Hi Everyone! It's been a hot minute, we went through a pandemic and some other stuff happened. It's time to throw away the old and bring on the new. While no security issues have been found the PyCrypto library seems to have gone the way of the dinosaurs. Therefor we are switching jak to the excellent replacement pycryptome
+Hi Everyone! It‘s been a hot minute, we went through a pandemic and some other stuff happened. It‘s time to throw away the old and bring on the new. While no security issues have been found the PyCrypto library seems to have gone the way of the dinosaurs. Therefor we are switching jak to the excellent replacement `(PyCryptodome to) <https://pycryptodome.readthedocs.io>` and updating which python versions jak supports to the `(currently supported ones) <https://www.python.org/downloads/>` (3.6 - 3.9 and pypy3).
 
-Lifecycle: 2021-08-X
+Lifecycle: 2021-08-X (UNRELEASED)
 
-* **[1.1.0]** DEPENDENCY: Switch from `(PyCryptodome to) <https://pycryptodome.readthedocs.io>` `(cryptography) <https://cryptography.io/en/latest/>` since it just seems more vetted.
 * **[1.0.0]** MAJOR:
   * Drop support for 2.7, 3.4, 3.5 and pypy. Add support for 3.6, 3.7, 3.8, 3.9.
   * Update documentation to reflect version update and change of supported versions.
   * Switch from PyCrypto to PyCryptodome. May well switch to `(cryptography) <https://cryptography.io/en/latest/>` in a
+  * TODO DEPRECATION: Remove the compat layer used to support Python 2.
 
 
 0.14.6

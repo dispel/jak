@@ -76,15 +76,13 @@ Once your branch or fork looks good make a PR and one of the stewards will take 
 Alerts
 ------
 
-It currently (2017-01-25) appears that tox will NOT run from Python 3.6 due to urrlib3 not existing. So run your tox from a different base Python environment for now.
-
-Also PyPy tests don't seem to run in tox either, I recommend checking out the virtualenv (``workon pypy``) and running them straight with ``pytest``. If someone could fix this, it would be much appreciated.
+No alerts. Everything seems to be working fine.
 
 
 Future versions
 ---------------
 
-0 - 10 are the formative years. If we get past them (which seems frankly highly unlikely) we will start a new naming scheme. We use `semantic versioning <http://semver.org/>`_ so the only time we shift the first number would be if we make backwards incompatible changes. The exception to this is 1.0 which will be assigned when Chris DiLorenzo thinks jak is (1) verified to be secure and (2) have no known bugs and (3) have decent tests for it's core functionality.
+0 - 10 are the formative years. If we get past them (which seems frankly highly unlikely) we will start a new naming scheme. We use `semantic versioning <http://semver.org/>`_ so the only time we shift the first number would be if we make backwards incompatible changes. The exception to this is 1.0 which will be assigned when Chris DiLorenzo thinks jak is (1) verified to be secure and (2) have no known bugs and (3) have decent tests for it‘s core functionality.
 
 .. sourcecode:: text
 
