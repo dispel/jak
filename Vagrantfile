@@ -11,22 +11,20 @@ export DEBIAN_FRONTEND=noninteractive
 sudo apt-get update
 sudo add-apt-repository ppa:deadsnakes/ppa -y
 sudo apt-get install build-essential libssl-dev libffi-dev -y
-# sudo apt-get install python-pip git -y
 
-# Update pip
-# sudo pip install --upgrade pip
-
-# Install all the snakes. (3.8 is already in Ubuntu 20 (Focal))
+# Install all the snakes. (except 3.8 which is already in Ubuntu 20.04 (Focal))
 sudo apt install python3.8-venv python3.8-dev python3.9 python3.9-venv python3.9-dev python3.7 python3.7-dev python3.7-venv python3.6 python3.6-dev python3.6-venv pypy3 pypy3-dev -y
 
 # Pop into the folder where jak lives
 cd /vagrant
 
-# Virtual environments for python 3.9 and 3.8
+# Virtual environments for python 3.9
 # You can use similar commands if you want to test other versions or pypy.
 python3.9 -m venv ~/venvs/py39
-python3.8 -m venv ~/venvs/py38
-pypy3 -m venv ~/venvs/pypy3
+
+# Heres how to make more venvs if you want for dev.
+# python3.8 -m venv ~/venvs/py38
+# pypy3 -m venv ~/venvs/pypy3
 
 # Activate 3.9 virtualenv
 source ~/venvs/py39/bin/activate
