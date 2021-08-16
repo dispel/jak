@@ -9,9 +9,7 @@ By sharing a key through some other means all developers can encrypt and decrypt
 
 For a more thorough introduction you should [read the documentation.](https://jak.readthedocs.io).
 
-jak currently works for *nix type systems such as macOS or ubuntu. We are working on windows compatibility.
-
-**IMPORTANT!! JAK IS NOT READY FOR PRODUCTION USE YET!!**
+jak currently works for *nix type systems such as macOS or ubuntu.
 
 # Installation
 
