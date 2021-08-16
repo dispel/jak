@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Copyright 2018 Dispel, LLC
+Copyright 2021 Dispel, LLC
 Apache 2.0 License, see https://github.com/dispel/jak/blob/master/LICENSE for details.
 """
 
@@ -54,7 +54,7 @@ PRE_COMMIT_ENCRYPT = '''#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 """
-Copyright 2018 Dispel, LLC
+Copyright 2021 Dispel, LLC
 Apache 2.0 License, see https://github.com/dispel/jak/blob/master/LICENSE for details.
 
 INSTALLATION

@@ -2,7 +2,7 @@
 
 Documentation: https://jak.readthedocs.io
 
-Copyright 2018 Dispel, LLC
+Copyright 2021 Dispel, LLC
 
 Apache 2.0 License, see https://github.com/dispel/jak/blob/master/LICENSE for details.
 """
@@ -34,7 +34,7 @@ setup(
     platforms='any',
     install_requires=[
         'click>=6.6',
-        'pycrypto>=2.6.1',
+        'pycryptodome>=3.10.1',
         'six>=1.10.0'
     ],
     entry_points={
@@ -44,8 +44,7 @@ setup(
     },
     classifiers=[
         # As from http://pypi.python.org/pypi?%3Aaction=list_classifiers
-        'Development Status :: 4 - Beta',
-        # 'Development Status :: 5 - Production/Stable',
+        'Development Status :: 5 - Production/Stable',
         # 'Development Status :: 6 - Mature',
         # 'Development Status :: 7 - Inactive',
         'Environment :: Console',
@@ -57,10 +56,10 @@ setup(
         'Operating System :: Unix',
         # 'Operating System :: Microsoft :: Windows',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: Implementation :: PyPy'
     ]
 )

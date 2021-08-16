@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Copyright 2018 Dispel, LLC
+Copyright 2021 Dispel, LLC
 Apache 2.0 License, see https://github.com/dispel/jak/blob/master/LICENSE for details.
 """
 
@@ -51,9 +51,8 @@ class AES256Cipher(object):
 
     def _generate_iv(self):
         """Generates an Initialization Vector (IV).
-
-        This implementation is the currently recommended way of generating an IV
-        in PyCrypto's docs (https://www.dlitz.net/software/pycrypto/api/current/)
+        https://github.com/Legrandin/pycryptodome/blob/master/lib/Crypto/Random/__init__.py
+        Seems to be making use of os.urandom.
         """
         return Random.new().read(self.BLOCK_SIZE)
 
@@ -61,8 +60,8 @@ class AES256Cipher(object):
         """True if key is correct and data has not been tampered with else False"""
         new_mac = hmac.new(key=self.hmac_key, msg=data, digestmod=SHA512).digest()
 
-        # It is important to compare them like this instead of using '==' to prevent
-        # timing attacks
+        # It is important to compare them like this instead of using '=='
+        # to prevent timing attacks
         return hmac.compare_digest(new_mac, signature)
 
     def extract_iv(self, ciphertext):
@@ -113,7 +112,10 @@ class AES256Cipher(object):
         version = self._extract_version(ciphertext=ciphertext)
 
         if self._need_old_decrypt_function(version):
-            return self._use_old_decrypt_function(version=version, ciphertext=ciphertext)
+            return self._use_old_decrypt_function(
+                version=version,
+                ciphertext=ciphertext
+            )
 
         signature = self._extract_signature(ciphertext=ciphertext)
         iv = self.extract_iv(ciphertext=ciphertext)
