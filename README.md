@@ -1,7 +1,7 @@
 # jak
 
 [![jak package on pypi](https://img.shields.io/pypi/v/jak.svg)](https://pypi.python.org/pypi/jak)
-[![travis-ci](https://travis-ci.org/dispel/jak.svg?branch=master)](https://travis-ci.org/dispel/jak)
+[![Build Status](https://travis-ci.com/dispel/jak.svg?branch=master)](https://travis-ci.com/dispel/jak)
 [![supported python versions](https://img.shields.io/pypi/pyversions/jak.svg)](https://pypi.python.org/pypi/jak)
 
 jak can encrypt and decrypt files. The standard example is of a ``.env`` file with secrets in it inside of a git repository.
