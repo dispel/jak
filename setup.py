@@ -42,6 +42,7 @@ setup(
             'jak = jak.app:main',
         ],
     },
+    python_requires='>=3.6',
     classifiers=[
         # As from http://pypi.python.org/pypi?%3Aaction=list_classifiers
         'Development Status :: 5 - Production/Stable',
