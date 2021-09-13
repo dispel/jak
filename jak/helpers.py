@@ -7,7 +7,6 @@ import os
 import json
 import errno
 import binascii
-from io import open
 
 
 def grouper(iterable, n):
@@ -61,11 +60,11 @@ def create_backup_filepath(jwd, filepath):
 
     # Special case: root.
     if ('/' not in filename):
-        return '/.jak/{}_backup'.format(filename)
+        return f'/.jak/{filename}_backup'
 
     filename = filename[1:]  # b/c/d
     filename = filename.replace('/', '_')  # b_c_d
-    return '{}/.jak/{}_backup'.format(jwd, filename)  # /a/.jak/b_c_d_backup
+    return f'{jwd}/.jak/{filename}_backup'  # /a/.jak/b_c_d_backup
 
 
 def backup_file_content(jwd, filepath, content):
@@ -92,7 +91,7 @@ def get_backup_content_for_file(jwd, filepath):
     TODO Needs test
     """
     filename = create_backup_filepath(jwd=jwd, filepath=filepath)
-    with open(filename, 'rt') as f:
+    with open(filename) as f:
         encrypted_secret = f.read()
     return encrypted_secret
 
@@ -102,7 +101,7 @@ def two_column(left, right, col1_length=65, col2_length=1):
     Example:
     I did this thing             done!
     """
-    tmp = '%-{}s%-{}s'.format(col1_length, col2_length)
+    tmp = f'%-{col1_length}s%-{col2_length}s'
 
     # The space in front of the right column add minimal padding in case
     # lefts content is very long (>col1_length)
@@ -131,7 +130,7 @@ def get_jak_working_directory(cwd=os.getcwd()):
     if none is found default to current directory: './'"""
 
     # They are probably in a .git repo so let's check that right off the bat.
-    if os.path.exists('{}/.git'.format(cwd)):
+    if os.path.exists(f'{cwd}/.git'):
         return cwd
 
     cwd_path = cwd.split('/')
@@ -146,7 +145,7 @@ def get_jak_working_directory(cwd=os.getcwd()):
     # /A/B/C/.git --> True, returns '/A/B/C'
     for directory in reversed(cwd_path):
         dirpath = '/'.join(cwd_path)
-        if os.path.exists('{}/.git'.format(dirpath)):
+        if os.path.exists(f'{dirpath}/.git'):
             return dirpath
         cwd_path.remove(directory)
 
@@ -157,12 +156,12 @@ def get_jak_working_directory(cwd=os.getcwd()):
 def does_jwd_have_gitignore(cwd=os.getcwd()):
     """'' means they are in repo root."""
     jwd = get_jak_working_directory(cwd=cwd)
-    return os.path.exists('{}/.gitignore'.format(jwd))
+    return os.path.exists(f'{jwd}/.gitignore')
 
 
 def read_jakfile_to_dict(jwd=get_jak_working_directory()):
     """Read the jakfile and dump its json comments into a dict for easy usage"""
-    with open('{}/jakfile'.format(jwd), 'rt') as f:
+    with open(f'{jwd}/jakfile') as f:
         contents_raw = f.read()
 
     sans_comments = _remove_comments_from_JSON(contents_raw)

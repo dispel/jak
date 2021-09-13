@@ -24,7 +24,7 @@ def test_add_keyfile_to_gitignore(tmpdir):
     gitignore = tmpdir.join('.gitignore')
     gitignore.write('# Simple Git Ignore')
     start.add_keyfile_to_gitignore(gitignore.strpath)
-    with open(gitignore.strpath, 'r') as f:
+    with open(gitignore.strpath) as f:
         new_gitignore = f.read()
     assert '.jak' in new_gitignore
 

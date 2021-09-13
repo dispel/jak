@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 Copyright 2021 Dispel, LLC
 Apache 2.0 License, see https://github.com/dispel/jak/blob/master/LICENSE for details.
@@ -7,12 +5,11 @@ Apache 2.0 License, see https://github.com/dispel/jak/blob/master/LICENSE for de
 
 import base64
 import binascii
-from io import open
 from . import helpers
 from .aes_cipher import AES256Cipher
 from .exceptions import JakException, WrongKeyException
 
-ENCRYPTED_BY_HEADER = u'- - - Encrypted by jak - - -\n\n'
+ENCRYPTED_BY_HEADER = '- - - Encrypted by jak - - -\n\n'
 
 
 def _read_file(filepath):
@@ -20,11 +17,11 @@ def _read_file(filepath):
     try:
         with open(filepath, 'rb') as f:
             contents = f.read()
-    except IOError:
-        raise JakException("Sorry I can't find the file: {}".format(filepath))
+    except OSError:
+        raise JakException(f"Sorry I can't find the file: {filepath}")
 
     if len(contents) == 0:
-        raise JakException('The file "{}" is empty, aborting...'.format(filepath))
+        raise JakException(f'The file "{filepath}" is empty, aborting...')
 
     return contents
 
@@ -64,7 +61,7 @@ def encrypt_file(jwd, filepath, key, **kwargs):
     plaintext = _read_file(filepath=filepath)
 
     if bytes(ENCRYPTED_BY_HEADER, 'utf-8') in plaintext:
-        raise JakException('I already encrypted the file: "{}".'.format(filepath))
+        raise JakException(f'I already encrypted the file: "{filepath}".')
 
     aes256_cipher = AES256Cipher(key=key)
 
@@ -80,7 +77,7 @@ def encrypt_file(jwd, filepath, key, **kwargs):
         ciphertext = base64.urlsafe_b64encode(ciphertext_ugly)
 
     write_ciphertext_to_file(filepath=filepath, ciphertext=ciphertext)
-    return '{} - is now encrypted.'.format(filepath)
+    return f'{filepath} - is now encrypted.'
 
 
 def decrypt_file(filepath, key, jwd, **kwargs):
@@ -115,9 +112,9 @@ def decrypt_file(filepath, key, jwd, **kwargs):
     try:
         decrypted_secret = aes256_cipher.decrypt(ciphertext=ciphertext)
     except WrongKeyException as wke:
-        raise JakException('{} - {}'.format(filepath, wke.__str__()))
+        raise JakException(f'{filepath} - {wke.__str__()}')
 
     with open(filepath, 'wb') as f:
         f.write(decrypted_secret)
 
-    return '{} - is now decrypted.'.format(filepath)
+    return f'{filepath} - is now decrypted.'
