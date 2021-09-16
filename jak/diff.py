@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Copyright 2021 Dispel, LLC
 Apache 2.0 License, see https://github.com/dispel/jak/blob/master/LICENSE for details.
@@ -11,7 +10,6 @@ import base64
 import random
 import binascii
 import subprocess
-from io import open
 from . import helpers
 from .aes_cipher import AES256Cipher
 from .exceptions import JakException, WrongKeyException
@@ -29,8 +27,8 @@ def _create_local_remote_diff_files(filepath, local, remote):
     """
     tag = random.randrange(10000, 99999)
     (filepath, ext) = os.path.splitext(filepath)
-    local_file_path = '{}_LOCAL_{}{}'.format(filepath, tag, ext)
-    remote_file_path = '{}_REMOTE_{}{}'.format(filepath, tag, ext)
+    local_file_path = f'{filepath}_LOCAL_{tag}{ext}'
+    remote_file_path = f'{filepath}_REMOTE_{tag}{ext}'
 
     helpers.create_or_overwrite_file(filepath=local_file_path, content=local)
     helpers.create_or_overwrite_file(filepath=remote_file_path, content=remote)
@@ -95,14 +93,14 @@ cyz>
     try:
         decrypted = aes256_cipher.decrypt(ciphertext=ugly_local)
     except WrongKeyException as wke:
-        raise JakException('LOCAL - {}'.format(wke.__str__()))
+        raise JakException(f'LOCAL - {wke.__str__()}')
     else:
         secrets.append(decrypted.decode('utf-8').rstrip('\n'))
 
     try:
         decrypted = aes256_cipher.decrypt(ciphertext=ugly_remote)
     except WrongKeyException as wke:
-        raise JakException('REMOTE - {}'.format(wke.__str__()))
+        raise JakException(f'REMOTE - {wke.__str__()}')
     else:
         secrets.append(decrypted.decode('utf-8').rstrip('\n'))
 
@@ -118,7 +116,7 @@ def _extract_merge_conflict_parts(content):
 @decorators.select_key
 def diff(filepath, key, **kwargs):
     """Diff and merge a file that has a merge conflict."""
-    with open(filepath, 'rt') as f:
+    with open(filepath) as f:
         encrypted_diff_file = f.read()
 
     (header, local, separator, remote, end) = _extract_merge_conflict_parts(encrypted_diff_file)

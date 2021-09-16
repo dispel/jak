@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 Copyright 2021 Dispel, LLC
 Apache 2.0 License, see https://github.com/dispel/jak/blob/master/LICENSE for details.
@@ -14,7 +12,7 @@ from .padding import pad, unpad
 from .exceptions import JakException, WrongKeyException
 
 
-class AES256Cipher(object):
+class AES256Cipher:
     """AES256 using CBC mode and a 16bit block size."""
 
     def __init__(self, key, mode=AES.MODE_CBC):
@@ -29,8 +27,8 @@ class AES256Cipher(object):
 
         # We force the key to be 64 hexdigits (nibbles) because we are sadists.
         key_issue_exception = JakException(
-            ("Key must be 64 hexadecimal [0-f] characters long. \n"
-             "jak recommends you use the 'keygen' command to generate a strong key."))
+            "Key must be 64 hexadecimal [0-f] characters long. \n"
+             "jak recommends you use the 'keygen' command to generate a strong key.")
 
         # Long enough?
         if len(key) != 64:
@@ -102,7 +100,7 @@ class AES256Cipher(object):
         # Haven't upgraded our encryption since we added ciphertext versioning.
         # When we do we will replace this with a switch statement selecting old
         # Decryption methods.
-        raise Exception('FATAL: No one should end up here.... VERSION: {}, C: {}'.format(version, ciphertext))
+        raise Exception(f'FATAL: No one should end up here.... VERSION: {version}, C: {ciphertext}')
 
     def decrypt(self, ciphertext):
         """Decrypts a ciphertext secret"""

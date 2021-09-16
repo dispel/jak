@@ -1,12 +1,9 @@
-# -*- coding: utf-8 -*-
-
 """
 Copyright 2021 Dispel, LLC
 Apache 2.0 License, see https://github.com/dispel/jak/blob/master/LICENSE for details.
 """
 
 import os
-from io import open
 from . import helpers
 from functools import wraps
 from .exceptions import JakException
@@ -54,7 +51,7 @@ def read_jakfile(f):
     def wrapper(*args, **kwargs):
         try:
             kwargs['jakfile_dict'] = helpers.read_jakfile_to_dict()
-        except IOError:
+        except OSError:
             kwargs['jakfile_dict'] = {}
         except ValueError as ve:
             raise JakException("Your jakfile has malformed syntax (probably).")
@@ -107,10 +104,10 @@ def select_key_logic(key=None, keyfile=None, jakfile_dict=None):
 
     if keyfile:
         try:
-            with open(keyfile, 'rt', encoding='utf-8') as f:
+            with open(keyfile, encoding='utf-8') as f:
                 key = f.read()
-        except IOError:
-            raise JakException("Sorry I can't find the key file: {}".format(keyfile))
+        except OSError:
+            raise JakException(f"Sorry I can't find the key file: {keyfile}")
         else:
             key = key.replace('\n', '')
             return key
@@ -118,10 +115,10 @@ def select_key_logic(key=None, keyfile=None, jakfile_dict=None):
     # At this point they must have supplied a keyfile value in their jakfile
     filepath = jakfile_dict['keyfile']
     try:
-        with open(filepath, 'rt', encoding='utf-8') as f:
+        with open(filepath, encoding='utf-8') as f:
             key = f.read()
-    except IOError:
-        raise JakException("Sorry I can't find the key file: {}".format(filepath))
+    except OSError:
+        raise JakException(f"Sorry I can't find the key file: {filepath}")
     else:
         key = key.replace('\n', '')
         return key

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Copyright 2021 Dispel, LLC
 Apache 2.0 License, see https://github.com/dispel/jak/blob/master/LICENSE for details.
@@ -6,15 +5,14 @@ Apache 2.0 License, see https://github.com/dispel/jak/blob/master/LICENSE for de
 
 import os
 import click
-from io import open
 from . import outputs
 from . import helpers
 
 
 def create_jakfile(jwd=os.getcwd()):
     """Create a jakfile if you do not already have one in your JWD"""
-    jakfile_path = '{}/jakfile'.format(jwd)
-    keyfile_path = '{}/.jak/keyfile'.format(jwd)
+    jakfile_path = f'{jwd}/jakfile'
+    keyfile_path = f'{jwd}/.jak/keyfile'
 
     if os.path.exists(jakfile_path):
         msg = helpers.two_column('Is there already a jakfile?', 'Yep!')
@@ -25,8 +23,8 @@ def create_jakfile(jwd=os.getcwd()):
         helpers.create_or_overwrite_file(filepath=jakfile_path, content=fresh_jakfile)
         helpers.create_or_overwrite_file(filepath=keyfile_path, content=key)
         msg = helpers.two_column('Is there already a jakfile?', 'Nope!')
-        msg += '\n' + helpers.two_column('  Creating {}'.format(jakfile_path), 'Done')
-        msg += '\n' + helpers.two_column('  Creating {}'.format(keyfile_path), 'Done')
+        msg += '\n' + helpers.two_column(f'  Creating {jakfile_path}', 'Done')
+        msg += '\n' + helpers.two_column(f'  Creating {keyfile_path}', 'Done')
     return msg + '\n'
 
 
