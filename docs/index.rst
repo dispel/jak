@@ -101,7 +101,7 @@ Proposed future features and enhancements
 
 License
 -------
-Copyright 2016-2017 Dispel, LLC and contributors
+Copyright 2016-2021 Dispel, LLC and contributors
 
 
 Licensed under the Apache License, Version 2.0 (the "License");

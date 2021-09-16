@@ -1,16 +1,13 @@
-# -*- coding: utf-8 -*-
 """
-Copyright 2018 Dispel, LLC
+Copyright 2021 Dispel, LLC
 Apache 2.0 License, see https://github.com/dispel/jak/blob/master/LICENSE for details.
 """
-
-import six
 
 
 def pad(data, bs=16):
     """PKCS#7 Padding. Takes a bytestring data and an optional blocksize 'bs'"""
     length = bs - (len(data) % bs)
-    data += six.int2byte(length) * length
+    data += bytes((length,)) * length
     return data
 
 

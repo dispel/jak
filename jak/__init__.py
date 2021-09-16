@@ -7,11 +7,11 @@ About versioning
 ----------------
 Past, current and future versions.
 
-0.X Troubled Toddler        <-- CURRENT
-1.X Young Whippersnapper
+0.X Troubled Toddler
+1.X Young Whippersnapper  <-- CURRENT
 2.X Teenage Wasteland
-3.X Highschool Sweetheart
-4.X Wannabee Scientist
+3.X High school Sweetheart
+4.X Wannabe Scientist
 5.X Jaded Hipster
 6.X Midlife Maniac
 7.X Dorky Parent
@@ -20,9 +20,6 @@ Past, current and future versions.
 10.X Wizened Witch
 
 If in doubt about how version should increase see: http://semver.org/
-The exception is version 1.X which is when we are saying that we are comfortable
-with people using it. I Don't care what incompatible API changes happen during 0.X
-it is NOT 1.X until we are 99.9 percent sure it is secure.
 
 Semantic Versioning Cheatsheet
 ------------------------------
@@ -31,9 +28,10 @@ MAJOR version when you make incompatible API changes,
 MINOR version when you add functionality in a backwards-compatible manner, and
 PATCH version when you make backwards-compatible bug fixes.
 
-Copyright 2018 Dispel, LLC
-Apache 2.0 License, see https://github.com/dispel/jak/blob/master/LICENSE for details.
+Copyright 2021 Dispel, LLC
+Apache 2.0 License, see https://github.com/dispel/jak/blob/master/LICENSE
+for details.
 """
 
-__version__ = '0.14.6'
-__version_full__ = "Jak v{0} ({1})".format(__version__, 'Troubled Toddler')
+__version__ = '1.0.0'
+__version_full__ = "Jak v{} ({})".format(__version__, 'Young Whippersnapper')

@@ -1,19 +1,15 @@
-# -*- coding: utf-8 -*-
-
 """
-Copyright 2018 Dispel, LLC
+Copyright 2021 Dispel, LLC
 Apache 2.0 License, see https://github.com/dispel/jak/blob/master/LICENSE for details.
 """
 
 import base64
 import binascii
-from io import open
 from . import helpers
-from .compat import b
 from .aes_cipher import AES256Cipher
 from .exceptions import JakException, WrongKeyException
 
-ENCRYPTED_BY_HEADER = u'- - - Encrypted by jak - - -\n\n'
+ENCRYPTED_BY_HEADER = '- - - Encrypted by jak - - -\n\n'
 
 
 def _read_file(filepath):
@@ -21,11 +17,11 @@ def _read_file(filepath):
     try:
         with open(filepath, 'rb') as f:
             contents = f.read()
-    except IOError:
-        raise JakException("Sorry I can't find the file: {}".format(filepath))
+    except OSError:
+        raise JakException(f"Sorry I can't find the file: {filepath}")
 
     if len(contents) == 0:
-        raise JakException('The file "{}" is empty, aborting...'.format(filepath))
+        raise JakException(f'The file "{filepath}" is empty, aborting...')
 
     return contents
 
@@ -41,7 +37,7 @@ def _restore_from_backup(jwd, filepath, plaintext, aes256_cipher):
 
     backup_ciphertext_original = helpers.get_backup_content_for_file(jwd=jwd, filepath=filepath)
 
-    previous_enc = base64.urlsafe_b64decode(b(backup_ciphertext_original))
+    previous_enc = base64.urlsafe_b64decode(bytes(backup_ciphertext_original, 'utf-8'))
     iv = aes256_cipher.extract_iv(ciphertext=previous_enc)
     new_secret_w_same_iv = aes256_cipher.encrypt(plaintext=plaintext, iv=iv)
 
@@ -52,7 +48,6 @@ def _restore_from_backup(jwd, filepath, plaintext, aes256_cipher):
 
 
 def write_ciphertext_to_file(filepath, ciphertext):
-    ciphertext = b(ciphertext)
     ciphertext = ciphertext.replace(b'\n', b'')
     encrypted_chunks = helpers.grouper(ciphertext.decode('utf-8'), 60)
     with open(filepath, 'w', encoding='utf-8') as f:
@@ -65,8 +60,8 @@ def encrypt_file(jwd, filepath, key, **kwargs):
     """Encrypts a file"""
     plaintext = _read_file(filepath=filepath)
 
-    if b(ENCRYPTED_BY_HEADER) in plaintext:
-        raise JakException('I already encrypted the file: "{}".'.format(filepath))
+    if bytes(ENCRYPTED_BY_HEADER, 'utf-8') in plaintext:
+        raise JakException(f'I already encrypted the file: "{filepath}".')
 
     aes256_cipher = AES256Cipher(key=key)
 
@@ -82,18 +77,18 @@ def encrypt_file(jwd, filepath, key, **kwargs):
         ciphertext = base64.urlsafe_b64encode(ciphertext_ugly)
 
     write_ciphertext_to_file(filepath=filepath, ciphertext=ciphertext)
-    return '{} - is now encrypted.'.format(filepath)
+    return f'{filepath} - is now encrypted.'
 
 
 def decrypt_file(filepath, key, jwd, **kwargs):
     """Decrypts a file"""
     contents = _read_file(filepath=filepath)
 
-    if b(ENCRYPTED_BY_HEADER) not in contents:
+    if bytes(ENCRYPTED_BY_HEADER, 'utf-8') not in contents:
         return 'The file "{}" is already decrypted, or it is missing it\'s jak header.'.format(
             filepath)
 
-    ciphertext_no_header = contents.replace(b(ENCRYPTED_BY_HEADER), b'')
+    ciphertext_no_header = contents.replace(bytes(ENCRYPTED_BY_HEADER, 'utf-8'), b'')
 
     # We could actually check that the first few letters are SkFL (JAK in base64)
     # it seems unreasonably unlikely that a plaintext would start with those 4 characters.
@@ -117,9 +112,9 @@ def decrypt_file(filepath, key, jwd, **kwargs):
     try:
         decrypted_secret = aes256_cipher.decrypt(ciphertext=ciphertext)
     except WrongKeyException as wke:
-        raise JakException('{} - {}'.format(filepath, wke.__str__()))
+        raise JakException(f'{filepath} - {wke.__str__()}')
 
     with open(filepath, 'wb') as f:
         f.write(decrypted_secret)
 
-    return '{} - is now decrypted.'.format(filepath)
+    return f'{filepath} - is now decrypted.'

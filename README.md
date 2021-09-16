@@ -1,7 +1,7 @@
 # jak
 
 [![jak package on pypi](https://img.shields.io/pypi/v/jak.svg)](https://pypi.python.org/pypi/jak)
-[![travis-ci](https://travis-ci.org/dispel/jak.svg?branch=master)](https://travis-ci.org/dispel/jak)
+[![Build Status](https://travis-ci.com/dispel/jak.svg?branch=master)](https://travis-ci.com/dispel/jak)
 [![supported python versions](https://img.shields.io/pypi/pyversions/jak.svg)](https://pypi.python.org/pypi/jak)
 
 jak can encrypt and decrypt files. The standard example is of a ``.env`` file with secrets in it inside of a git repository.
@@ -9,9 +9,7 @@ By sharing a key through some other means all developers can encrypt and decrypt
 
 For a more thorough introduction you should [read the documentation.](https://jak.readthedocs.io).
 
-jak currently works for *nix type systems such as macOS or ubuntu. We are working on windows compatibility.
-
-**IMPORTANT!! JAK IS NOT READY FOR PRODUCTION USE YET!!**
+jak currently works for *nix type systems such as macOS or ubuntu.
 
 # Installation
 

@@ -1,6 +1,5 @@
-# -*- coding: utf-8 -*-
 """
-Copyright 2018 Dispel, LLC
+Copyright 2021 Dispel, LLC
 Apache 2.0 License, see https://github.com/dispel/jak/blob/master/LICENSE for details.
 """
 
@@ -74,7 +73,7 @@ def start():
     jwd = helpers.get_jak_working_directory()
     click.echo(start_logic.create_jakfile(jwd=jwd))
 
-    if not os.path.exists('{}/.git'.format(jwd)):
+    if not os.path.exists(f'{jwd}/.git'):
         msg = helpers.two_column('Is this a git repository?', 'Nope!')
         msg += '\n  jak says: I work great with git, but you do you.'
         click.echo(msg)

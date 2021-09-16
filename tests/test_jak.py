@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import pytest
 from click.testing import CliRunner
 from jak.app import main as jak
@@ -22,7 +20,7 @@ def test_version(runner, version_flag):
     result = runner.invoke(jak, [version_flag])
     assert not result.exception
     assert result.exit_code == 0
-    assert '(Troubled Toddler)' in result.output.strip()
+    assert '(Young Whippersnapper)' in result.output.strip()
 
 
 @pytest.mark.parametrize('cmd, filepath', [

@@ -1,9 +1,5 @@
-# -*- coding: utf-8 -*-
-
-import six
 import pytest
 from jak import helpers
-from jak.compat import b
 from Crypto.Cipher import AES
 from click.testing import CliRunner
 import jak.crypto_services as crypto
@@ -36,7 +32,7 @@ def test_bad_create_cipher():
 def test_generate_iv(cipher):
     result = cipher._generate_iv()
     assert len(result) == 16
-    assert isinstance(result, six.binary_type)
+    assert isinstance(result, bytes)
 
 
 @pytest.mark.parametrize('key', [
@@ -60,8 +56,8 @@ def test_encrypt_decrypt(cipher):
 
     ciphertext = cipher.encrypt(plaintext=secret)
     plaintext = cipher.decrypt(ciphertext=ciphertext)
-    assert isinstance(ciphertext, six.binary_type)
-    assert isinstance(plaintext, six.binary_type)
+    assert isinstance(ciphertext, bytes)
+    assert isinstance(plaintext, bytes)
     assert plaintext == secret
     assert ciphertext != secret
     assert ciphertext != plaintext
@@ -102,17 +98,8 @@ def test_authenticate_tampered(cipher):
 
     # Let's tamper with the payload
     dump = [x for x in payload]
-
-    try:
-        dump[5] = dump[5] + 1 if dump[5] != 255 else dump[5] - 1
-    except TypeError:
-
-        # Python 2 or PyPy
-        x = ord(dump[5])
-        dump[5] = chr(x + 1) if x != 255 else chr(x - 1)
-        tampered_payload = "".join(dump)
-    else:
-        tampered_payload = b("".join(map(chr, dump)))
+    dump[5] = dump[5] + 1 if dump[5] != 255 else dump[5] - 1
+    tampered_payload = bytes("".join(map(chr, dump)), 'utf-8')
 
     assert payload != tampered_payload
     assert cipher._authenticate(data=tampered_payload, signature=signature) is False
@@ -171,10 +158,10 @@ def test_encrypt_and_decrypt_a_file(runner, tmpdir):
 
 
 def test_need_old_decrypt_version(cipher):
-    same_version = b(cipher.VERSION)
+    same_version = bytes(cipher.VERSION, 'utf-8')
     assert cipher._need_old_decrypt_function(version=same_version) is False
 
-    different_version = b('JAK-XXX')
+    different_version = 'JAK-XXX'
     assert cipher._need_old_decrypt_function(version=different_version) is True
 
 
