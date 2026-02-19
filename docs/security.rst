@@ -16,17 +16,17 @@ Hopefully this image will be helpful in having you understand how the encryption
 Encryption
 ----------
 
-jak uses the **PyCrypto** implementation of **AES256** running in **CBC-MODE** for its encryption. What makes AES be 256 is the key space of the key you use. For 256-bit you should have a 32 byte key that is as random as possible. 1 byte is 8 bits so 256 / 8 = 32. This gives you a key space of 2^32.
+jak uses the **PyCryptodome** implementation of **AES256** running in **CBC-MODE** for its encryption. What makes AES be 256 is the key space of the key you use. For 256-bit you should have a 32 byte key that is as random as possible. 1 byte is 8 bits so 256 / 8 = 32. This gives you a key space of 2^32.
 
-jak requires a 64 character hexadecimal key. It can :ref:`generate it for you. <keygen_cmd>`  It should look something like this ``b30259425d7e5a8b4858f72948d7a232142c292997d6431efaa6a02d7a866b03``. To keep it readable we are actually representing the bytes as hexdigits, 2 hex digits are 1 byte of complexity. ``b3 02 59 42`` is 4 bytes. Therefore the 64 character is key 32 bytes. jak generates this key from **/dev/urandom** (``binascii.hexlify(os.urandom(32))``).
+jak requires a 64 character hexadecimal key. It can :ref:`generate it for you. <keygen_cmd>`  It should look something like this ``b30259425d7e5a8b4858f72948d7a232142c292997d6431efaa6a02d7a866b03``. To keep it readable we are actually representing the bytes as hexdigits, 2 hex digits are 1 byte of complexity. ``b3 02 59 42`` is 4 bytes. Therefore the 64 character key is 32 bytes. jak generates this key from **/dev/urandom** (``binascii.hexlify(os.urandom(32))``).
 
 CBC-MODE requires padding. jak uses **PKCS#7** padding. In plain English that means that jak pads the plaintext secret to be a multiple of the block size (defaults to 16) by adding padding where each character is a number equal to the amount of padding. The previous sentence might be tricky, so here is an example to clarify: ``pad('aaaaaaaaaaaaa') returns 'aaaaaaaaaaaaa\x03\x03\x03'``.
 
-CBC-MODE also requires an **Initialization Vector (IV)**. jak generates it using the **Fortuna (PRNG)** as implemented by **PyCrypto**.
+CBC-MODE also requires an **Initialization Vector (IV)**. jak generates it using the **Fortuna (PRNG)** as implemented by **PyCryptodome**.
 
 Further reading:
 
-* https://www.pycrypto.org
+* https://pycryptodome.readthedocs.io/en/latest/
 * https://en.wikipedia.org/wiki/Advanced_Encryption_Standard
 * https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Cipher_Block_Chaining_.28CBC.29
 * https://en.wikipedia.org/wiki/Key_space_(cryptography)
@@ -58,13 +58,11 @@ Further reading:
 Obtaining randomness
 --------------------
 
-The random values jak generates are the **key** and the **IV**. Measuring randomness is hard if not impossible and there seems to be a great deal of differing opinions about what is a good source. The TL;DR seems to be that /dev/urandom and Fortuna are sufficiently random. But please educate yourself, it's a really interesting subject. Here are some good links to get you started.
+The random values jak generates are the **key** and the **IV**. Measuring randomness is hard if not impossible and there seems to be a great deal of differing opinions about what is a good source. The TL;DR seems to be that /dev/urandom and Fortuna are sufficiently random. But please educate yourself, it‘s a really interesting subject. Here are some good links to get you started.
 
-* https://docs.python.org/3.5/library/os.html#os.urandom
-* https://docs.python.org/2.7/library/os.html#os.urandom
+* https://docs.python.org/3.9/library/os.html#os.urandom
 * https://sockpuppet.org/blog/2014/02/25/safely-generate-random-numbers/
 * http://www.2uo.de/myths-about-urandom/
-* https://github.com/dlitz/pycrypto/blob/master/lib/Crypto/Random/__init__.py
 
 
 Final thoughts

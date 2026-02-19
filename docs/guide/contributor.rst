@@ -30,10 +30,8 @@ Developer machine setup
   # This is where the project files are mirrorer on the virtual machine
   cd /vagrant
 
-  # Choose a virtualenv to work on (see virtualenvwrapper docs)
-  # It is recommended you use the py27 environment for development and
-  # then switching to py35 when you have an issue in Python 3.
-  workon py27
+  # Activate virtualenv
+  source ~/venvs/py39/bin/activate
 
   # Run tests for multiple Python versions (see tox.ini)
   tox
@@ -78,23 +76,21 @@ Once your branch or fork looks good make a PR and one of the stewards will take 
 Alerts
 ------
 
-It currently (2017-01-25) appears that tox will NOT run from Python 3.6 due to urrlib3 not existing. So run your tox from a different base Python environment for now.
-
-Also PyPy tests don't seem to run in tox either, I recommend checking out the virtualenv (``workon pypy``) and running them straight with ``pytest``. If someone could fix this, it would be much appreciated.
+No alerts. Everything seems to be working fine.
 
 
 Future versions
 ---------------
 
-0 - 10 are the formative years. If we get past them (which seems frankly highly unlikely) we will start a new naming scheme. We use `semantic versioning <http://semver.org/>`_ so the only time we shift the first number would be if we make backwards incompatible changes. The exception to this is 1.0 which will be assigned when Chris DiLorenzo thinks jak is (1) verified to be secure and (2) have no known bugs and (3) have decent tests for it's core functionality.
+0 - 10 are the formative years. If we get past them (which seems frankly highly unlikely) we will start a new naming scheme. We use `semantic versioning <http://semver.org/>`_ so the only time we shift the first number would be if we make backwards incompatible changes. The exception to this is 1.0 which will be assigned when Chris DiLorenzo thinks jak is (1) verified to be secure and (2) have no known bugs and (3) have decent tests for it‘s core functionality.
 
 .. sourcecode:: text
 
-  0.X Troubled Toddler        <-- CURRENT
-  1.X Young Whippersnapper
+  0.X Troubled Toddler
+  1.X Young Whippersnapper  <-- CURRENT
   2.X Teenage Wasteland
-  3.X Highschool Sweetheart
-  4.X Wannabee Scientist
+  3.X High school Sweetheart
+  4.X Wannabe Scientist
   5.X Jaded Hipster
   6.X Midlife Maniac
   7.X Dorky Parent

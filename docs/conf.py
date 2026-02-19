@@ -19,6 +19,7 @@
 #
 import os
 import sys
+from jak import __version__, __version_full__
 sys.path.insert(0, os.path.abspath('..'))
 
 
@@ -47,13 +48,12 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'jak'
-copyright = '2017, Dispel, LLC'
+copyright = '2021, Dispel, LLC'
 author = 'Dispel, LLC'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
-from jak import __version__, __version_full__
 
 # The short X.Y version.
 version = __version__
@@ -82,7 +82,8 @@ todo_include_todos = False
 
 # -- Options for HTML output ----------------------------------------------
 
-# on_rtd is whether we are on readthedocs.org, this line of code grabbed from docs.readthedocs.org
+# on_rtd is whether we are on readthedocs.org, this line of code grabbed from
+# docs.readthedocs.org
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 
 if not on_rtd:  # only import and set the theme if we're building docs locally
