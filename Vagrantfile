@@ -24,11 +24,11 @@ sudo apt-get install python3-dev python-dev python3.4 python3.4-dev python3.5-de
 sudo pip install virtualenvwrapper
 
 # Add ye olden virtualenvwrapper settings to the .profile and load them in.
-sed -i "$ a # Virtualenvwrapper settings" /home/ubuntu/.profile
-sed -i "$ a export WORKON_HOME=/home/ubuntu/.virtualenvs" /home/ubuntu/.profile
-sed -i "$ a export PROJECT_HOME=/home/ubuntu/Devel" /home/ubuntu/.profile
-sed -i "$ a source /usr/local/bin/virtualenvwrapper.sh" /home/ubuntu/.profile
-source /home/ubuntu/.profile
+sudo sed -i "$ a # Virtualenvwrapper settings" /home/vagrant/.profile
+sudo sed -i "$ a export WORKON_HOME=/home/vagrant/.virtualenvs" /home/vagrant/.profile
+sudo sed -i "$ a export PROJECT_HOME=/home/vagrant/Devel" /home/vagrant/.profile
+sudo sed -i "$ a source /usr/local/bin/virtualenvwrapper.sh" /home/vagrant/.profile
+source /home/vagrant/.profile
 
 # Pop into the folder where jak lives
 cd /vagrant

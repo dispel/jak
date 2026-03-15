@@ -9,11 +9,98 @@ from click.testing import CliRunner
 import jak.crypto_services as crypto
 from jak.exceptions import JakException
 
-
 @pytest.fixture
 def runner():
     return CliRunner()
 
+
+#should I be adding "with runner.isolated_filesystem():" to any or all of these?
+
+
+@pytest.mark.parametrize('original_plaintext, append_to_ciphertext, append_to_plaintext', [
+    ( 'even write in it for the test', '', '' ),
+    ('even write in it for the test', 'This has to go at the very end doesnt it?', '' ),
+    ( 'even write in it for the test', '', 'wuba wuba dub' )
+])
+def test__restore_from_backup(original_plaintext, append_to_ciphertext, append_to_plaintext, tmpdir):
+    testfile = tmpdir.join('testfile')
+    plaintext = original_plaintext
+    testfile.write(plaintext)
+    assert testfile.read() == plaintext
+
+    key = "9412735d31033ed596de83344939677e24bad58e9576392252d16d2243d1d9c5"
+    crypto.encrypt_file(testfile.dirpath().strpath, testfile.strpath, key=key)
+    assert crypto.ENCRYPTED_BY_HEADER in testfile.read()
+    testfile.write(append_to_ciphertext, "a")
+    encrypted_text = testfile.read()
+    #we don't want the encrypted by jak to show up since it doesn't when we use restore_from_backup
+    encrypted_text = encrypted_text.replace("""- - - Encrypted by jak - - -
+
+""","")
+
+    is_decrypted = crypto.decrypt_file(jwd=testfile.dirpath().strpath, filepath=testfile.strpath, key=key)
+    assert '- is now decrypted.' in is_decrypted
+
+    testfile.write(append_to_plaintext, "a")
+    altered_plaintext = plaintext+append_to_plaintext
+    aes256_cipher = crypto.AES256Cipher(key=key)
+
+    restored_ciphertext = crypto._restore_from_backup(testfile.dirpath().strpath, testfile.strpath, b(altered_plaintext), aes256_cipher)
+    if append_to_plaintext == '':
+        assert restored_ciphertext == encrypted_text
+    else:
+        assert restored_ciphertext == None
+
+
+
+
+@pytest.mark.parametrize('content_to_file', [ "", "something" ])
+def test__read_file(tmpdir, content_to_file):
+    testfile = tmpdir.join("testfile")
+    testfile.write(content_to_file)
+    assert testfile.read() == content_to_file
+    if content_to_file == "":
+        with pytest.raises(JakException) as excempty:
+            crypto._read_file(testfile.strpath)
+        assert "is empty" in str(excempty.value)
+    else:
+        assert crypto._read_file(testfile.strpath) == b("something")
+
+def test_already_encrypted(tmpdir):
+    encryptfile = tmpdir.join("already_encrypt")
+    encryptfile.write("be encrypt")
+    assert encryptfile.read() == "be encrypt"
+    key = helpers.generate_256bit_key().decode('utf-8')
+    crypto.encrypt_file(jwd=encryptfile.dirpath().strpath, filepath=encryptfile.strpath, key=key)
+    assert encryptfile.read() != "be encrypt"
+    assert crypto.ENCRYPTED_BY_HEADER in encryptfile.read()
+    with pytest.raises(JakException) as excencrypted:
+        crypto.encrypt_file(jwd=encryptfile.dirpath().strpath, filepath=encryptfile.strpath, key=key)
+    assert "already encrypted the file" in str(excencrypted.value)
+
+def test_already_decrypted(tmpdir):
+    decryptfile = tmpdir.join("decryptfile")
+    decryptfile.write("are we there yet?")
+    key = helpers.generate_256bit_key().decode('utf-8')
+    assert decryptfile.read() == "are we there yet?"
+    out = crypto.decrypt_file(jwd=decryptfile.dirpath().strpath, filepath=decryptfile.strpath, key=key)
+    assert out == 'The file "{}" is already decrypted, or is not in a format I recognize.'.format(
+            decryptfile.strpath)
+
+def test_wrong_key(tmpdir):
+    wrongkey = tmpdir.join("wrongkey")
+    wrongkey.write("I have to write this.")
+    key = "519c4865ba5aaa0505f95ad4975a7ea3ac07b9ad1842c1c064662a893ae64966"
+    crypto.encrypt_file(jwd=wrongkey.dirpath().strpath, filepath=wrongkey.strpath, key=key)
+    assert wrongkey.read() != "I have to write this."
+    badkey = "519c4865ba5aaa0505f95ad4975a7ea355555555555555555555555555555555"
+    with pytest.raises(JakException) as excwrong:
+        crypto.decrypt_file(jwd=wrongkey.dirpath().strpath, filepath=wrongkey.strpath, key=badkey)
+    assert "Wrong key" in str(excwrong.value)
+
+@pytest.fixture
+def runner():
+    return CliRunner()
 
 @pytest.fixture
 def cipher():

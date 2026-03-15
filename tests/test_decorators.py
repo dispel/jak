@@ -8,10 +8,6 @@ from jak.exceptions import JakException
 CWD = os.getcwd()
 
 
-def test_select_key():
-    pass
-
-
 @pytest.mark.parametrize('input, output', [
     ({
         'all_or_filepath': 'all',
@@ -38,13 +34,23 @@ def test_select_files(input, output):
     assert decorators._select_files_logic(**input) == output
 
 
-def test_read_jakfile():
-    # TODO
-    pass
+def test_select_files_logic_exception():
+    input = {
+        'all_or_filepath': 'all',
+        'jakfile_dict': { 'there is nothing in here': 'yes nothing' }
+    }
+    with pytest.raises(JakException) as exception:
+        decorators._select_files_logic(**input)
+    assert "Expected key missing:" in str(exception.value)
 
 
 def test_select_key_logic(tmpdir):
-
+    """
+    CLI = Command line interface.
+    P = Password
+    PF = Password file
+    JAKPF = Password file that is referenced in the jakfile
+    """
     # !CLIP & !CLIPF
     with pytest.raises(JakException) as exception:
         decorators.select_key_logic()
@@ -57,6 +63,11 @@ def test_select_key_logic(tmpdir):
 
     # CLIP
     assert "key" == decorators.select_key_logic("key")
+
+    # Bad CLIPF
+    with pytest.raises(JakException) as exception:
+        print(decorators.select_key_logic(keyfile ="not_a_keyfile"))
+    assert "I can't find the key file" in exception.__str__()
 
     # CLIPF
     keyfile = tmpdir.mkdir("a").join("keyfile")
@@ -81,6 +92,5 @@ def test_select_key_logic(tmpdir):
     assert decorators.select_key_logic(jakfile_dict={'keyfile': keyfile.strpath}) == key
 
     # JAKPF but doesn't exist
-    # with pytest.raises(IOError) as exception:
     with pytest.raises(JakException) as exception:
         decorators.select_key_logic(jakfile_dict={'keyfile': 'badpath'})
