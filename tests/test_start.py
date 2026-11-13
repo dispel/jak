@@ -44,7 +44,8 @@ def test_add_keyfile_to_gitignore(tmpdir):
     with open(gitignore.strpath) as f:
         new_gitignore = f.read()
     assert '.jak' in new_gitignore
-    # this will test that it functions properly and doesn't throw errors if we already have '.jak' in gitignore
+    # this will test that it functions properly and doesn't throw errors if we already have '.jak'
+    # in gitignore
     start.add_keyfile_to_gitignore(gitignore.strpath)
 
 def test_create_jakfile_error(tmpdir):
@@ -77,13 +78,16 @@ def test_create_jakfile(tmpdir):
   "files_to_encrypt": ["path/to/file"],
   "keyfile": ".jak/keyfile"
 }"""
-    altered_text = original_file.replace('// This list is for the encrypt/decrypt all commands and for the\n  // pre-commit hook (optional) protection.',
+    altered_text = original_file.replace(
+        '// This list is for the encrypt/decrypt all commands and for the\n'
+        '  // pre-commit hook (optional) protection.',
         '  // adding some comment to show that we have the right file')
     mock_jakfile = open(testfile.strpath+'/jakfile', 'w')
     mock_jakfile.write(altered_text)
     mock_jakfile.close()
 
-    #it seems that we have to open and reopen again since using "w+" will clear the file even when we are just reading
+    # it seems that we have to open and reopen again since using "w+" will clear the file even when
+    # we are just reading
     mock_jakfile = open(testfile.strpath+'/jakfile', 'r')
     assert mock_jakfile.read() == altered_text
     mock_jakfile.close()

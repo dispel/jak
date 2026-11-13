@@ -40,11 +40,12 @@ def test__restore_from_backup(original_plaintext, append_to_ciphertext, append_t
     altered_plaintext = plaintext+append_to_plaintext
     aes256_cipher = crypto.AES256Cipher(key=key)
 
-    restored_ciphertext = crypto._restore_from_backup(testfile.dirpath().strpath, testfile.strpath, altered_plaintext.encode(), aes256_cipher)
+    restored_ciphertext = crypto._restore_from_backup(
+        testfile.dirpath().strpath, testfile.strpath, altered_plaintext.encode(), aes256_cipher)
     if append_to_plaintext == '':
         assert restored_ciphertext == encrypted_text
     else:
-        assert restored_ciphertext == None
+        assert restored_ciphertext is None
 
 
 
@@ -105,10 +106,6 @@ def test_wrong_key(tmpdir):
     with pytest.raises(JakException) as excwrong:
         crypto.decrypt_file(jwd=wrongkey.dirpath().strpath, filepath=wrongkey.strpath, key=badkey)
     assert "Wrong key" in str(excwrong.value)
-
-@pytest.fixture
-def runner():
-    return CliRunner()
 
 @pytest.fixture
 def cipher():
