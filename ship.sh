@@ -41,5 +41,9 @@ If it works, publish it and tag the release:
 
   python3 -m twine upload --config-file .pypirc dist/*
   git tag $version && git push origin $version
-  gh release create $version --title v$version --notes "See docs/changelog.rst"
+  gh release create $version --title v$version --generate-notes
+
+--generate-notes lists every pull request merged since the previous tag. To put
+highlights above that list (breaking changes, security fixes), add
+--notes "your text".
 DONE
