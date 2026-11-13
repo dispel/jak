@@ -19,8 +19,8 @@
 #
 import os
 import sys
-from jak import __version__, __version_full__
 sys.path.insert(0, os.path.abspath('..'))
+from jak import __version__, __version_full__  # noqa: E402
 
 
 # -- General configuration ------------------------------------------------
