@@ -15,6 +15,7 @@ Lifecycle: 2026-11-X (UNRELEASED)
 * **[1.0.0]** MAJOR:
   * Drop support for 2.7, 3.4, 3.5, 3.6 and pypy. Add support for 3.11 - 3.15 and pypy3 `(PR#60) <https://github.com/dispel/jak/pull/60>`_.
   * Move CI from Travis to GitHub Actions.
+  * SECURITY: ``jak start`` did not make git ignore the ``.jak`` folder when it had to create the ``.gitignore`` itself (the entry was written with a leading space), so ``git add`` could commit the keyfile. ``jak start`` now writes a working entry and repairs the old one. If you ran ``jak start`` in a repository without a ``.gitignore``, run ``git ls-files .jak``. If it lists your keyfile, treat that key as leaked: generate a new one and cycle the secrets it protected.
   * Update documentation to reflect version update and change of supported versions.
   * Switch from PyCrypto to PyCryptodome. May well switch to `cryptography <https://cryptography.io/en/latest/>`_ in a future release.
   * DEPRECATION: Remove the compat layer used to support Python 2 `(PR#62) <https://github.com/dispel/jak/pull/62>`_.

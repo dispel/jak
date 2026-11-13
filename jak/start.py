@@ -33,19 +33,16 @@ def add_keyfile_to_gitignore(filepath='.gitignore'):
 folder [which contains the keyfile]. Note here add a file path in case
 they are not in the repo root"""
 
-    with open(filepath, 'r+') as f:
-        gitignore = f.read()
+    # 'a+' creates the file when it is missing.
+    with open(filepath, 'a+') as f:
+        f.seek(0)
 
-        if '.jak' in gitignore:
+        # Match the whole line: git takes leading whitespace literally, so a
+        # line like ' .jak' does not ignore the folder.
+        if '.jak' in f.read().splitlines():
             return
 
-        appended_text = '\n# jaks secret stash\n.jak\n'
-        try:
-            appended_text = appended_text.decode('utf-8')
-        except AttributeError:
-            pass
-        f.write(appended_text)
-    return
+        f.write('\n# jaks secret stash\n.jak\n')
 
 
 def want_to_add_pre_commit_encrypt_hook():
