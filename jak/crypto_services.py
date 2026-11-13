@@ -48,8 +48,8 @@ def _restore_from_backup(jwd, filepath, plaintext, aes256_cipher):
 
 
 def write_ciphertext_to_file(filepath, ciphertext):
-    ciphertext = ciphertext.replace(b'\n', b'')
-    encrypted_chunks = helpers.grouper(ciphertext.decode('utf-8'), 60)
+    ciphertext = ciphertext.replace('\n', '')
+    encrypted_chunks = helpers.grouper(ciphertext, 60)
     with open(filepath, 'w', encoding='utf-8') as f:
         f.write(ENCRYPTED_BY_HEADER)
         for encrypted_chunk in encrypted_chunks:
@@ -74,7 +74,7 @@ def encrypt_file(jwd, filepath, key, **kwargs):
         ciphertext_ugly = aes256_cipher.encrypt(plaintext=plaintext)
 
         # Base64 is prettier
-        ciphertext = base64.urlsafe_b64encode(ciphertext_ugly)
+        ciphertext = base64.urlsafe_b64encode(ciphertext_ugly).decode('utf-8')
 
     write_ciphertext_to_file(filepath=filepath, ciphertext=ciphertext)
     return f'{filepath} - is now encrypted.'

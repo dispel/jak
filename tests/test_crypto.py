@@ -49,6 +49,20 @@ def test__restore_from_backup(original_plaintext, append_to_ciphertext, append_t
 
 
 
+def test_encrypt_unchanged_file_restores_ciphertext(tmpdir):
+    testfile = tmpdir.join('testfile')
+    testfile.write('secret')
+    jwd = tmpdir.strpath
+    key = "9412735d31033ed596de83344939677e24bad58e9576392252d16d2243d1d9c5"
+
+    crypto.encrypt_file(jwd=jwd, filepath=testfile.strpath, key=key)
+    first_ciphertext = testfile.read()
+    crypto.decrypt_file(jwd=jwd, filepath=testfile.strpath, key=key)
+    crypto.encrypt_file(jwd=jwd, filepath=testfile.strpath, key=key)
+
+    assert testfile.read() == first_ciphertext
+
+
 @pytest.mark.parametrize('content_to_file', [ "", "something" ])
 def test__read_file(tmpdir, content_to_file):
     testfile = tmpdir.join("testfile")
