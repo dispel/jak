@@ -18,8 +18,8 @@
 #
 import os
 import sys
-from jak import __version__, __version_full__
 sys.path.insert(0, os.path.abspath('..'))
+from jak import __version__, __version_full__  # noqa: E402
 
 
 # -- General configuration ------------------------------------------------
@@ -47,7 +47,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'jak'
-copyright = '2021, Dispel, LLC'
+copyright = '2026, Dispel, LLC'
 author = 'Dispel, LLC'
 
 # The version info for the project you're documenting, acts as replacement for
