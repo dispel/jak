@@ -13,11 +13,11 @@ Hi Everyone! It‘s been a hot minute, we went through a pandemic and some other
 Lifecycle: 2026-11-X (UNRELEASED)
 
 * **[1.0.0]** MAJOR:
-  * Drop support for 2.7, 3.4, 3.5, 3.6 and pypy. Add support for 3.11 - 3.15 and pypy3.
+  * Drop support for 2.7, 3.4, 3.5, 3.6 and pypy. Add support for 3.11 - 3.15 and pypy3 `(PR#60) <https://github.com/dispel/jak/pull/60>`_.
   * Move CI from Travis to GitHub Actions.
   * Update documentation to reflect version update and change of supported versions.
   * Switch from PyCrypto to PyCryptodome. May well switch to `cryptography <https://cryptography.io/en/latest/>`_ in a future release.
-  * TODO DEPRECATION: Remove the compat layer used to support Python 2.
+  * DEPRECATION: Remove the compat layer used to support Python 2 `(PR#62) <https://github.com/dispel/jak/pull/62>`_.
 
 
 0.14.6

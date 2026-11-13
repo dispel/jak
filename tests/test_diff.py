@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import jak.diff as difflib
 from jak.exceptions import JakException
 import pytest
@@ -59,14 +57,14 @@ PL2gvlgTqLxOzupXgA==
     ('env.yaml', 'env_LOCAL_1232342.yaml', 'env_REMOTE_1232342.yaml')
 ])
 def test_smoke_vimdiff(f, lf, rf):
-    expected = "vimdiff -f -d -c 'wincmd J' {} {} {}".format(f, lf, rf)
+    expected = f"vimdiff -f -d -c 'wincmd J' {f} {lf} {rf}"
     assert expected in difflib._vimdiff(f, lf, rf)
 
 
 @pytest.mark.parametrize('filepath,name,local,remote', [
     ('a', 'b', 'c', 'd'),
     ('', 'env.yaml', 'localcontent', 'remotecontent'),
-    ('a/real/path', 'env.ext', u'localcontent', u'remotecontent')
+    ('a/real/path', 'env.ext', 'localcontent', 'remotecontent')
 ])
 def test_create_local_remote_diff_files(tmpdir, filepath, name, local, remote):
     # create a folder for them to put the files so we dont pollute.

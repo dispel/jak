@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import pytest
 from click.testing import CliRunner
 from jak.app import main as jak

@@ -34,8 +34,7 @@ setup(
     platforms='any',
     install_requires=[
         'click>=6.6',
-        'pycryptodome>=3.10.1',
-        'six>=1.10.0'
+        'pycryptodome>=3.10.1'
     ],
     entry_points={
         'console_scripts': [

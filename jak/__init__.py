@@ -34,4 +34,4 @@ for details.
 """
 
 __version__ = '1.0.0'
-__version_full__ = "Jak v{0} ({1})".format(__version__, 'Young Whippersnapper')
+__version_full__ = "Jak v{} ({})".format(__version__, 'Young Whippersnapper')

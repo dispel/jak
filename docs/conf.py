@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # jak documentation build configuration file, created by
 # sphinx-quickstart on Mon Jan 9 13:37:00 2017.
