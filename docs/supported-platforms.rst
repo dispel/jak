@@ -21,4 +21,4 @@ jak follows the `Python end of support dates <https://devguide.python.org/versio
 Operating Systems
 --
 
-We believe jak should work well on most `*nix <https://en.wikipedia.org/wiki/Unix-like>`_ systems. But is mainly developed on Ubuntu and tested on Ubuntu and macOS.
+We believe jak should work well on most `*nix <https://en.wikipedia.org/wiki/Unix-like>`_ systems. It is developed on macOS, and CI runs the tests on Ubuntu.

@@ -13,35 +13,25 @@ We aim to be friendly to rookie devs, so if you are in doubt about proper operat
 Developer machine setup
 -----------------------
 
-1. Clone this repo
-2. Install the excellent [vagrant](https://www.vagrantup.com/)
-3. See below.
+You need git and a :ref:`supported version of Python <support_detailed>`. Clone this repo, then from its root:
 
 .. sourcecode:: shell
 
-  # Boot up the vagrant machine
-  # This will run for quite some time, I HIGHLY recommend looking at the Vagrantfile
-  # for a description of what is happening.
-  vagrant up
+  # Create and activate a virtualenv
+  python3 -m venv .venv
+  source .venv/bin/activate
 
-  # Enter sandman
-  vagrant ssh
+  # Install jak in editable mode, plus the tools used for development
+  pip install --editable . -r requirements_dev.txt
 
-  # This is where the project files are mirrorer on the virtual machine
-  cd /vagrant
-
-  # Activate virtualenv
-  source ~/venvs/jak/bin/activate
-
-  # Run the tests. CI runs them on every supported Python version.
+  # Run the tests
   pytest
 
 
 Notes of import
 ---------------
 
-To edit which environments the tests should be run as see the `tox.ini` file.
-We would prefer to be developing against Python 3 but the reality is that it is easier to dev against Python 2 and continually make sure it also works for 3.
+You only need one Python version locally. When you open a pull request, GitHub Actions runs the tests on every supported version (see ``.github/workflows/test.yml``).
 
 
 Updating documentation
@@ -55,7 +45,7 @@ To update the docs edit the ``*.rst`` file that has the information you want to 
 
 .. sourcecode:: shell
 
-  # from the root of jak, probably /vagrant
+  # from the root of jak, with the virtualenv active
   cd docs
 
   # clean out previous version and remake the html
