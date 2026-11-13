@@ -48,7 +48,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'jak'
-copyright = '2021, Dispel, LLC'
+copyright = '2026, Dispel, LLC'
 author = 'Dispel, LLC'
 
 # The version info for the project you're documenting, acts as replacement for
