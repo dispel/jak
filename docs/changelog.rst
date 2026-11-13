@@ -15,6 +15,7 @@ Lifecycle: 2026-11-X (UNRELEASED)
 * **[1.0.0]** BREAKING: Drop support for Python 2.7, 3.4, 3.5, 3.6 and pypy. Add support for 3.11 - 3.15 and pypy3. `(PR#60) <https://github.com/dispel/jak/pull/60>`_
 * **[1.0.0]** BREAKING: Switch from PyCrypto to PyCryptodome. May well switch to `cryptography <https://cryptography.io/en/latest/>`_ in a future release. `(PR#60) <https://github.com/dispel/jak/pull/60>`_
 * **[1.0.0]** SECURITY: ``jak start`` did not make git ignore the ``.jak`` folder when it had to create the ``.gitignore`` itself (the entry was written with a leading space), so ``git add`` could commit the keyfile. ``jak start`` now writes a working entry and repairs the old one. If you ran ``jak start`` in a repository without a ``.gitignore``, run ``git ls-files .jak``. If it lists your keyfile, treat that key as leaked: generate a new one and cycle the secrets it protected. `(PR#69) <https://github.com/dispel/jak/pull/69>`_
+* **[1.0.0]** ENHANCEMENT: ``jak start`` creates a jakfile with an empty ``files_to_encrypt`` list and the example path in a comment. The placeholder ``path/to/file`` used to be a real entry, so a file at that path would have been encrypted.
 * **[1.0.0]** CLEANUP: Remove the compat layer used to support Python 2, and the dependency on six. `(PR#62) <https://github.com/dispel/jak/pull/62>`_ `(PR#63) <https://github.com/dispel/jak/pull/63>`_
 * **[1.0.0]** DEV: More tests for the crypto, helpers, decorators and start modules. `(PR#53) <https://github.com/dispel/jak/pull/53>`_
 
