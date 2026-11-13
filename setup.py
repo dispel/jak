@@ -42,7 +42,7 @@ setup(
             'jak = jak.app:main',
         ],
     },
-    python_requires='>=3.9',
+    python_requires='>=3.11',
     classifiers=[
         # As from http://pypi.python.org/pypi?%3Aaction=list_classifiers
         'Development Status :: 5 - Production/Stable',
@@ -57,8 +57,6 @@ setup(
         'Operating System :: Unix',
         # 'Operating System :: Microsoft :: Windows',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 3.9',
-        'Programming Language :: Python :: 3.10',
         'Programming Language :: Python :: 3.11',
         'Programming Language :: Python :: 3.12',
         'Programming Language :: Python :: 3.13',

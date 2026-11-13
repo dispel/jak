@@ -9,8 +9,6 @@ Python
 
 jak is explicitly tested on Pythons:
 
-- 3.9
-- 3.10
 - 3.11
 - 3.12
 - 3.13
@@ -18,7 +16,7 @@ jak is explicitly tested on Pythons:
 - 3.15
 - PyPy3
 
-jak follows the `Python end of support dates <https://devguide.python.org/versions/>`_. 3.9 and 3.10 are past their end of support and will be dropped in a future release.
+jak follows the `Python end of support dates <https://devguide.python.org/versions/>`_. Versions that have reached end of life are dropped.
 
 Operating Systems
 --
