@@ -13,7 +13,7 @@ def grouper(iterable, n):
     """split iterable data into n-length blocks
     grouper('aaa', 2) == ('aa', 'a')
     """
-    return tuple(iterable[i:i + n] for i in range(0, len(iterable), n))
+    return tuple(iterable[i : i + n] for i in range(0, len(iterable), n))
 
 
 def create_or_overwrite_file(filepath, content):
@@ -59,7 +59,7 @@ def create_backup_filepath(jwd, filepath):
     filename = filepath.replace(jwd, '')  # /b/c/d
 
     # Special case: root.
-    if ('/' not in filename):
+    if '/' not in filename:
         return f'/.jak/{filename}_backup'
 
     filename = filename[1:]  # b/c/d
@@ -183,6 +183,7 @@ def _remove_comments_from_JSON(raw_json):
     }
     """
     import re
+
     tmp = re.sub(r'//.*\n', '\n', raw_json)
-    tmp = "".join(tmp.replace('\n', '').split())
+    tmp = ''.join(tmp.replace('\n', '').split())
     return tmp

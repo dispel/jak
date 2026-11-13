@@ -41,14 +41,15 @@ def _vimdiff(filepath, local_file_path, remote_file_path):
     Instead we settled on just letting user know what command they should run.
     """
     command = "vimdiff -f -d -c 'wincmd J' {merged} {local} {remote}".format(
-        merged=filepath, local=local_file_path, remote=remote_file_path)
+        merged=filepath, local=local_file_path, remote=remote_file_path
+    )
 
-    return '''
+    return """
 
 ~*Currently under development*~
 
 To open the diff use this command:
-$> {}'''.format(command)
+$> {}""".format(command)
 
 
 def _opendiff(filepath, local_file_path, remote_file_path):
@@ -56,10 +57,12 @@ def _opendiff(filepath, local_file_path, remote_file_path):
     # Write to devnull so user doesnt see a bunch of messages.
     # FIXME put in logfile instead?
     FNULL = open(os.devnull, 'w')
-    subprocess.Popen(['opendiff', local_file_path, remote_file_path, '-merge', filepath],
-                     stdout=FNULL,
-                     stderr=subprocess.STDOUT)
-    return "Opened opendiff."
+    subprocess.Popen(
+        ['opendiff', local_file_path, remote_file_path, '-merge', filepath],
+        stdout=FNULL,
+        stderr=subprocess.STDOUT,
+    )
+    return 'Opened opendiff.'
 
 
 def _decrypt(key, local, remote):
@@ -71,7 +74,7 @@ def _decrypt(key, local, remote):
         ugly_local = base64.urlsafe_b64decode(bytes(local, 'utf-8'))
         ugly_remote = base64.urlsafe_b64decode(bytes(remote, 'utf-8'))
     except binascii.Error:
-        msg = '''Failed during decryption. Are you sure the file you are pointing to is jak encrypted?
+        msg = """Failed during decryption. Are you sure the file you are pointing to is jak encrypted?
 
 For example:
 <<<<<<< SOMETHING
@@ -84,7 +87,7 @@ cyz>
 ff9790b8cccd50e1276c4b9ac18475d4e048f2e0
 4e0034e782b64b1c9e1ac8c1cb81c3b4e43cb93f
 cyz>
->>>>>>> SOMETHING'''
+>>>>>>> SOMETHING"""
         raise JakException(msg)
 
     aes256_cipher = AES256Cipher(key=key)
@@ -122,14 +125,9 @@ def diff(filepath, key, **kwargs):
     (header, local, separator, remote, end) = _extract_merge_conflict_parts(encrypted_diff_file)
     (decrypted_local, decrypted_remote) = _decrypt(key, local, remote)
 
-    output = '''{header}{local}
+    output = """{header}{local}
 {separator}{remote}
-{end}'''.format(
-        header=header,
-        local=decrypted_local,
-        separator=separator,
-        remote=decrypted_remote,
-        end=end)
+{end}""".format(header=header, local=decrypted_local, separator=separator, remote=decrypted_remote, end=end)
 
     # Python 3 does not have a decode for this
     # but it doesn't need to perform the decode so all is well here.
@@ -140,34 +138,32 @@ def diff(filepath, key, **kwargs):
     except AttributeError:
         pass
 
-    msg = '''Which editor do you want to use?
+    msg = """Which editor do you want to use?
 plain (default): will simply decrypt the contents of the original file.
 opendiff: The macOS default merge tool.
 vimdiff: Hacker 4 life yo!
 
-[plain, opendiff, vimdiff]'''
+[plain, opendiff, vimdiff]"""
     response = click.prompt(msg, default='plain')
 
     if response == 'opendiff':
         (local_file_path, remote_file_path) = _create_local_remote_diff_files(
-            filepath=filepath,
-            local=decrypted_local,
-            remote=decrypted_remote)
-        result = _opendiff(filepath=filepath,
-                           local_file_path=local_file_path,
-                           remote_file_path=remote_file_path)
+            filepath=filepath, local=decrypted_local, remote=decrypted_remote
+        )
+        result = _opendiff(
+            filepath=filepath, local_file_path=local_file_path, remote_file_path=remote_file_path
+        )
     elif response == 'vimdiff':
         (local_file_path, remote_file_path) = _create_local_remote_diff_files(
-            filepath=filepath,
-            local=decrypted_local,
-            remote=decrypted_remote)
-        result = _vimdiff(filepath=filepath,
-                          local_file_path=local_file_path,
-                          remote_file_path=remote_file_path)
+            filepath=filepath, local=decrypted_local, remote=decrypted_remote
+        )
+        result = _vimdiff(
+            filepath=filepath, local_file_path=local_file_path, remote_file_path=remote_file_path
+        )
     elif response == 'plain':
-        result = "Ok, file decrypted, go ahead an edit it manually. Godspeed you master of the universe."
+        result = 'Ok, file decrypted, go ahead an edit it manually. Godspeed you master of the universe.'
     else:
-        return "Unrecognized choice. Aborting without changing anything."
+        return 'Unrecognized choice. Aborting without changing anything.'
 
     # Replace the original file with the decrypted output
     with open(filepath, 'w', encoding='utf-8') as f:

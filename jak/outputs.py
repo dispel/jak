@@ -3,7 +3,7 @@ Copyright 2026 Dispel, LLC
 Apache 2.0 License, see https://github.com/dispel/jak/blob/master/LICENSE for details.
 """
 
-FRESH_JAKFILE = '''
+FRESH_JAKFILE = """
 {{
 
   // This list is for the encrypt/decrypt all commands and for the
@@ -11,16 +11,16 @@ FRESH_JAKFILE = '''
   // Example: "files_to_encrypt": ["path/to/file", "other/secret.env"],
   "files_to_encrypt": [],
   "keyfile": "{keyfile_path}"
-}}'''
+}}"""
 
-KEYGEN_RESPONSE = '''Here is your shiny new key.
+KEYGEN_RESPONSE = """Here is your shiny new key.
 
 {key}
 
 Remember to keep this password secret and save it. Without it you will NOT be able
-to decrypt any file(s) you encrypt using it.'''
+to decrypt any file(s) you encrypt using it."""
 
-PRE_COMMIT_CALL = '''#!/bin/sh
+PRE_COMMIT_CALL = """#!/bin/sh
 # ---- Begin jak Block ----
 
 PURPLE='\\033[1;35m'
@@ -43,12 +43,12 @@ python .git/hooks/jak.pre-commit.py
 # ---- End jak Block ----
 
 # Place your custom pre-commit code here
-'''
+"""
 
-PRE_COMMIT_EXISTS = '''
+PRE_COMMIT_EXISTS = """
 
 jak says: EXISTING PRE-COMMIT HOOK, I DON'T WANT TO OVERRIDE IT WILLY NILLY
-SEE .git/hooks/jak.pre-commit.py for further installation instructions.'''
+SEE .git/hooks/jak.pre-commit.py for further installation instructions."""
 
 PRE_COMMIT_ENCRYPT = '''#!/usr/bin/env python
 # -*- coding: utf-8 -*-
@@ -129,15 +129,15 @@ if __name__ == '__main__':
 '''
 
 
-FINAL_START_MESSAGE = '''- - - Setup complete! - - -
+FINAL_START_MESSAGE = """- - - Setup complete! - - -
 
 TL;DR;
 1. If this is your first rodeo please look at your ./keyfile and your ./jakfile.
 2. Keep your keyfile secret at all costs. Don't commit it to any VCS, don't email it, don't put it in dropbox, definitely don't put it in google drive, etc...!
 
-{version}'''  # noqa
+{version}"""  # noqa
 
-QUESTION_WANT_TO_ADD_PRE_COMMIT = '''
+QUESTION_WANT_TO_ADD_PRE_COMMIT = """
 Do you want to add a git pre-commit hook?
 The hook will encrypt files listed in your jakfile
-each time you git commit. [y/n]'''
+each time you git commit. [y/n]"""

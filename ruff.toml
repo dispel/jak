@@ -2,3 +2,6 @@ line-length = 110
 
 [lint]
 select = ["E", "W", "F"]
+
+[format]
+quote-style = "single"

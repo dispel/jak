@@ -30,8 +30,8 @@ def create_jakfile(jwd=os.getcwd()):
 
 def add_keyfile_to_gitignore(filepath='.gitignore'):
     """This function should open the gitignore file and add the .jak
-folder [which contains the keyfile]. Note here add a file path in case
-they are not in the repo root"""
+    folder [which contains the keyfile]. Note here add a file path in case
+    they are not in the repo root"""
 
     # 'a+' creates the file when it is missing.
     with open(filepath, 'a+') as f:

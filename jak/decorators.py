@@ -20,7 +20,6 @@ def _select_files_logic(**kwargs):
 
     files = []
     for fp in filepaths:
-
         # Some OS expand this out automagically but in case one doesnt...
         if fp[0] == '~':
             fp = fp.replace('~', os.path.expanduser('~'))
@@ -30,10 +29,12 @@ def _select_files_logic(**kwargs):
 
 def select_files(f):
     """Select which files you want to act upon"""
+
     @wraps(f)
     def wrapper(*args, **kwargs):
         kwargs['files'] = _select_files_logic(**kwargs)
         return f(*args, **kwargs)
+
     return wrapper
 
 
@@ -42,11 +43,13 @@ def attach_jwd(f):
     def wrapper(*args, **kwargs):
         kwargs['jwd'] = helpers.get_jak_working_directory()
         return f(*args, **kwargs)
+
     return wrapper
 
 
 def read_jakfile(f):
     """Parse the jakfile and assign it to the jakfile_dict value"""
+
     @wraps(f)
     def wrapper(*args, **kwargs):
         try:
@@ -54,20 +57,23 @@ def read_jakfile(f):
         except OSError:
             kwargs['jakfile_dict'] = {}
         except ValueError:
-            raise JakException("Your jakfile has malformed syntax (probably).")
+            raise JakException('Your jakfile has malformed syntax (probably).')
         return f(*args, **kwargs)
+
     return wrapper
 
 
 def select_key(f):
     """Let's find your key champ!"""
+
     @wraps(f)
     def wrapper(*args, **kwargs):
-        kwargs['key'] = select_key_logic(key=kwargs['key'],
-                                         keyfile=kwargs['keyfile'],
-                                         jakfile_dict=kwargs['jakfile_dict'])
+        kwargs['key'] = select_key_logic(
+            key=kwargs['key'], keyfile=kwargs['keyfile'], jakfile_dict=kwargs['jakfile_dict']
+        )
         result = f(*args, **kwargs)
         return result
+
     return wrapper
 
 
@@ -86,10 +92,10 @@ def select_key_logic(key=None, keyfile=None, jakfile_dict=None):
     """
 
     # Take from them everything, give to them nothing!
-    msg = '''Please provide a key in one of the three ways:
+    msg = """Please provide a key in one of the three ways:
 1. -k <key>
 2. -kf <keyfile path>
-3. "keyfile" value in your jakfile (recommended)'''
+3. "keyfile" value in your jakfile (recommended)"""
     try:
         if not key and not keyfile and 'keyfile' not in jakfile_dict:
             raise JakException(msg)

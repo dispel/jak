@@ -28,6 +28,7 @@ jobs:
           python-version: "3.x"
       - run: pip install ruff==0.17.5
       - run: ruff check
+      - run: ruff format --check
 
   test:
     runs-on: ubuntu-latest
