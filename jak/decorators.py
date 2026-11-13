@@ -53,7 +53,7 @@ def read_jakfile(f):
             kwargs['jakfile_dict'] = helpers.read_jakfile_to_dict()
         except OSError:
             kwargs['jakfile_dict'] = {}
-        except ValueError as ve:
+        except ValueError:
             raise JakException("Your jakfile has malformed syntax (probably).")
         return f(*args, **kwargs)
     return wrapper
