@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import sys
 import six
 import pytest
 from jak import helpers
@@ -19,7 +20,10 @@ def runner():
 
 @pytest.mark.parametrize('original_plaintext, append_to_ciphertext, append_to_plaintext', [
     ( 'even write in it for the test', '', '' ),
-    ('even write in it for the test', 'This has to go at the very end doesnt it?', '' ),
+    # Python < 3.15 ignores anything after the base64 padding, so the appended
+    # text survives a decrypt. 3.15 decodes it, which fails authentication.
+    pytest.param('even write in it for the test', 'This has to go at the very end doesnt it?', '',
+                 marks=pytest.mark.skipif(sys.version_info >= (3, 15), reason='base64 no longer ignores trailing data')),
     ( 'even write in it for the test', '', 'wuba wuba dub' )
 ])
 def test__restore_from_backup(original_plaintext, append_to_ciphertext, append_to_plaintext, tmpdir):
