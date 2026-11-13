@@ -10,7 +10,7 @@ Changelog
 
 Hi Everyone! It‘s been a hot minute, we went through a pandemic and some other stuff happened. It‘s time to throw away the old and bring on the new. While no security issues have been found the PyCrypto library seems to have gone the way of the dinosaurs. Therefore we are switching jak to the excellent replacement `PyCryptodome <https://pycryptodome.readthedocs.io>`_ and updating which python versions jak supports to the `currently supported ones <https://www.python.org/downloads/>`_ (3.11 - 3.15 and pypy3).
 
-Lifecycle: 2026-11-X (UNRELEASED)
+Lifecycle: 2026-11-13 - current
 
 * **[1.0.0]** BREAKING: Drop support for Python 2.7, 3.4, 3.5, 3.6 and pypy. Add support for 3.11 - 3.15 and pypy3. `(PR#60) <https://github.com/dispel/jak/pull/60>`_
 * **[1.0.0]** BREAKING: Switch from PyCrypto to PyCryptodome. May well switch to `cryptography <https://cryptography.io/en/latest/>`_ in a future release. `(PR#60) <https://github.com/dispel/jak/pull/60>`_
@@ -23,12 +23,15 @@ Lifecycle: 2026-11-X (UNRELEASED)
   * Update documentation to reflect version update and change of supported versions. `(PR#60) <https://github.com/dispel/jak/pull/60>`_
   * Clarify that we are not actively working towards Windows compatibility. `(PR#64) <https://github.com/dispel/jak/pull/64>`_
   * Updated copyrights to the year 2026 `(PR#61) <https://github.com/dispel/jak/pull/61>`_
+  * Fix the documentation build on Read the Docs, and build the docs in CI. `(PR#77) <https://github.com/dispel/jak/pull/77>`_
+  * Lint with ruff in CI. `(PR#72) <https://github.com/dispel/jak/pull/72>`_
+  * Remove Vagrant from the developer setup. `(PR#75) <https://github.com/dispel/jak/pull/75>`_
 
 
 0.14.6
 ------
 
-Lifecycle: 2018-10-22 - current
+Lifecycle: 2018-10-22 - 2026-11-13
 
 * **[0.14.6]** BUG: Had issue when double decrypting certain files (which should be safe operation, and now it is again). `(PR#56) <https://github.com/dispel/jak/pull/56>`_
 
