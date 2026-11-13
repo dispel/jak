@@ -86,8 +86,7 @@ def start():
             click.echo(helpers.two_column('  Adding ".jak" to .gitignore', 'Done'))
         else:
             click.echo(helpers.two_column('  Is there a .gitignore?', 'Nope!'))
-            helpers.create_or_overwrite_file(filepath=jwd + '/.gitignore',
-                                             content='# Jak KeyFile\n .jak \n')
+            start_logic.add_keyfile_to_gitignore(filepath=jwd + '/.gitignore')
             click.echo(helpers.two_column('  Creating ./.gitignore', 'Done'))
             click.echo(helpers.two_column('  Adding ".jak" to .gitignore', 'Done'))
 
