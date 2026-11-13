@@ -1,5 +1,7 @@
 from jak import start
 import os
+import subprocess
+import pytest
 
 def test_add_pre_commit_encrypt_hook(tmpdir):
     repo_hooks = tmpdir.mkdir('.git').mkdir('hooks')
@@ -17,6 +19,23 @@ def test_pre_existing_pre_commit_hook(tmpdir):
     assert os.path.exists(repo_hooks[:repo_hooks.rfind('/pre-commit')] + '/pre-commit')
     assert 'EXISTING PRE-COMMIT HOOK' in result
     assert os.path.exists(repo_hooks[:repo_hooks.rfind('/pre-commit')] + '/jak.pre-commit.py')
+
+@pytest.mark.parametrize('existing_gitignore', [
+    None,                       # no .gitignore yet
+    '# Jak KeyFile\n .jak \n',  # written by jak < 1.0.0, does not ignore .jak
+    '*.pyc',                    # no trailing newline
+])
+def test_add_keyfile_to_gitignore_makes_git_ignore_the_keyfile(tmpdir, existing_gitignore):
+    subprocess.check_call(['git', 'init', '-q', tmpdir.strpath])
+    tmpdir.mkdir('.jak').join('keyfile').write('secret')
+    if existing_gitignore is not None:
+        tmpdir.join('.gitignore').write(existing_gitignore)
+
+    start.add_keyfile_to_gitignore(tmpdir.join('.gitignore').strpath)
+
+    # git check-ignore exits with 0 only when the path is ignored.
+    assert subprocess.call(['git', 'check-ignore', '-q', '.jak/keyfile'], cwd=tmpdir.strpath) == 0
+
 
 def test_add_keyfile_to_gitignore(tmpdir):
     gitignore = tmpdir.join('.gitignore')
