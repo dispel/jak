@@ -22,7 +22,7 @@ jak requires a 64 character hexadecimal key. It can :ref:`generate it for you. <
 
 CBC-MODE requires padding. jak uses **PKCS#7** padding. In plain English that means that jak pads the plaintext secret to be a multiple of the block size (defaults to 16) by adding padding where each character is a number equal to the amount of padding. The previous sentence might be tricky, so here is an example to clarify: ``pad('aaaaaaaaaaaaa') returns 'aaaaaaaaaaaaa\x03\x03\x03'``.
 
-CBC-MODE also requires an **Initialization Vector (IV)**. jak generates it using the **Fortuna (PRNG)** as implemented by **PyCryptodome**.
+CBC-MODE also requires an **Initialization Vector (IV)**. jak generates it with **PyCryptodome**'s ``Crypto.Random``, which reads from the operating system's random source (``os.urandom``).
 
 Further reading:
 
@@ -32,7 +32,6 @@ Further reading:
 * https://en.wikipedia.org/wiki/Key_space_(cryptography)
 * https://en.wikipedia.org/wiki/Initialization_vector
 * `https://en.wikipedia.org/wiki/Padding_(cryptography)#PKCS7 <https://en.wikipedia.org/wiki/Padding_(cryptography)#PKCS7>`_
-* https://en.wikipedia.org/wiki/Fortuna_(PRNG)
 
 
 HMAC
@@ -58,7 +57,7 @@ Further reading:
 Obtaining randomness
 --------------------
 
-The random values jak generates are the **key** and the **IV**. Measuring randomness is hard if not impossible and there seems to be a great deal of differing opinions about what is a good source. The TL;DR seems to be that /dev/urandom and Fortuna are sufficiently random. But please educate yourself, it‘s a really interesting subject. Here are some good links to get you started.
+The random values jak generates are the **key** and the **IV**. Measuring randomness is hard if not impossible and there seems to be a great deal of differing opinions about what is a good source. The TL;DR seems to be that /dev/urandom is sufficiently random. But please educate yourself, it‘s a really interesting subject. Here are some good links to get you started.
 
 * https://docs.python.org/3.9/library/os.html#os.urandom
 * https://sockpuppet.org/blog/2014/02/25/safely-generate-random-numbers/

@@ -2,7 +2,7 @@
 
 Documentation: https://jak.readthedocs.io
 
-Copyright 2021 Dispel, LLC
+Copyright 2026 Dispel, LLC
 
 Apache 2.0 License, see https://github.com/dispel/jak/blob/master/LICENSE for details.
 """
@@ -42,6 +42,7 @@ setup(
             'jak = jak.app:main',
         ],
     },
+    python_requires='>=3.11',
     classifiers=[
         # As from http://pypi.python.org/pypi?%3Aaction=list_classifiers
         'Development Status :: 5 - Production/Stable',
@@ -56,10 +57,11 @@ setup(
         'Operating System :: Unix',
         # 'Operating System :: Microsoft :: Windows',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8',
-        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.11',
+        'Programming Language :: Python :: 3.12',
+        'Programming Language :: Python :: 3.13',
+        'Programming Language :: Python :: 3.14',
+        'Programming Language :: Python :: 3.15',
         'Programming Language :: Python :: Implementation :: PyPy'
     ]
 )

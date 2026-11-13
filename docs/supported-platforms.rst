@@ -9,17 +9,14 @@ Python
 
 jak is explicitly tested on Pythons:
 
-- 3.6
-- 3.7
-- 3.8
-- 3.9
+- 3.11
+- 3.12
+- 3.13
+- 3.14
+- 3.15
 - PyPy3
 
-jak follows the `Python end of support dates <https://docs.python.org/devguide/index.html#branchstatus>`_, which in practice means that support ends on the following dates:
-
-- 3.6 (PEP 494) support ends 2021-12-23
-- 3.7 (PEP 537) support ends 2023-06-27
-- 3.8 (PEP 569) support ends 2024-10
+jak follows the `Python end of support dates <https://devguide.python.org/versions/>`_. Versions that have reached end of life are dropped.
 
 Operating Systems
 --
