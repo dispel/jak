@@ -15,7 +15,8 @@ jakfile_content_1 = """
 // Comment 7
 """
 
-@pytest.mark.parametrize('filename', [ 'original_file', 'this_file_ends/original_file','this_file/is_in/nested/original_file'])
+@pytest.mark.parametrize('filename', [
+    'original_file', 'this_file_ends/original_file', 'this_file/is_in/nested/original_file'])
 def test_backup_file_content(tmpdir, filename):
     testfile = tmpdir.join(filename)
     content = 'added content to the original file'
@@ -50,7 +51,7 @@ def test_create_or_overwrite_file_decoding(tmpdir, filename, file_content, expec
     helpers.create_or_overwrite_file(filepath=testfile.strpath, content=file_content)
     result = testfile.read()
     assert result == expected_output
-    assert type(result) == str
+    assert isinstance(result, str)
 
 def test_remove_comments_from_JSON():
     result = helpers._remove_comments_from_JSON(jakfile_content_1)

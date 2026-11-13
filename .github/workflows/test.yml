@@ -19,6 +19,16 @@ jobs:
       - run: pip install -r requirements_dev.txt
       - run: sphinx-build -W docs docs/_build/html
 
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.x"
+      - run: pip install ruff==0.17.5
+      - run: ruff check
+
   test:
     runs-on: ubuntu-latest
     strategy:
