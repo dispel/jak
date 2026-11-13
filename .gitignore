@@ -1,4 +1,4 @@
-# Created by https://www.gitignore.io/api/macos,linux,python,virtualenv,vagrant
+# Created by https://www.gitignore.io/api/macos,linux,python,virtualenv
 
 ### macOS ###
 *.DS_Store
@@ -105,6 +105,3 @@ docs/_build/
 .venv/
 venv/
 ENV/
-
-### Vagrant ###
-.vagrant/
