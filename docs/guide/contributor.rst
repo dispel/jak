@@ -31,12 +31,9 @@ Developer machine setup
   cd /vagrant
 
   # Activate virtualenv
-  source ~/venvs/py39/bin/activate
+  source ~/venvs/jak/bin/activate
 
-  # Run tests for multiple Python versions (see tox.ini)
-  tox
-
-  # Or run tests in just the current environment
+  # Run the tests. CI runs them on every supported Python version.
   pytest
 
 
