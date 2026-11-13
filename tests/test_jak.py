@@ -13,8 +13,9 @@ def runner():
 
 def test_empty(runner):
     result = runner.invoke(jak)
-    assert result.exit_code == 0
-    assert not result.exception
+    # click >= 8.2 exits with 2 (instead of 0) when it shows help for no args.
+    assert result.exit_code in (0, 2)
+    assert 'Usage:' in result.output
 
 
 @pytest.mark.parametrize('version_flag', ['--version', '-v'])
@@ -22,7 +23,7 @@ def test_version(runner, version_flag):
     result = runner.invoke(jak, [version_flag])
     assert not result.exception
     assert result.exit_code == 0
-    assert '(Troubled Toddler)' in result.output.strip()
+    assert '(Young Whippersnapper)' in result.output.strip()
 
 
 @pytest.mark.parametrize('cmd, filepath', [

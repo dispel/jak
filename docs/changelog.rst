@@ -8,19 +8,33 @@ Changelog
 1.0 (Young Whippersnapper)
 --------------------------
 
-Lifecycle: Not released yet.
+Hi Everyone! It‘s been a hot minute, we went through a pandemic and some other stuff happened. It‘s time to throw away the old and bring on the new. While no security issues have been found the PyCrypto library seems to have gone the way of the dinosaurs. Therefore we are switching jak to the excellent replacement `PyCryptodome <https://pycryptodome.readthedocs.io>`_ and updating which python versions jak supports to the `currently supported ones <https://www.python.org/downloads/>`_ (3.11 - 3.15 and pypy3).
 
-1.0.0 Will be assigned when we have verified that the encryption is absolutely stable AND we believe the risk of us accidentally deleting peoples secrets is < 0.0001%. In practice this means better unit testing and talking to 2-3 more cryptography experts (especially outside of Dispel). Are you such an expert? Get in touch! cdilorenzo@dispel.io.
+Lifecycle: 2026-11-X (UNRELEASED)
 
+* **[1.0.0]** MAJOR:
+  * Drop support for 2.7, 3.4, 3.5, 3.6 and pypy. Add support for 3.11 - 3.15 and pypy3.
+  * Move CI from Travis to GitHub Actions.
+  * Update documentation to reflect version update and change of supported versions.
+  * Switch from PyCrypto to PyCryptodome. May well switch to `cryptography <https://cryptography.io/en/latest/>`_ in a future release.
+  * TODO DEPRECATION: Remove the compat layer used to support Python 2.
+
+
+0.14.6
+------
+
+Lifecycle: 2018-10-22 - current
+
+* **[0.14.6]** BUG: Had issue when double decrypting certain files (which should be safe operation, and now it is again). `(PR#56) <https://github.com/dispel/jak/pull/56>`_
 
 
 0.14.5
 ------
 
-Lifecycle: 2018-03-08 - current
+Lifecycle: 2018-03-08 - 2018-10-22
 
 * **[0.14.4]** BUG: SourceTree (and other linuxy apps hopefully) should now work with the pre-commit hook. `(PR#45) <https://github.com/dispel/jak/pull/45>`_
-* **[0.14.5]** ENHANCEMENT: Better message when malformed jakfile. `(PR#48) <https://github.com/dispel/jak/pull/48>`_
+* **[0.14.5]** ENHANCEMENT: Better message when malformed jakfile. `(PR#51) <https://github.com/dispel/jak/pull/51>`_
 
 * Other:
   * Updated 2017 to 2018 (Happy new year!?)
