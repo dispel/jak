@@ -75,7 +75,8 @@ def test_create_jakfile(tmpdir):
 
   // This list is for the encrypt/decrypt all commands and for the
   // pre-commit hook (optional) protection.
-  "files_to_encrypt": ["path/to/file"],
+  // Example: "files_to_encrypt": ["path/to/file", "other/secret.env"],
+  "files_to_encrypt": [],
   "keyfile": ".jak/keyfile"
 }"""
     altered_text = original_file.replace(
