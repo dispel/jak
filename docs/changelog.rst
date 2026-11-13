@@ -12,13 +12,17 @@ Hi Everyone! It‘s been a hot minute, we went through a pandemic and some other
 
 Lifecycle: 2026-11-X (UNRELEASED)
 
-* **[1.0.0]** MAJOR:
-  * Drop support for 2.7, 3.4, 3.5, 3.6 and pypy. Add support for 3.11 - 3.15 and pypy3 `(PR#60) <https://github.com/dispel/jak/pull/60>`_.
-  * Move CI from Travis to GitHub Actions.
-  * SECURITY: ``jak start`` did not make git ignore the ``.jak`` folder when it had to create the ``.gitignore`` itself (the entry was written with a leading space), so ``git add`` could commit the keyfile. ``jak start`` now writes a working entry and repairs the old one. If you ran ``jak start`` in a repository without a ``.gitignore``, run ``git ls-files .jak``. If it lists your keyfile, treat that key as leaked: generate a new one and cycle the secrets it protected.
-  * Update documentation to reflect version update and change of supported versions.
-  * Switch from PyCrypto to PyCryptodome. May well switch to `cryptography <https://cryptography.io/en/latest/>`_ in a future release.
-  * DEPRECATION: Remove the compat layer used to support Python 2 `(PR#62) <https://github.com/dispel/jak/pull/62>`_.
+* **[1.0.0]** BREAKING: Drop support for Python 2.7, 3.4, 3.5, 3.6 and pypy. Add support for 3.11 - 3.15 and pypy3. `(PR#60) <https://github.com/dispel/jak/pull/60>`_
+* **[1.0.0]** BREAKING: Switch from PyCrypto to PyCryptodome. May well switch to `cryptography <https://cryptography.io/en/latest/>`_ in a future release. `(PR#60) <https://github.com/dispel/jak/pull/60>`_
+* **[1.0.0]** SECURITY: ``jak start`` did not make git ignore the ``.jak`` folder when it had to create the ``.gitignore`` itself (the entry was written with a leading space), so ``git add`` could commit the keyfile. ``jak start`` now writes a working entry and repairs the old one. If you ran ``jak start`` in a repository without a ``.gitignore``, run ``git ls-files .jak``. If it lists your keyfile, treat that key as leaked: generate a new one and cycle the secrets it protected. `(PR#69) <https://github.com/dispel/jak/pull/69>`_
+* **[1.0.0]** CLEANUP: Remove the compat layer used to support Python 2, and the dependency on six. `(PR#62) <https://github.com/dispel/jak/pull/62>`_ `(PR#63) <https://github.com/dispel/jak/pull/63>`_
+* **[1.0.0]** DEV: More tests for the crypto, helpers, decorators and start modules. `(PR#53) <https://github.com/dispel/jak/pull/53>`_
+
+* Other:
+  * Move CI from Travis to GitHub Actions. `(PR#60) <https://github.com/dispel/jak/pull/60>`_
+  * Update documentation to reflect version update and change of supported versions. `(PR#60) <https://github.com/dispel/jak/pull/60>`_
+  * Clarify that we are not actively working towards Windows compatibility. `(PR#64) <https://github.com/dispel/jak/pull/64>`_
+  * Updated copyrights to the year 2026 `(PR#61) <https://github.com/dispel/jak/pull/61>`_
 
 
 0.14.6
