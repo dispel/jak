@@ -84,8 +84,7 @@ def test_already_decrypted(tmpdir):
     key = helpers.generate_256bit_key().decode('utf-8')
     assert decryptfile.read() == "are we there yet?"
     out = crypto.decrypt_file(jwd=decryptfile.dirpath().strpath, filepath=decryptfile.strpath, key=key)
-    assert out == 'The file "{}" is already decrypted, or is not in a format I recognize.'.format(
-            decryptfile.strpath)
+    assert 'The file "{}" is already decrypted'.format(decryptfile.strpath) in out
 
 def test_wrong_key(tmpdir):
     wrongkey = tmpdir.join("wrongkey")

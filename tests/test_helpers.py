@@ -22,8 +22,8 @@ def test_backup_file_content(tmpdir, filename):
     testfile = tmpdir.join(filename)
     content = 'added content to the original file'
 
-    helpers.backup_file_content(jwd="tmp", filepath=testfile.strpath, content=content)
-    backup_filepath = helpers.create_backup_filepath(jwd="tmp", filepath=testfile.strpath)
+    helpers.backup_file_content(jwd=tmpdir.strpath, filepath=testfile.strpath, content=content)
+    backup_filepath = helpers.create_backup_filepath(jwd=tmpdir.strpath, filepath=testfile.strpath)
     assert os.path.exists(backup_filepath)
 
     backup = open(backup_filepath, 'r')
@@ -36,9 +36,9 @@ def test_backup_file_content(tmpdir, filename):
 def test_get_backup_content_for_file(tmpdir, filename):
     testfile = tmpdir.join(filename)
     content = 'added content to original but its a secret now'
-    helpers.backup_file_content(jwd="tmp", filepath=testfile.strpath, content=content)
+    helpers.backup_file_content(jwd=tmpdir.strpath, filepath=testfile.strpath, content=content)
 
-    mysecret = helpers.get_backup_content_for_file(jwd="tmp", filepath=testfile.strpath)
+    mysecret = helpers.get_backup_content_for_file(jwd=tmpdir.strpath, filepath=testfile.strpath)
     assert mysecret == content
 
 
