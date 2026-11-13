@@ -18,6 +18,7 @@
 #
 import os
 import sys
+
 sys.path.insert(0, os.path.abspath('..'))
 from jak import __version__, __version_full__  # noqa: E402
 
@@ -31,7 +32,8 @@ extensions = [
     # 'sphinx.ext.autodoc',
     # 'sphinx.ext.doctest',
     'sphinx.ext.ifconfig',
-    'sphinx.ext.viewcode']
+    'sphinx.ext.viewcode',
+]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -87,6 +89,7 @@ on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 
 if not on_rtd:  # only import and set the theme if we're building docs locally
     import sphinx_rtd_theme
+
     html_theme = 'sphinx_rtd_theme'
     html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 
@@ -116,10 +119,7 @@ htmlhelp_basename = 'jakdoc'
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [
-    (master_doc, 'jak', 'jak Documentation',
-     [author], 1)
-]
+man_pages = [(master_doc, 'jak', 'jak Documentation', [author], 1)]
 
 
 # -- Options for Texinfo output -------------------------------------------
@@ -128,9 +128,15 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'jak', 'jak Documentation',
-     author, 'jak', 'One line description of project.',
-     'Miscellaneous'),
+    (
+        master_doc,
+        'jak',
+        'jak Documentation',
+        author,
+        'jak',
+        'One line description of project.',
+        'Miscellaneous',
+    ),
 ]
 
 

@@ -34,10 +34,9 @@ class JakGroup(click.Group):
         return show_at_top + sorted(list(extras))
 
 
-@click.group(invoke_without_command=True,
-             context_settings=CONTEXT_SETTINGS,
-             no_args_is_help=True,
-             cls=JakGroup)
+@click.group(
+    invoke_without_command=True, context_settings=CONTEXT_SETTINGS, no_args_is_help=True, cls=JakGroup
+)
 @click.option('-v', '--version', is_flag=True)
 def main(version):
     """(c) Dispel LLC (Apache-2.0)
@@ -64,12 +63,12 @@ def main(version):
 @main.command()
 def start():
     """Initializes jak in your working directory."""
-    click.echo('''- - - Welcome to jak - - -
+    click.echo("""- - - Welcome to jak - - -
 
 "jak start" does a couple of things:
 1. jakfile: File with per working directory settings for jak.
 2. keyfile: Holds the key used to encrypt files.
-    ''')
+    """)
     jwd = helpers.get_jak_working_directory()
     click.echo(start_logic.create_jakfile(jwd=jwd))
 

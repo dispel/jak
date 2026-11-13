@@ -21,6 +21,6 @@ def unpad(data):
 
     # Python 3 raises the TypeError
     try:
-        return data[:-ord(data[-1])]
+        return data[: -ord(data[-1])]
     except TypeError:
-        return data[:-data[-1]]
+        return data[: -data[-1]]

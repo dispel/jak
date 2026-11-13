@@ -18,7 +18,10 @@ def test_pad():
     assert pad(data=b'aaaaaaaaaaaaa') == b'aaaaaaaaaaaaa\x03\x03\x03'
     assert pad(data=b'aaaaaaaaaaaaaa') == b'aaaaaaaaaaaaaa\x02\x02'
     assert pad(data=b'aaaaaaaaaaaaaaa') == b'aaaaaaaaaaaaaaa\x01'
-    assert pad(data=b'aaaaaaaaaaaaaaaa') == b'aaaaaaaaaaaaaaaa\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10'  # noqa
+    assert (
+        pad(data=b'aaaaaaaaaaaaaaaa')
+        == b'aaaaaaaaaaaaaaaa\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10'
+    )  # noqa
 
 
 def test_unpad():
@@ -37,4 +40,6 @@ def test_unpad():
     assert b'aaaaaaaaaaaaa' == unpad(data=b'aaaaaaaaaaaaa\x03\x03\x03')
     assert b'aaaaaaaaaaaaaa' == unpad(data=b'aaaaaaaaaaaaaa\x02\x02')
     assert b'aaaaaaaaaaaaaaa' == unpad(data=b'aaaaaaaaaaaaaaa\x01')
-    assert b'aaaaaaaaaaaaaaaa' == unpad(data=b'aaaaaaaaaaaaaaaa\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10')  # noqa
+    assert b'aaaaaaaaaaaaaaaa' == unpad(
+        data=b'aaaaaaaaaaaaaaaa\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10'
+    )  # noqa

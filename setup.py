@@ -15,8 +15,7 @@ import ast
 # (can't rely on something that we haven't installed yet)
 _version_re = re.compile(r'__version__\s+=\s+(.*)')
 with open('jak/__init__.py', 'rb') as f:
-    version = str(ast.literal_eval(_version_re.search(
-        f.read().decode('utf-8')).group(1)))
+    version = str(ast.literal_eval(_version_re.search(f.read().decode('utf-8')).group(1)))
 
 
 setup(
@@ -32,10 +31,7 @@ setup(
     include_package_data=True,
     zip_safe=False,
     platforms='any',
-    install_requires=[
-        'click>=6.6',
-        'pycryptodome>=3.10.1'
-    ],
+    install_requires=['click>=6.6', 'pycryptodome>=3.10.1'],
     entry_points={
         'console_scripts': [
             'jak = jak.app:main',
@@ -61,6 +57,6 @@ setup(
         'Programming Language :: Python :: 3.13',
         'Programming Language :: Python :: 3.14',
         'Programming Language :: Python :: 3.15',
-        'Programming Language :: Python :: Implementation :: PyPy'
-    ]
+        'Programming Language :: Python :: Implementation :: PyPy',
+    ],
 )

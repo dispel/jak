@@ -65,10 +65,9 @@ def encrypt_file(jwd, filepath, key, **kwargs):
 
     aes256_cipher = AES256Cipher(key=key)
 
-    ciphertext = _restore_from_backup(jwd=jwd,
-                                      filepath=filepath,
-                                      plaintext=plaintext,
-                                      aes256_cipher=aes256_cipher)
+    ciphertext = _restore_from_backup(
+        jwd=jwd, filepath=filepath, plaintext=plaintext, aes256_cipher=aes256_cipher
+    )
 
     if not ciphertext:
         ciphertext_ugly = aes256_cipher.encrypt(plaintext=plaintext)
@@ -85,8 +84,7 @@ def decrypt_file(filepath, key, jwd, **kwargs):
     contents = _read_file(filepath=filepath)
 
     if bytes(ENCRYPTED_BY_HEADER, 'utf-8') not in contents:
-        return 'The file "{}" is already decrypted, or it is missing it\'s jak header.'.format(
-            filepath)
+        return 'The file "{}" is already decrypted, or it is missing it\'s jak header.'.format(filepath)
 
     ciphertext_no_header = contents.replace(bytes(ENCRYPTED_BY_HEADER, 'utf-8'), b'')
 
@@ -98,8 +96,7 @@ def decrypt_file(filepath, key, jwd, **kwargs):
     try:
         ciphertext = base64.urlsafe_b64decode(ciphertext_no_header)
     except (TypeError, binascii.Error):
-        return 'The file "{}" is already decrypted, or is not in a format I recognize.'.format(
-            filepath)
+        return 'The file "{}" is already decrypted, or is not in a format I recognize.'.format(filepath)
 
     # Remember the encrypted file in the .jak folder
     # The reason to remember is because we don't want re-encryption of files to

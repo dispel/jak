@@ -15,8 +15,10 @@ jakfile_content_1 = """
 // Comment 7
 """
 
-@pytest.mark.parametrize('filename', [
-    'original_file', 'this_file_ends/original_file', 'this_file/is_in/nested/original_file'])
+
+@pytest.mark.parametrize(
+    'filename', ['original_file', 'this_file_ends/original_file', 'this_file/is_in/nested/original_file']
+)
 def test_backup_file_content(tmpdir, filename):
     testfile = tmpdir.join(filename)
     content = 'added content to the original file'
@@ -30,8 +32,9 @@ def test_backup_file_content(tmpdir, filename):
     backup.close()
     assert backup_content == content
 
+
 #'this_file_ends/original_file_get','this_file/is_in/nested/original_file_get'
-@pytest.mark.parametrize('filename', [ 'original_file_get'])
+@pytest.mark.parametrize('filename', ['original_file_get'])
 def test_get_backup_content_for_file(tmpdir, filename):
     testfile = tmpdir.join(filename)
     content = 'added content to original but its a secret now'
@@ -41,10 +44,17 @@ def test_get_backup_content_for_file(tmpdir, filename):
     assert mysecret == content
 
 
-@pytest.mark.parametrize('filename, file_content, expected_output', [
-    ("testfile", "Strîng can't decode", "Strîng can't decode"),
-    ("testfile2", b"A\xc3\xa0d some w\xc3\xabird \xc3\xa7haracters y\xc3\xb6", 'Aàd some wëird çharacters yö')
-])
+@pytest.mark.parametrize(
+    'filename, file_content, expected_output',
+    [
+        ('testfile', "Strîng can't decode", "Strîng can't decode"),
+        (
+            'testfile2',
+            b'A\xc3\xa0d some w\xc3\xabird \xc3\xa7haracters y\xc3\xb6',
+            'Aàd some wëird çharacters yö',
+        ),
+    ],
+)
 def test_create_or_overwrite_file_decoding(tmpdir, filename, file_content, expected_output):
     testfile = tmpdir.join(filename)
 
@@ -53,13 +63,14 @@ def test_create_or_overwrite_file_decoding(tmpdir, filename, file_content, expec
     assert result == expected_output
     assert isinstance(result, str)
 
+
 def test_remove_comments_from_JSON():
     result = helpers._remove_comments_from_JSON(jakfile_content_1)
     assert result == '{"password_file":"jakpassword","files_to_encrypt":["env","env2"]}'
 
 
 def test_read_jakfile_to_dict(tmpdir):
-    jakfile = tmpdir.join("jakfile")
+    jakfile = tmpdir.join('jakfile')
     jakfile.write(jakfile_content_1)
     assert jakfile.read() == jakfile_content_1
 
@@ -69,10 +80,11 @@ def test_read_jakfile_to_dict(tmpdir):
     assert 'files_to_encrypt' in result
     assert 'password_file' in result
 
+
 def test_read_jakfile_to_dict_malformed(tmpdir):
-    jakfile = tmpdir.join("jakfile")
-    jakfile.write("There is nothing to see here")
-    assert jakfile.read() == "There is nothing to see here"
+    jakfile = tmpdir.join('jakfile')
+    jakfile.write('There is nothing to see here')
+    assert jakfile.read() == 'There is nothing to see here'
 
     with pytest.raises(ValueError):
         helpers.read_jakfile_to_dict(jwd=jakfile.dirpath().strpath)
@@ -80,7 +92,7 @@ def test_read_jakfile_to_dict_malformed(tmpdir):
 
 def test_grouper():
     assert helpers.grouper('aaa', 1) == ('a', 'a', 'a')
-    assert helpers.grouper('aaa', 5) == ('aaa', )
+    assert helpers.grouper('aaa', 5) == ('aaa',)
     assert helpers.grouper('aaabbbcc', 3) == ('aaa', 'bbb', 'cc')
 
     # Raise error due to 2 not being iterable
@@ -95,10 +107,10 @@ def test_generate_256bit_key():
 
 
 def test_get_jak_working_directory(tmpdir):
-    '''
+    """
     /repo/.git/gitfile
     /repo/sub1/sub2/nestedfile
-    '''
+    """
     # No parent .git
     norepo = tmpdir.mkdir('norepo')
     result = helpers.get_jak_working_directory(cwd=norepo.strpath)
@@ -120,9 +132,9 @@ def test_get_jak_working_directory(tmpdir):
 
 
 def test_does_jwd_have_gitignore(tmpdir):
-    repo = tmpdir.mkdir("repo_folder")
-    git_ignore = repo.join(".gitignore")
-    git_ignore.write("i exist")
+    repo = tmpdir.mkdir('repo_folder')
+    git_ignore = repo.join('.gitignore')
+    git_ignore.write('i exist')
 
     # this will pass because the .gitignore is in the CWD
     assert helpers.does_jwd_have_gitignore(cwd=repo.strpath)
