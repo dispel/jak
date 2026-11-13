@@ -115,7 +115,7 @@ def test_get_jak_working_directory(tmpdir):
     result = helpers.get_jak_working_directory(cwd=nested.strpath)
     assert '/repo' in result
     assert result.count('/') > 3
-    assert 'sub' not in result
+    assert result == repo.strpath
 
 
 def test_does_jwd_have_gitignore(tmpdir):
